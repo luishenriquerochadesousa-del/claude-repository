@@ -1,0 +1,47 @@
+Section,Line,Lean,Typical,Notes
+SETUP,Deposit + first month to owner,1800,2700,Two months deposit is standard; negotiate one where possible
+SETUP,Furniture / mattresses / linen (3 sets per bed),3000,6500,Three linen sets is the minimum for same-day turnovers
+SETUP,Kitchen / crockery / appliances,600,1400,
+SETUP,Smart lock + wifi + basic automation,250,600,Self check-in is not optional at scale
+SETUP,Safety kit (extinguisher / fire blanket / first aid / 112 signage),120,200,Legally required under DL 128/2014
+SETUP,AL identification plaque,30,60,Mandatory; fixed outside the building entrance
+SETUP,Civil liability insurance (year 1),120,250,Minimum EUR 75000 cover per claim
+SETUP,Professional photography,0,250,Highest-ROI line in the whole budget
+SETUP,Accountant setup + first quarter,200,450,
+SETUP,Working capital buffer (3 months fixed costs),1500,3000,Non-negotiable
+SETUP,TOTAL PER UNIT,7620,15410,
+,,,,
+ASSUMPTION,Average nightly rate (ADR) EUR,95,95,National AL ADR was 134.1 in Apr 2025 and 169.5 in Jun 2025 (TravelBI); use local comparables not national averages
+ASSUMPTION,Occupancy (annual average),0.70,0.70,National AL occupancy ran 54.1-55.3 pct in Q2 2025
+ASSUMPTION,Average length of stay (nights),3.0,3.0,Drives the number of cleaning turnovers
+ASSUMPTION,Nights sold per month,21.3,21.3,= 30.4 x occupancy
+ASSUMPTION,Platform commission on gross,0.08,0.08,Airbnb split-fee ~3 pct host / host-only 14-16 pct; Booking 15-18 pct
+ASSUMPTION,IRS coefficient (art. 31 CIRS),0.35,0.35,0.35 AL in flat or house / 0.50 in area de contencao / 0.75 co-hosting service fee
+ASSUMPTION,Marginal IRS rate,0.35,0.35,Depends on total household income
+ASSUMPTION,Seguranca Social relevant income coefficient,0.20,0.20,20 pct for hotel-type activity; rate 21.4 pct
+,,,,
+MONTHLY,Gross bookings,2022,2022,= ADR x nights sold
+MONTHLY,Rent to owner,-900,-900,Target: under 30 pct of gross
+MONTHLY,Platform commission,-162,-162,
+MONTHLY,VAT self-assessed on commission (23 pct reverse charge),-37,-37,Due even while art. 53 VAT-exempt; requires VIES registration
+MONTHLY,Cleaning (7.1 turnovers x 35),-248,-248,Often partly recovered via the guest cleaning fee
+MONTHLY,Utilities / internet / consumables,-220,-220,
+MONTHLY,PMS / accountant / insurance / maintenance,-155,-155,
+MONTHLY,IRS + Seguranca Social (estimate),-284,-284,
+MONTHLY,NET AFTER TAX,15,15,Marginal - this is the point: at 45 pct rent-to-gross the deal does not work
+,,,,
+SEASONALITY,January index,0.68,,Multiply annual average occupancy by the index
+SEASONALITY,February index,0.72,,
+SEASONALITY,March index,0.83,,
+SEASONALITY,April index,0.97,,
+SEASONALITY,May index,1.04,,
+SEASONALITY,June index,1.10,,
+SEASONALITY,July index,1.24,,
+SEASONALITY,August index,1.32,,
+SEASONALITY,September index,1.14,,
+SEASONALITY,October index,0.99,,
+SEASONALITY,November index,0.79,,
+SEASONALITY,December index,0.68,,
+,,,,
+TEST,Rent as pct of gross,0.45,,Good under 0.25 / acceptable to 0.30 / walk away above 0.35
+TEST,Survives 4 months at 40 pct occupancy without new capital?,NO,,If no the deal is a liquidity trap even if the annual average works

@@ -1,0 +1,1173 @@
+<title>Alojamento Local without owning — Portugal operator's dashboard</title>
+<style>
+/* ── tokens ───────────────────────────────────────────────────────────── */
+:root{
+  --ground:#E9ECEE; --surface:#FFFFFF; --surface-2:#F2F5F6; --surface-3:#E4E9EC;
+  --line:#CFD7DC; --line-soft:#E1E7EA;
+  --ink:#101B24; --ink-2:#3C4B57; --ink-3:#6B7A85;
+  --accent:#14508C; --accent-2:#2C7ABF; --accent-soft:#DCE8F4;
+  --ochre:#8E5E12; --ochre-soft:#F3E9D6;
+  --good:#1C6349; --good-soft:#DCEDE5;
+  --warn:#8A5709; --warn-soft:#F6E8CE;
+  --crit:#96291F; --crit-soft:#F6DEDA;
+  --shadow:0 1px 2px rgba(16,27,36,.06),0 6px 20px -12px rgba(16,27,36,.28);
+  --display:"Iowan Old Style","Palatino Linotype",Palatino,"Book Antiqua",Georgia,serif;
+  --body:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
+  --mono:ui-monospace,SFMono-Regular,Menlo,Consolas,"Liberation Mono",monospace;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --ground:#0B1219; --surface:#121C25; --surface-2:#17222C; --surface-3:#1E2B36;
+    --line:#27353F; --line-soft:#1F2C36;
+    --ink:#E5ECF1; --ink-2:#AAB9C4; --ink-3:#7C8C98;
+    --accent:#6FB0E6; --accent-2:#8CC4F2; --accent-soft:#122839;
+    --ochre:#D3A257; --ochre-soft:#2C2415;
+    --good:#5FC098; --good-soft:#12261E;
+    --warn:#DCAE5D; --warn-soft:#2A2114;
+    --crit:#EE8C80; --crit-soft:#2E1815;
+    --shadow:0 1px 2px rgba(0,0,0,.4),0 8px 24px -14px rgba(0,0,0,.8);
+  }
+}
+:root[data-theme="dark"]{
+  --ground:#0B1219; --surface:#121C25; --surface-2:#17222C; --surface-3:#1E2B36;
+  --line:#27353F; --line-soft:#1F2C36;
+  --ink:#E5ECF1; --ink-2:#AAB9C4; --ink-3:#7C8C98;
+  --accent:#6FB0E6; --accent-2:#8CC4F2; --accent-soft:#122839;
+  --ochre:#D3A257; --ochre-soft:#2C2415;
+  --good:#5FC098; --good-soft:#12261E;
+  --warn:#DCAE5D; --warn-soft:#2A2114;
+  --crit:#EE8C80; --crit-soft:#2E1815;
+  --shadow:0 1px 2px rgba(0,0,0,.4),0 8px 24px -14px rgba(0,0,0,.8);
+}
+
+/* ── base ─────────────────────────────────────────────────────────────── */
+*{box-sizing:border-box}
+body{
+  margin:0; background:var(--ground); color:var(--ink);
+  font-family:var(--body); font-size:16px; line-height:1.6;
+  -webkit-font-smoothing:antialiased;
+}
+a{color:var(--accent); text-underline-offset:3px; text-decoration-thickness:1px}
+h1,h2,h3,h4{font-family:var(--display); font-weight:600; text-wrap:balance; margin:0}
+p{margin:0}
+code,.mono{font-family:var(--mono)}
+:focus-visible{outline:2px solid var(--accent); outline-offset:2px; border-radius:3px}
+@media (prefers-reduced-motion:reduce){*{animation:none!important; transition:none!important}}
+
+/* ── shell ────────────────────────────────────────────────────────────── */
+.shell{display:grid; grid-template-columns:252px minmax(0,1fr); gap:0; min-height:100vh}
+.rail{
+  position:sticky; top:0; align-self:start; height:100vh; overflow-y:auto;
+  background:var(--surface); border-right:1px solid var(--line);
+  padding:26px 18px 40px; display:flex; flex-direction:column; gap:22px;
+}
+.brand{display:flex; flex-direction:column; gap:6px}
+.brand .mark{
+  font-family:var(--mono); font-size:10.5px; letter-spacing:.16em; text-transform:uppercase;
+  color:var(--accent); display:flex; align-items:center; gap:7px;
+}
+.brand .mark::before{content:""; width:16px; height:2px; background:var(--accent)}
+.brand h1{font-size:19px; line-height:1.25}
+.brand .sub{font-size:12.5px; color:var(--ink-3); line-height:1.45}
+nav ol{list-style:none; margin:0; padding:0; display:flex; flex-direction:column; gap:1px}
+nav a{
+  display:flex; gap:10px; align-items:baseline; padding:7px 10px; border-radius:6px;
+  color:var(--ink-2); text-decoration:none; font-size:13.5px; line-height:1.35;
+}
+nav a .n{font-family:var(--mono); font-size:10.5px; color:var(--ink-3); min-width:15px}
+nav a:hover{background:var(--surface-2); color:var(--ink)}
+nav a.on{background:var(--accent-soft); color:var(--accent); font-weight:600}
+nav a.on .n{color:var(--accent)}
+.rail-foot{margin-top:auto; font-size:11.5px; color:var(--ink-3); line-height:1.5; border-top:1px solid var(--line-soft); padding-top:14px}
+.themer{
+  appearance:none; background:var(--surface-2); border:1px solid var(--line); color:var(--ink-2);
+  font-family:var(--mono); font-size:10.5px; letter-spacing:.08em; text-transform:uppercase;
+  padding:6px 10px; border-radius:5px; cursor:pointer; margin-bottom:12px;
+}
+.themer:hover{border-color:var(--accent); color:var(--accent)}
+
+main{padding:0 0 90px; min-width:0}
+.wrap{max-width:940px; margin:0 auto; padding:0 34px}
+
+/* ── hero ─────────────────────────────────────────────────────────────── */
+.hero{border-bottom:1px solid var(--line); background:var(--surface); padding:52px 0 34px}
+.eyebrow{
+  font-family:var(--mono); font-size:11px; letter-spacing:.14em; text-transform:uppercase;
+  color:var(--ochre); margin-bottom:14px;
+}
+.hero h2{font-size:clamp(29px,4vw,42px); line-height:1.1; letter-spacing:-.015em; max-width:19ch}
+.hero .lede{margin-top:16px; max-width:62ch; color:var(--ink-2); font-size:17px}
+.hero .stamp{
+  margin-top:22px; display:inline-flex; gap:9px; align-items:center; flex-wrap:wrap;
+  font-family:var(--mono); font-size:11.5px; color:var(--ink-3);
+}
+.hero .stamp span{padding:3px 8px; border:1px solid var(--line); border-radius:99px; background:var(--surface-2)}
+
+/* ── sections ─────────────────────────────────────────────────────────── */
+section{padding:46px 0 4px; scroll-margin-top:12px}
+section > .wrap > header{margin-bottom:22px; border-bottom:1px solid var(--line); padding-bottom:12px}
+section > .wrap > header .kicker{
+  font-family:var(--mono); font-size:10.5px; letter-spacing:.14em; text-transform:uppercase;
+  color:var(--ink-3); margin-bottom:7px;
+}
+section > .wrap > header h3{font-size:26px; letter-spacing:-.01em}
+section > .wrap > header p{margin-top:8px; color:var(--ink-2); max-width:70ch; font-size:15px}
+.stack{display:flex; flex-direction:column; gap:18px}
+h4.sub{font-size:18px; margin-top:8px}
+.prose p{max-width:70ch; color:var(--ink-2); font-size:15px}
+.prose p + p{margin-top:10px}
+
+/* ── cards & blocks ───────────────────────────────────────────────────── */
+.card{background:var(--surface); border:1px solid var(--line); border-radius:9px; padding:20px 22px; box-shadow:var(--shadow)}
+.card > h4{font-size:17px; margin-bottom:10px}
+.card p{font-size:14.5px; color:var(--ink-2)}
+.grid2{display:grid; grid-template-columns:repeat(auto-fit,minmax(285px,1fr)); gap:16px}
+.grid3{display:grid; grid-template-columns:repeat(auto-fit,minmax(215px,1fr)); gap:14px}
+.grid4{display:grid; grid-template-columns:repeat(auto-fit,minmax(165px,1fr)); gap:12px}
+
+.tile{background:var(--surface); border:1px solid var(--line); border-radius:9px; padding:15px 16px}
+.tile .lab{font-family:var(--mono); font-size:10.5px; letter-spacing:.1em; text-transform:uppercase; color:var(--ink-3)}
+.tile .val{font-family:var(--display); font-size:28px; line-height:1.15; margin-top:6px; letter-spacing:-.01em; font-variant-numeric:tabular-nums}
+.tile .note{font-size:12.5px; color:var(--ink-3); margin-top:5px; line-height:1.4}
+.tile.accent .val{color:var(--accent)}
+.tile.ochre .val{color:var(--ochre)}
+
+.callout{border-left:3px solid var(--accent); background:var(--accent-soft); border-radius:0 8px 8px 0; padding:14px 18px}
+.callout.warn{border-color:var(--warn); background:var(--warn-soft)}
+.callout.crit{border-color:var(--crit); background:var(--crit-soft)}
+.callout.good{border-color:var(--good); background:var(--good-soft)}
+.callout .t{font-family:var(--mono); font-size:10.5px; letter-spacing:.12em; text-transform:uppercase; margin-bottom:6px}
+.callout p{font-size:14.5px; color:var(--ink-2)}
+.callout.warn .t{color:var(--warn)} .callout.crit .t{color:var(--crit)}
+.callout.good .t{color:var(--good)} .callout .t{color:var(--accent)}
+
+.law{
+  display:inline-block; font-family:var(--mono); font-size:11.5px; padding:1px 6px;
+  background:var(--surface-3); border-radius:4px; color:var(--ink-2); white-space:nowrap;
+}
+.pill{display:inline-flex; align-items:center; gap:5px; font-family:var(--mono); font-size:10.5px;
+  letter-spacing:.07em; text-transform:uppercase; padding:3px 9px; border-radius:99px; border:1px solid transparent}
+.pill.ok{background:var(--good-soft); color:var(--good); border-color:var(--good)}
+.pill.mid{background:var(--warn-soft); color:var(--warn); border-color:var(--warn)}
+.pill.no{background:var(--crit-soft); color:var(--crit); border-color:var(--crit)}
+.pill.neu{background:var(--surface-3); color:var(--ink-2); border-color:var(--line)}
+
+/* ── tables ───────────────────────────────────────────────────────────── */
+.tbl-wrap{overflow-x:auto; border:1px solid var(--line); border-radius:9px; background:var(--surface)}
+table{border-collapse:collapse; width:100%; font-size:14px; min-width:520px}
+th,td{text-align:left; padding:10px 14px; border-bottom:1px solid var(--line-soft); vertical-align:top}
+thead th{
+  font-family:var(--mono); font-size:10.5px; letter-spacing:.1em; text-transform:uppercase;
+  color:var(--ink-3); background:var(--surface-2); border-bottom:1px solid var(--line); font-weight:500;
+}
+tbody tr:last-child td{border-bottom:none}
+td.num,th.num{text-align:right; font-variant-numeric:tabular-nums; font-family:var(--mono); font-size:13px}
+td strong{color:var(--ink)}
+caption{caption-side:bottom; text-align:left; padding:10px 14px; font-size:12.5px; color:var(--ink-3); border-top:1px solid var(--line-soft)}
+
+/* ── steps / timeline ─────────────────────────────────────────────────── */
+.steps{list-style:none; margin:0; padding:0; display:flex; flex-direction:column}
+.steps li{display:grid; grid-template-columns:34px 1fr; gap:14px; padding-bottom:20px; position:relative}
+.steps li::before{content:""; position:absolute; left:16px; top:30px; bottom:0; width:1px; background:var(--line)}
+.steps li:last-child::before{display:none}
+.steps .num{
+  width:32px; height:32px; border-radius:50%; background:var(--surface); border:1px solid var(--line);
+  display:grid; place-items:center; font-family:var(--mono); font-size:12px; color:var(--accent); font-weight:600;
+}
+.steps .bd h5{font-family:var(--display); font-size:16.5px; margin:4px 0 5px; font-weight:600}
+.steps .bd p{font-size:14.5px; color:var(--ink-2)}
+.steps .bd .meta{margin-top:7px; display:flex; gap:8px; flex-wrap:wrap}
+
+/* ── checklist ────────────────────────────────────────────────────────── */
+.check{list-style:none; margin:0; padding:0; display:flex; flex-direction:column; gap:2px}
+.check li{display:flex; gap:11px; align-items:flex-start; padding:9px 12px; border-radius:7px; background:var(--surface); border:1px solid var(--line-soft)}
+.check li:hover{border-color:var(--line)}
+.check input{margin:3px 0 0; width:16px; height:16px; accent-color:var(--accent); flex:none; cursor:pointer}
+.check label{font-size:14.5px; cursor:pointer; color:var(--ink-2)}
+.check input:checked + label{color:var(--ink-3); text-decoration:line-through}
+.check .why{display:block; font-size:12.5px; color:var(--ink-3); margin-top:2px; text-decoration:none!important}
+.progress{display:flex; align-items:center; gap:12px; margin-bottom:14px; font-family:var(--mono); font-size:12px; color:var(--ink-3)}
+.progress .bar{flex:1; height:6px; background:var(--surface-3); border-radius:99px; overflow:hidden}
+.progress .bar i{display:block; height:100%; background:var(--accent); border-radius:99px; width:0; transition:width .25s ease}
+
+/* ── calculator ───────────────────────────────────────────────────────── */
+.calc{display:grid; grid-template-columns:minmax(0,300px) minmax(0,1fr); gap:18px; align-items:start}
+.inputs{background:var(--surface); border:1px solid var(--line); border-radius:9px; padding:18px; display:flex; flex-direction:column; gap:14px; box-shadow:var(--shadow)}
+.mode{display:flex; gap:0; border:1px solid var(--line); border-radius:7px; overflow:hidden}
+.mode button{
+  flex:1; appearance:none; border:0; background:var(--surface-2); color:var(--ink-2); cursor:pointer;
+  font-family:var(--mono); font-size:10.5px; letter-spacing:.08em; text-transform:uppercase; padding:9px 4px;
+}
+.mode button[aria-pressed="true"]{background:var(--accent); color:#fff}
+:root[data-theme="dark"] .mode button[aria-pressed="true"]{color:#08131c}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .mode button[aria-pressed="true"]{color:#08131c}}
+.fld{display:flex; flex-direction:column; gap:5px}
+.fld .row{display:flex; justify-content:space-between; align-items:baseline; gap:8px}
+.fld label{font-size:12.5px; color:var(--ink-2)}
+.fld output{font-family:var(--mono); font-size:13px; color:var(--accent); font-variant-numeric:tabular-nums}
+.fld input[type=range]{width:100%; accent-color:var(--accent); height:18px}
+.results{display:flex; flex-direction:column; gap:14px; min-width:0}
+.readout{background:var(--surface); border:1px solid var(--line); border-radius:9px; padding:18px 20px; box-shadow:var(--shadow)}
+.headline{display:flex; align-items:baseline; gap:14px; flex-wrap:wrap; padding-bottom:14px; border-bottom:1px solid var(--line-soft); margin-bottom:14px}
+.headline .big{font-family:var(--display); font-size:40px; line-height:1; letter-spacing:-.02em; font-variant-numeric:tabular-nums}
+.headline .cap{font-family:var(--mono); font-size:10.5px; letter-spacing:.1em; text-transform:uppercase; color:var(--ink-3)}
+.pl{list-style:none; margin:0; padding:0; font-size:14px}
+.pl li{display:flex; justify-content:space-between; gap:16px; padding:5px 0; border-bottom:1px dotted var(--line-soft)}
+.pl li:last-child{border-bottom:0}
+.pl li.tot{font-weight:600; border-top:1px solid var(--line); border-bottom:0; margin-top:5px; padding-top:9px}
+.pl .v{font-family:var(--mono); font-variant-numeric:tabular-nums; color:var(--ink)}
+.pl .k{color:var(--ink-2)}
+.verdict{font-size:14px; padding:11px 14px; border-radius:7px; line-height:1.5}
+figure{margin:0}
+figcaption{font-size:12.5px; color:var(--ink-3); margin-top:8px}
+.chart{width:100%; height:auto; display:block; overflow:visible}
+.chart .grid-line{stroke:var(--line-soft); stroke-width:1}
+.chart .zero{stroke:var(--line); stroke-width:1}
+.chart .tick{font-family:var(--mono); font-size:9.5px; fill:var(--ink-3)}
+.chart .lbl{font-family:var(--mono); font-size:9.5px; fill:var(--ink-3)}
+
+/* ── misc ─────────────────────────────────────────────────────────────── */
+ul.bul{margin:8px 0 0; padding-left:19px; font-size:14.5px; color:var(--ink-2)}
+ul.bul li{margin-bottom:5px}
+ul.bul li::marker{color:var(--accent)}
+.src{font-size:13px; color:var(--ink-2)}
+.src ol{padding-left:20px; display:flex; flex-direction:column; gap:7px}
+footer{border-top:1px solid var(--line); margin-top:50px; padding:26px 0; background:var(--surface)}
+footer p{font-size:12.5px; color:var(--ink-3); max-width:78ch}
+
+@media (max-width:900px){
+  .shell{grid-template-columns:1fr}
+  .rail{position:static; height:auto; border-right:0; border-bottom:1px solid var(--line); padding:18px}
+  nav ol{flex-direction:row; overflow-x:auto; gap:4px; padding-bottom:4px}
+  nav a{white-space:nowrap}
+  .rail-foot{display:none}
+  .wrap{padding:0 20px}
+  .calc{grid-template-columns:1fr}
+}
+</style>
+
+<div class="shell">
+<aside class="rail">
+  <div class="brand">
+    <div class="mark">Operator's dashboard</div>
+    <h1>Alojamento Local<br>without owning</h1>
+    <div class="sub">Portuguese law, tax and unit economics for running short-term rentals in property you don't own.</div>
+  </div>
+  <nav aria-label="Sections">
+    <ol>
+      <li><a href="#panorama" class="on"><span class="n">01</span>The four models</a></li>
+      <li><a href="#legal"><span class="n">02</span>Legal regime (AL)</a></li>
+      <li><a href="#registo"><span class="n">03</span>Getting registered</a></li>
+      <li><a href="#contencao"><span class="n">04</span>Where you can't</a></li>
+      <li><a href="#contratos"><span class="n">05</span>The landlord contract</a></li>
+      <li><a href="#obrigacoes"><span class="n">06</span>Running obligations</a></li>
+      <li><a href="#fiscal"><span class="n">07</span>Tax &amp; accounting</a></li>
+      <li><a href="#numeros"><span class="n">08</span>Deal calculator</a></li>
+      <li><a href="#setup"><span class="n">09</span>Startup capital</a></li>
+      <li><a href="#playbook"><span class="n">10</span>90-day playbook</a></li>
+      <li><a href="#riscos"><span class="n">11</span>Risks &amp; red flags</a></li>
+      <li><a href="#checklist"><span class="n">12</span>Launch checklist</a></li>
+      <li><a href="#fontes"><span class="n">13</span>Sources</a></li>
+    </ol>
+  </nav>
+  <div class="rail-foot">
+    <button class="themer" id="themer" type="button">Theme: auto</button>
+    <p>Written August 2026. Law changes fast here — verify against <span class="mono">dre.pt</span> and your município before signing anything.</p>
+  </div>
+</aside>
+
+<main>
+<div class="hero">
+  <div class="wrap">
+    <div class="eyebrow">Portugal · updated August 2026</div>
+    <h2>You don't need to own the flat. You do need to own the compliance.</h2>
+    <p class="lede">Running short-term rentals in someone else's property is entirely legal in Portugal — provided the owner's authorisation is in writing and the registration is in the right name. What kills these businesses is rarely the model: it's a missing signature from a landlord, a <em>freguesia</em> that stopped issuing registrations, or a rent that eats 45% of gross revenue. This dashboard covers all three.</p>
+    <div class="stamp">
+      <span>DL 128/2014 (as amended)</span><span>DL 76/2024</span><span>DL 151/2026</span><span>EU Reg. 2024/1028</span>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ 01 ══════════════════════════════════════════════════════════════ -->
+<section id="panorama">
+<div class="wrap">
+  <header>
+    <div class="kicker">01 — Positioning</div>
+    <h3>Four ways in, ranked by how much can go wrong</h3>
+    <p>The Instagram/Holidu framing lumps these together as "Airbnb without owning". They are completely different businesses with different capital needs, different legal exposure, and — critically — different people whose name goes on the RNAL registration.</p>
+  </header>
+
+  <div class="stack">
+  <div class="tbl-wrap">
+  <table>
+    <thead><tr>
+      <th>Model</th><th>How it works</th><th class="num">Capital in</th><th>Who holds the AL registration</th><th>Downside risk</th>
+    </tr></thead>
+    <tbody>
+      <tr>
+        <td><strong>Rent-to-rent</strong><br><span class="law">arbitragem</span></td>
+        <td>You lease a flat long-term, get written authorisation to operate AL, and sublet it nightly.</td>
+        <td class="num">€8k–15k<br>per unit</td>
+        <td>You — as <em>titular da exploração</em>, with the owner's written consent on file.</td>
+        <td><span class="pill no">High</span> You owe rent 12 months a year whether or not anyone books.</td>
+      </tr>
+      <tr>
+        <td><strong>Co-hosting</strong></td>
+        <td>The owner keeps the licence and the risk; you run listing, pricing, guests, cleaning.</td>
+        <td class="num">€0–1.5k<br>per unit</td>
+        <td>The owner. You are a service provider.</td>
+        <td><span class="pill ok">Low</span> Worst case you lose the client.</td>
+      </tr>
+      <tr>
+        <td><strong>Property management</strong></td>
+        <td>Co-hosting at scale, with a real company, staff, contracts, and often the licence in your name via <em>cessão de exploração</em>.</td>
+        <td class="num">€5k–20k<br>fixed base</td>
+        <td>Owner, or you under a <em>cessão de exploração</em> contract.</td>
+        <td><span class="pill mid">Medium</span> Fixed overhead before you have volume.</td>
+      </tr>
+      <tr>
+        <td><strong>Experiences</strong></td>
+        <td>Tours, cooking, photo walks. No property at all.</td>
+        <td class="num">€0–2k</td>
+        <td>N/A — different regime entirely (no AL).</td>
+        <td><span class="pill ok">Low</span> Low ceiling; caps out at your own hours.</td>
+      </tr>
+    </tbody>
+    <caption>Capital figures are per-unit setup for a Portuguese T1/T2, discussed in section 09.</caption>
+  </table>
+  </div>
+
+  <div class="callout good">
+    <div class="t">The honest recommendation</div>
+    <p><strong>Start co-hosting, then graduate to arbitrage on units you've already proven.</strong> Portuguese rents relative to achievable ADR make pure arbitrage thin — a Lisbon T1 at €1,100/month needs roughly €2,800–3,300 of gross bookings just to earn a normal margin, which is a high bar outside prime months. Co-hosting pays 15–25% of gross with none of the rent risk, gets you the operational reps, and — this is the real asset — puts you in front of owners whose flats you may later want to lease outright. Every serious operator I can find in Portugal built the book this way.</p>
+  </div>
+
+  <div class="grid4">
+    <div class="tile accent"><div class="lab">Nat. occupancy</div><div class="val">55.3%</div><div class="note">AL, June 2025 (Q2 band 54.1–55.3%)</div></div>
+    <div class="tile"><div class="lab">ADR, June 2025</div><div class="val">€169.5</div><div class="note">National AL average; €134.1 in April</div></div>
+    <div class="tile"><div class="lab">RevPAR</div><div class="val">€93.8</div><div class="note">National, end of Q2 2025</div></div>
+    <div class="tile ochre"><div class="lab">Grande Lisboa ADR</div><div class="val">€174.8</div><div class="note">May 2025 — highest in the country; Algarve peaked at €217.8 in August</div></div>
+  </div>
+  <p class="src">Source: TravelBI / Turismo de Portugal, <em>Alojamento Local</em> quarterly (Lighthouse data). Note these are national averages skewed by prime coastal and city-centre stock — a suburban T1 will not print €169 ADR.</p>
+  </div>
+</div>
+</section>
+
+<!-- ═══ 02 ══════════════════════════════════════════════════════════════ -->
+<section id="legal">
+<div class="wrap">
+  <header>
+    <div class="kicker">02 — Enquadramento legal</div>
+    <h3>The Alojamento Local regime, current state</h3>
+    <p>Everything short-term-rental in Portugal runs off one statute: <span class="law">Decreto-Lei n.º 128/2014, de 29 de agosto</span>, the <em>regime jurídico da exploração dos estabelecimentos de alojamento local</em>. It has been amended six times. What matters is which version you're reading — most blog posts online are still describing the 2023 rules, which were repealed.</p>
+  </header>
+
+  <div class="stack">
+  <h4 class="sub">How the law got here</h4>
+  <ol class="steps">
+    <li><span class="num">1</span><div class="bd">
+      <h5>DL 128/2014 — the base regime</h5>
+      <p>Creates AL as a category distinct from hotels (<span class="law">DL 80/2017</span> governs those), defines the modalities and the <em>comunicação prévia</em> registration route. This distinction matters later for VAT.</p>
+    </div></li>
+    <li><span class="num">2</span><div class="bd">
+      <h5>Lei 62/2018 — municipalities get teeth</h5>
+      <p>Introduces <em>áreas de contenção</em>, the mandatory civil liability insurance, and per-building limits on apartment-modality registrations.</p>
+    </div></li>
+    <li><span class="num">3</span><div class="bd">
+      <h5>Lei 56/2023 "Mais Habitação" — the freeze</h5>
+      <p>Suspended new AL registrations in apartments nationwide, imposed the CEAL extraordinary contribution, and set licences to expire in 2030. <strong>Almost all of this is now repealed</strong> — ignore any guide that still describes it.</p>
+    </div></li>
+    <li><span class="num">4</span><div class="bd">
+      <h5>DL 76/2024 — the reversal (in force 1 Nov 2024)</h5>
+      <p>Lifted the national freeze, killed the CEAL, removed the 2030 expiry, and made registrations transferable with the property instead of personal and non-transmissible. It also removed the requirement for prior condominium <em>authorisation</em> — while giving condominiums a new, easier <em>opposition</em> right.</p>
+      <div class="meta"><span class="pill neu">Sixth amendment</span><span class="pill ok">Most restrictions lifted</span></div>
+    </div></li>
+    <li><span class="num">5</span><div class="bd">
+      <h5>DL 151/2026 — the municipal deadline</h5>
+      <p>Exceptional regime: municipalities with more than 1,000 registered AL units as at 31 Dec 2025 have until <strong>31 December 2026</strong> to write (or rewrite) their local regulation, and may keep suspending new registrations meanwhile. Any such suspension lapses automatically at the end of 2026 if no regulation is in force. This is the single biggest live variable for anyone starting now.</p>
+      <div class="meta"><span class="pill mid">Deadline 31 Dec 2026</span><span class="pill neu">Lisboa · Porto · Funchal · Sintra affected</span></div>
+    </div></li>
+    <li><span class="num">6</span><div class="bd">
+      <h5>EU Regulation 2024/1028 — fully applicable since 20 May 2026</h5>
+      <p>Platforms (Airbnb, Booking, Expedia) must now systematically verify registration numbers against national registries and share host data with authorities. Practical consequence: <strong>an unregistered or mismatched listing gets pulled automatically.</strong> The era of quietly listing without an RNAL number is over.</p>
+    </div></li>
+  </ol>
+
+  <h4 class="sub">Modalities and capacity</h4>
+  <div class="tbl-wrap">
+  <table>
+    <thead><tr><th>Modality</th><th>What qualifies</th><th class="num">Max capacity</th><th>Notes for a non-owner</th></tr></thead>
+    <tbody>
+      <tr><td><strong>Apartamento</strong></td><td>An autonomous fraction of a building.</td><td class="num">9 rooms / 30 guests</td><td>The workhorse of arbitrage. Max <strong>9 AL apartments per building</strong> per owner/operator.</td></tr>
+      <tr><td><strong>Moradia</strong></td><td>An autonomous, independent building.</td><td class="num">9 rooms / 30 guests</td><td>No condominium to fight with. Often the cleaner deal.</td></tr>
+      <tr><td><strong>Estabelecimento de hospedagem</strong></td><td>Units within an autonomous fraction; includes <em>hostel</em> when dormitories predominate.</td><td class="num">9 rooms / 30 guests<br>(hostel exempt)</td><td>Higher fit-out cost, higher fixed regime obligations.</td></tr>
+      <tr><td><strong>Quartos</strong></td><td>Rooms inside the operator's own home, which must be their <em>domicílio fiscal</em>.</td><td class="num">3 rooms max</td><td><strong>Not available to you</strong> unless you actually live there — this modality is tied to your tax residence.</td></tr>
+    </tbody>
+    <caption>Capacity = rooms × 2, plus 2 extra guests in the living room for <em>apartamento</em> and <em>moradia</em>. Source: DL 128/2014, arts. 3.º and 11.º.</caption>
+  </table>
+  </div>
+
+  <h4 class="sub">Requirements the unit must meet</h4>
+  <div class="grid2">
+    <div class="card">
+      <h4>Physical &amp; safety</h4>
+      <ul class="bul">
+        <li>Adequate conservation, hygiene and functioning of all equipment</li>
+        <li>Natural ventilation — windows or balcony doors to the outside</li>
+        <li>Bathroom with running hot and cold water</li>
+        <li>Fire extinguisher and fire blanket, accessible to guests</li>
+        <li>First-aid kit</li>
+        <li>National emergency number (112) displayed visibly</li>
+        <li>Manual or automatic fire-safety measures scale with capacity (units above 10 guests attract heavier requirements)</li>
+      </ul>
+    </div>
+    <div class="card">
+      <h4>Paperwork that must exist before guest one</h4>
+      <ul class="bul">
+        <li><strong>Civil liability insurance</strong> — mandatory, minimum cover €75,000 per claim, covering fire and damage to guests and third parties. Proof is uploaded to the registration.</li>
+        <li><strong>Placa identificativa</strong> — the standardised AL plaque, fixed to the outside of the building, next to the entrance</li>
+        <li><strong>Livro de reclamações eletrónico</strong> — registration on the national platform is mandatory</li>
+        <li><strong>RNAL number displayed</strong> in every listing and advertisement</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="callout crit">
+    <div class="t">Contraordenações — what non-compliance costs</div>
+    <p>Operating, advertising or intermediating an unregistered AL establishment: <strong>€2,500–€4,000 for an individual, €25,000–€40,000 for a company</strong>. Missing plaque, missing insurance, missing complaints book and out-of-date registration data all carry their own fines. Enforcement is <strong>ASAE</strong>, plus the município, and since May 2026 the platforms themselves flag mismatches. Repeat offences can bring closure of the establishment.</p>
+  </div>
+  </div>
+</div>
+</section>
+
+<!-- ═══ 03 ══════════════════════════════════════════════════════════════ -->
+<section id="registo">
+<div class="wrap">
+  <header>
+    <div class="kicker">03 — Registration</div>
+    <h3>Getting the RNAL number when the flat isn't yours</h3>
+    <p>Registration is a <em>comunicação prévia com prazo</em> — a prior notice, not a licence application. You file, you get a number immediately, and the município has a window in which to inspect and object. The one non-obvious part for a non-owner is proving <em>legitimidade</em>.</p>
+  </header>
+
+  <div class="stack">
+  <ol class="steps">
+    <li><span class="num">1</span><div class="bd">
+      <h5>Open activity at Finanças first</h5>
+      <p>You need an active CAE before you can register. The usual codes are <span class="law">CAE 55201</span> (<em>alojamento mobilado para turistas</em>) and <span class="law">CAE 55204</span> (<em>outros locais de alojamento de curta duração</em>). Do it on the Portal das Finanças under <em>Início de Atividade</em>, as a <em>trabalhador independente</em> or through a company. Register with Segurança Social at the same time.</p>
+      <div class="meta"><span class="pill neu">Free</span><span class="pill neu">Same day, online</span></div>
+    </div></li>
+    <li><span class="num">2</span><div class="bd">
+      <h5>Assemble the legitimacy file — the part that trips up non-owners</h5>
+      <p>The <em>comunicação prévia</em> requires the title under which you use the property. As a tenant that means: the lease contract <strong>plus the owner's express written authorisation to operate Alojamento Local in the property and to sublet</strong>. Under <span class="law">art. 1038.º f)</span> and <span class="law">art. 1088.º do Código Civil</span> a tenant may not give a third party the use of the property, and subletting authorisation must be in writing. Verbal comfort is worthless: unauthorised subletting is grounds for terminating your lease, which would take the AL registration with it.</p>
+      <div class="meta"><span class="pill no">Deal-breaker if missing</span></div>
+    </div></li>
+    <li><span class="num">3</span><div class="bd">
+      <h5>File at the Balcão Único Eletrónico</h5>
+      <p>Via <span class="mono">eportugal.gov.pt</span> / the <em>Balcão do Empreendedor</em>, addressed to the president of the câmara municipal. Typical attachments: ID and NIF of the <em>titular da exploração</em>, caderneta predial urbana, the use title (lease + authorisation), a floor plan with rooms identified, declaration of compliance with the legal requirements, and the insurance certificate.</p>
+    </div></li>
+    <li><span class="num">4</span><div class="bd">
+      <h5>Get the number, put up the plaque, start operating</h5>
+      <p>The RNAL number is issued automatically on submission and is <strong>the only document you need in order to operate</strong> (art. 7.º, as amended by DL 76/2024). You may begin immediately unless the município objects.</p>
+    </div></li>
+    <li><span class="num">5</span><div class="bd">
+      <h5>Survive the inspection window</h5>
+      <p>The município inspects within <strong>60 days</strong> of the prior notice, or <strong>90 days</strong> if the unit sits in an <em>área de contenção</em>, to verify the requirements. Keep the safety kit, plaque and insurance in place from day one — an inspection failing on a €20 fire blanket is an avoidable way to lose the registration.</p>
+    </div></li>
+    <li><span class="num">6</span><div class="bd">
+      <h5>Keep the registration current</h5>
+      <p>Any change to the registered data must be communicated within <strong>10 days</strong>. Insurance renewals get uploaded. Cessation of activity must be communicated too. Since DL 76/2024 the registration is no longer personal — it travels with the property on transfer — which cuts both ways for a tenant-operator: a new owner inherits a live registration, but also inherits the power to end your lease.</p>
+    </div></li>
+  </ol>
+
+  <div class="callout warn">
+    <div class="t">Condominium: authorisation is out, opposition is in</div>
+    <p>DL 76/2024 removed the need for prior condominium <em>authorisation</em> where the fraction is designated for housing in the <em>título constitutivo</em>. In exchange, the condominium can now <strong>oppose</strong> the activity by a deliberation carrying more than <strong>50% of the building's permilagem</strong> — down from the previous two-thirds — where there is repeated conduct disturbing normal use of the building. Separately, if the <em>título constitutivo</em> expressly prohibits non-residential use, AL is off the table regardless. <strong>Read the título constitutivo and the last two years of assembly minutes before you sign a lease.</strong></p>
+  </div>
+  </div>
+</div>
+</section>
+
+<!-- ═══ 04 ══════════════════════════════════════════════════════════════ -->
+<section id="contencao">
+<div class="wrap">
+  <header>
+    <div class="kicker">04 — Geography</div>
+    <h3>Where you currently cannot get a new registration</h3>
+    <p>National law permits new registrations. Municipal regulation is what actually decides. As of mid-2026 the picture below applies — but every one of these is subject to the 31 December 2026 rewrite deadline under DL 151/2026, so re-verify with the câmara before committing to a lease.</p>
+  </header>
+
+  <div class="stack">
+  <div class="tbl-wrap">
+  <table>
+    <thead><tr><th>Municipality</th><th>Status</th><th>Detail</th></tr></thead>
+    <tbody>
+      <tr><td><strong>Lisboa</strong></td><td><span class="pill no">Largely closed</span></td><td>The 2025 RMAL, in force from 2026, sets <em>absolute containment</em> where AL reaches 10% of housing stock in a neighbourhood and <em>relative containment</em> between 5–10%. Roughly 22 neighbourhoods in absolute and 11 in relative containment as of April 2026. Santa Maria Maior, Misericórdia, Alcântara, Estrela and São Vicente are effectively shut to new registrations, with narrow exceptions (e.g. units unrented for 5+ years).</td></tr>
+      <tr><td><strong>Porto</strong></td><td><span class="pill no">Historic core closed</span></td><td>New AL suspended in the union of central historic parishes — Santo Ildefonso, Sé, Miragaia, São Nicolau, Vitória. Rooms modality still permitted; exceptions for long-vacant buildings (3+ years) and recent rehabilitation. The rest of the city is "sustainable growth" with numeric caps.</td></tr>
+      <tr><td><strong>Funchal</strong></td><td><span class="pill no">Most restrictive</span></td><td>Regulation effective June 2026. Area 1 (Sé): new AL prohibited in any modality. Area 2: apartments blocked; only independent houses and rooms-in-home permitted.</td></tr>
+      <tr><td><strong>Viana do Castelo</strong></td><td><span class="pill mid">Historic centre</span></td><td>Containment in the historic centre from June 2026, with exceptions for recently rehabilitated buildings and rooms.</td></tr>
+      <tr><td><strong>Nazaré</strong></td><td><span class="pill mid">Zoned</span></td><td>Six-zone containment framework effective August 2026.</td></tr>
+      <tr><td><strong>Lagoa (Açores)</strong></td><td><span class="pill mid">Quota</span></td><td>Capped at 10% of housing stock per freguesia, allocated in order of application.</td></tr>
+      <tr><td><strong>Faro, Cascais, Sintra, Lagos, Albufeira</strong></td><td><span class="pill ok">Open / pending</span></td><td>No binding restriction confirmed as of July 2026, though regulations are drafting in several. Sintra is on the DL 151/2026 list of municipalities that may suspend.</td></tr>
+    </tbody>
+    <caption>Verify current status directly with the câmara municipal — this table is a snapshot, and the December 2026 deadline will move several rows.</caption>
+  </table>
+  </div>
+
+  <div class="callout">
+    <div class="t">The strategic read</div>
+    <p>Contention pushes new operators outward, and that's not purely bad news. A registration in a closed zone is now a scarce asset — existing AL units transfer with the property and command a premium, and a landlord who <em>already holds</em> a live RNAL registration in Alfama is exactly the counterparty you want for a <em>cessão de exploração</em> rather than a fresh registration. Meanwhile Setúbal, Almada, Braga, Coimbra, Aveiro and the second-line Algarve towns still register freely and have far better rent-to-ADR ratios than Lisbon centre.</p>
+  </div>
+  </div>
+</div>
+</section>
+
+<!-- ═══ 05 ══════════════════════════════════════════════════════════════ -->
+<section id="contratos">
+<div class="wrap">
+  <header>
+    <div class="kicker">05 — Contracts</div>
+    <h3>Four ways to paper the deal with the owner</h3>
+    <p>This is where the business is won or lost. Pick the structure deliberately — they differ in who is liable, who registers, and what VAT the owner has to charge you.</p>
+  </header>
+
+  <div class="stack">
+  <div class="grid2">
+    <div class="card">
+      <h4>A · Lease + written AL authorisation</h4>
+      <p>A standard <em>arrendamento</em> with an express clause authorising subletting and AL exploitation. You register the AL in your name. Cleanest for arbitrage. Requires <span class="law">art. 1088.º CC</span> written authorisation; the sublease must then be communicated to the landlord.</p>
+      <div class="meta" style="margin-top:9px"><span class="pill ok">Best for control</span><span class="pill mid">You carry rent risk</span></div>
+    </div>
+    <div class="card">
+      <h4>B · Cessão de exploração</h4>
+      <p>The owner transfers operation of a going concern (the AL establishment, furnished and equipped) to you for a fee. Not a lease, so the tenancy protections of the NRAU don't apply the same way. Common in professional management. Note the tax consequence below.</p>
+      <div class="meta" style="margin-top:9px"><span class="pill ok">Flexible</span><span class="pill mid">Owner may owe 23% VAT on your payment</span></div>
+    </div>
+    <div class="card">
+      <h4>C · Management mandate (co-hosting)</h4>
+      <p>You act in the owner's name for a commission on gross bookings, typically 15–25%. The owner registers, insures, invoices the guests and carries the tax. You invoice a service fee. Fastest to start, zero rent risk.</p>
+      <div class="meta" style="margin-top:9px"><span class="pill ok">Zero capital</span><span class="pill neu">Lower ceiling per unit</span></div>
+    </div>
+    <div class="card">
+      <h4>D · Revenue-share hybrid</h4>
+      <p>Guaranteed floor to the owner plus a split above it (e.g. €800 guaranteed + 40% of gross above €2,000). Bridges the gap between an owner who wants certainty and an operator who can't absorb a full fixed rent. Increasingly the standard offer.</p>
+      <div class="meta" style="margin-top:9px"><span class="pill ok">Easiest to sell</span><span class="pill mid">Model it carefully</span></div>
+    </div>
+  </div>
+
+  <h4 class="sub">Clauses your contract must contain</h4>
+  <div class="tbl-wrap">
+  <table>
+    <thead><tr><th>Clause</th><th>Why it exists</th></tr></thead>
+    <tbody>
+      <tr><td><strong>Express AL authorisation</strong></td><td>Names Alojamento Local specifically — not just "subletting". Registration and inspections both hinge on it.</td></tr>
+      <tr><td><strong>Consent to register the RNAL in your name</strong></td><td>Without it, the câmara's legitimacy check fails.</td></tr>
+      <tr><td><strong>Term of at least 3–5 years, with your renewal option</strong></td><td>You're amortising €8k–15k of fit-out. A 1-year term makes the maths impossible.</td></tr>
+      <tr><td><strong>Owner's warranty on the condominium and título constitutivo</strong></td><td>Protects you if the fraction turns out to be barred from non-residential use or an opposition deliberation already exists.</td></tr>
+      <tr><td><strong>Who pays what</strong></td><td>IMI, condominium fees, structural repairs → owner. Utilities, internet, consumables, cosmetic wear → you.</td></tr>
+      <tr><td><strong>Ownership of the furniture</strong></td><td>Explicit — it's yours, and you may remove it at the end. Otherwise you're gifting €10k of furnishings.</td></tr>
+      <tr><td><strong>Exit and regulatory-change clause</strong></td><td>Your escape if the município revokes, suspends, or a condominium opposition succeeds. Without this you owe rent on a flat you cannot legally operate.</td></tr>
+      <tr><td><strong>Insurance and damage protocol</strong></td><td>Your €75,000 civil liability policy, plus who claims what when a guest breaks something.</td></tr>
+      <tr><td><strong>Inspection rights for the owner</strong></td><td>Cheap to give, and it's the single concession that most often closes a hesitant landlord.</td></tr>
+    </tbody>
+  </table>
+  </div>
+
+  <div class="callout warn">
+    <div class="t">Watch the VAT on what you pay the owner</div>
+    <p>An AT binding information from March 2025 (PIV 27356) reversed the previous position: the reduced 6% rate applies to the invoice from the <em>operator to the guest</em>, but the amount the property owner receives from the operator is treated as an atypical service beyond mere accommodation and taxed at the <strong>standard 23%</strong>. A pure <em>arrendamento</em> is VAT-exempt under <span class="law">art. 9.º, n.º 29 CIVA</span>; a <em>cessão de exploração</em> generally is not. That is a 23% swing on your single largest cost line — settle it with an accountant <em>before</em> you choose structure B over structure A.</p>
+  </div>
+  </div>
+</div>
+</section>
+
+<!-- ═══ 06 ══════════════════════════════════════════════════════════════ -->
+<section id="obrigacoes">
+<div class="wrap">
+  <header>
+    <div class="kicker">06 — Running obligations</div>
+    <h3>What you must do every week, month and year</h3>
+  </header>
+
+  <div class="stack">
+  <div class="tbl-wrap">
+  <table>
+    <thead><tr><th>Obligation</th><th>Cadence</th><th>Detail</th></tr></thead>
+    <tbody>
+      <tr><td><strong>Boletins de alojamento (SIBA)</strong></td><td>Per check-in</td><td>Report foreign guests to the authorities via the SIBA system (now under AIMA/PSP after SEF's extinction), within 3 working days of check-in. Most PMS tools automate this; do not skip it.</td></tr>
+      <tr><td><strong>Invoice every stay</strong></td><td>Per booking</td><td>Certified invoicing software, guest NIF where given, communicated to e-Fatura. SAF-T(PT) filing where applicable.</td></tr>
+      <tr><td><strong>Taxa municipal turística</strong></td><td>Monthly</td><td>You collect it from the guest and remit it. <strong>Lisboa €4/guest/night</strong>, capped at 7 nights, guests 13+, declared and paid on the city portal by the 25th of the following month. <strong>Porto €3</strong>, capped at €21 per stay. Many other municipalities have their own — check yours.</td></tr>
+      <tr><td><strong>Livro de reclamações eletrónico</strong></td><td>Continuous</td><td>Registered and accessible; the physical book is no longer sufficient on its own.</td></tr>
+      <tr><td><strong>RNAL data currency</strong></td><td>Within 10 days of change</td><td>Capacity, contacts, insurance, operator details.</td></tr>
+      <tr><td><strong>Insurance renewal</strong></td><td>Annual</td><td>Upload proof to the registration on each renewal.</td></tr>
+      <tr><td><strong>Platform registration number</strong></td><td>Continuous</td><td>RNAL number visible on every listing. Since 20 May 2026 platforms verify this automatically under EU Reg. 2024/1028; a mismatch takes the listing down.</td></tr>
+      <tr><td><strong>DAC7 platform reporting</strong></td><td>Annual</td><td>Airbnb and Booking report your earnings to the tax authorities automatically. Assume AT already knows your revenue — reconcile rather than estimate.</td></tr>
+    </tbody>
+  </table>
+  </div>
+  </div>
+</div>
+</section>
+
+<!-- ═══ 07 ══════════════════════════════════════════════════════════════ -->
+<section id="fiscal">
+<div class="wrap">
+  <header>
+    <div class="kicker">07 — Fiscalidade</div>
+    <h3>Tax: the four things that decide your net</h3>
+    <p>AL income is business income — <em>categoria B</em> — not rental income. That single classification drives everything below. Figures are for 2026; thresholds move most years.</p>
+  </header>
+
+  <div class="stack">
+  <div class="grid2">
+    <div class="card">
+      <h4>1 · IRS — regime simplificado</h4>
+      <p>Under <span class="law">art. 31.º CIRS</span> a coefficient converts turnover into taxable income; the remainder is presumed to be costs.</p>
+      <ul class="bul">
+        <li><strong>0.35</strong> — AL in <em>moradia</em> or <em>apartamento</em>: 35% of gross is taxed, 65% presumed costs</li>
+        <li><strong>0.50</strong> — the same activity in an <em>área de contenção</em>: half your gross becomes taxable</li>
+        <li><strong>0.15</strong> — hotel-type and similar establishments, including some <em>hospedagem</em> modalities</li>
+      </ul>
+      <p style="margin-top:9px">Taxable income is then added to your other income and taxed at progressive IRS rates. Above €200,000 turnover you must move to <em>contabilidade organizada</em>, where actual costs are deducted instead.</p>
+    </div>
+    <div class="card">
+      <h4>2 · IVA</h4>
+      <ul class="bul">
+        <li><strong>Isenção art. 53.º CIVA</strong> while turnover stays under <strong>€15,000</strong> (threshold set by DL 35/2025). Exceed it and you leave the exemption; exceeding €18,750 mid-year ends it immediately.</li>
+        <li>Once inside the normal regime, accommodation invoiced to guests goes at the reduced <strong>6%</strong> rate (verba 2.17, Lista I) per AT's current position, while ancillary services billed separately follow their own rates.</li>
+        <li><strong>Reverse charge on platform commissions.</strong> Airbnb (Ireland) and Booking (Netherlands) invoice you without VAT. You must register in <strong>VIES</strong> and self-assess Portuguese VAT at 23% on those commissions — <em>even if you are art. 53.º exempt</em>, in which case you cannot deduct it. It is a real cost and the single most commonly missed obligation in this business.</li>
+      </ul>
+    </div>
+    <div class="card">
+      <h4>3 · Segurança Social</h4>
+      <p>As a <em>trabalhador independente</em>: 21.4% on relevant income, with quarterly declarations. For AL and other hotel-type activity the relevant income is <strong>20%</strong> of turnover (not the 70% that applies to ordinary services) — a large difference.</p>
+      <p style="margin-top:9px">Two reliefs worth confirming with an accountant: a <strong>12-month exemption</strong> from contributions when you first open activity, and a carve-out under which independents whose activity is exclusively urban letting for AL in <em>moradia</em> or <em>apartamento</em> fall outside the contributory regime altogether. Whether the carve-out survives once you're operating multiple units as a business is exactly the question to put to a <em>contabilista certificado</em>.</p>
+    </div>
+    <div class="card">
+      <h4>4 · The rest</h4>
+      <ul class="bul">
+        <li><strong>Retenção na fonte</strong> — 25% withholding on B2B service invoices you issue, unless you're exempt in your first year under the €15,000 threshold.</li>
+        <li><strong>Modelo 30</strong> — due when you pay income to non-resident entities.</li>
+        <li><strong>IMI / condominium</strong> — the owner's, not yours, and it should say so in the contract.</li>
+        <li><strong>Company vs. sole trader</strong> — a <em>sociedade por quotas</em> pays IRC at 20% on the first €50,000 of taxable profit plus derrama, deducts real costs, and ring-fences liability. It becomes the better structure at roughly 3+ units or once you're above the simplified-regime ceiling.</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="callout">
+    <div class="t">Worked example — one unit, simplified regime</div>
+    <p>€24,000 gross bookings in the year, non-contention zone. IRS: €24,000 × 0.35 = €8,400 added to taxable income. Segurança Social: €24,000 × 20% × 21.4% ≈ €1,027 (before any exemption). IVA: under €15,000? No — so you're in the normal regime, charging 6% on accommodation and self-assessing 23% on roughly €2,000 of platform commissions. The cash cost of tax and contributions on that unit lands somewhere around €3,000–4,500 depending on your marginal IRS bracket.</p>
+  </div>
+  </div>
+</div>
+</section>
+
+<!-- ═══ 08 ══════════════════════════════════════════════════════════════ -->
+<section id="numeros">
+<div class="wrap">
+  <header>
+    <div class="kicker">08 — Unit economics</div>
+    <h3>Deal calculator</h3>
+    <p>Move the inputs. The arbitrage mode answers "does this specific flat work?"; the co-hosting mode answers "how many doors do I need?". Defaults are a realistic Lisbon-periphery T1.</p>
+  </header>
+
+  <div class="calc">
+    <div class="inputs">
+      <div class="mode" role="group" aria-label="Business model">
+        <button type="button" id="m-arb" aria-pressed="true">Arbitrage</button>
+        <button type="button" id="m-cohost" aria-pressed="false">Co-hosting</button>
+      </div>
+
+      <div class="fld"><div class="row"><label for="adr">Average nightly rate (ADR)</label><output id="o-adr">€95</output></div>
+        <input type="range" id="adr" min="40" max="300" step="5" value="95"></div>
+      <div class="fld"><div class="row"><label for="occ">Occupancy</label><output id="o-occ">70%</output></div>
+        <input type="range" id="occ" min="20" max="95" step="1" value="70"></div>
+      <div class="fld"><div class="row"><label for="stay">Average length of stay</label><output id="o-stay">3.0 nights</output></div>
+        <input type="range" id="stay" min="1" max="10" step="0.5" value="3"></div>
+
+      <div id="arb-only" style="display:flex; flex-direction:column; gap:14px">
+        <div class="fld"><div class="row"><label for="rent">Rent to the owner</label><output id="o-rent">€900</output></div>
+          <input type="range" id="rent" min="300" max="2500" step="25" value="900"></div>
+        <div class="fld"><div class="row"><label for="clean">Cleaning cost per turnover</label><output id="o-clean">€35</output></div>
+          <input type="range" id="clean" min="0" max="90" step="5" value="35"></div>
+        <div class="fld"><div class="row"><label for="util">Utilities, internet, consumables</label><output id="o-util">€220</output></div>
+          <input type="range" id="util" min="80" max="500" step="10" value="220"></div>
+        <div class="fld"><div class="row"><label for="fixed">Other fixed monthly (PMS, accountant, insurance, maintenance)</label><output id="o-fixed">€155</output></div>
+          <input type="range" id="fixed" min="40" max="500" step="5" value="155"></div>
+        <div class="fld"><div class="row"><label for="setup">One-off setup capital</label><output id="o-setup">€11,000</output></div>
+          <input type="range" id="setup" min="2000" max="30000" step="500" value="11000"></div>
+      </div>
+
+      <div id="co-only" style="display:none; flex-direction:column; gap:14px">
+        <div class="fld"><div class="row"><label for="comm">Your commission on gross</label><output id="o-comm">20%</output></div>
+          <input type="range" id="comm" min="8" max="35" step="1" value="20"></div>
+        <div class="fld"><div class="row"><label for="doors">Units under management</label><output id="o-doors">6</output></div>
+          <input type="range" id="doors" min="1" max="40" step="1" value="6"></div>
+        <div class="fld"><div class="row"><label for="cocost">Your cost to service each unit / month</label><output id="o-cocost">€60</output></div>
+          <input type="range" id="cocost" min="0" max="300" step="10" value="60"></div>
+      </div>
+
+      <div class="fld"><div class="row"><label for="fee">Platform commission on gross</label><output id="o-fee">8%</output></div>
+        <input type="range" id="fee" min="3" max="20" step="1" value="8"></div>
+      <div class="fld"><div class="row"><label for="coef">IRS coefficient <span class="mono" style="color:var(--ink-3)">(art. 31.º)</span></label><output id="o-coef">0.35</output></div>
+        <input type="range" id="coef" min="15" max="75" step="5" value="35">
+        <span style="font-size:11.5px; color:var(--ink-3)">0.35 for AL in a flat or house · 0.50 in an área de contenção · 0.75 for a co-hosting service fee</span></div>
+      <div class="fld"><div class="row"><label for="marg">Your marginal IRS rate</label><output id="o-marg">35%</output></div>
+        <input type="range" id="marg" min="13" max="48" step="1" value="35"></div>
+    </div>
+
+    <div class="results">
+      <div class="readout">
+        <div class="headline">
+          <div><div class="cap">Net profit / month, after tax</div><div class="big" id="r-net">—</div></div>
+          <div><div class="cap">Margin on gross</div><div class="big" id="r-marg" style="font-size:26px">—</div></div>
+          <div><div class="cap" id="r-third-cap">Break-even occupancy</div><div class="big" id="r-third" style="font-size:26px">—</div></div>
+        </div>
+        <ul class="pl" id="r-pl"></ul>
+        <div class="verdict" id="r-verdict" style="margin-top:14px"></div>
+      </div>
+
+      <div class="readout">
+        <figure>
+          <div class="cap" style="font-family:var(--mono); font-size:10.5px; letter-spacing:.1em; text-transform:uppercase; color:var(--ink-3); margin-bottom:10px">Monthly profit across a seasonality swing</div>
+          <svg class="chart" id="chart" viewBox="0 0 660 220" role="img" aria-labelledby="chart-t"><title id="chart-t">Modelled monthly net profit across the year</title></svg>
+          <figcaption>Your occupancy input is treated as the annual average and flexed by a typical Portuguese seasonality curve (roughly 0.68× in January to 1.32× in August). Bars below the zero line are months where the unit loses money — in arbitrage the rent is due in those months regardless.</figcaption>
+        </figure>
+      </div>
+    </div>
+  </div>
+
+  <div class="stack" style="margin-top:18px">
+    <div class="callout">
+      <div class="t">The rule that saves you from bad deals</div>
+      <p><strong>Rent should not exceed 28–30% of realistic gross revenue</strong>, and realistic means the annual average, not August. Below 25% the deal is good; above 35% you are working for the landlord. The second test: can you survive four consecutive low-season months at 40% occupancy without new capital? If not, the deal is a liquidity trap even if the annual average works.</p>
+    </div>
+  </div>
+</div>
+</section>
+
+<!-- ═══ 09 ══════════════════════════════════════════════════════════════ -->
+<section id="setup">
+<div class="wrap">
+  <header>
+    <div class="kicker">09 — Capital</div>
+    <h3>What it actually costs to open one door</h3>
+  </header>
+
+  <div class="stack">
+  <div class="tbl-wrap">
+  <table>
+    <thead><tr><th>Line</th><th class="num">Lean</th><th class="num">Typical</th><th>Notes</th></tr></thead>
+    <tbody>
+      <tr><td>Deposit + first month to owner</td><td class="num">€1,800</td><td class="num">€2,700</td><td>Two months' deposit is standard; negotiate one where you can.</td></tr>
+      <tr><td>Furniture, mattresses, linen (×3 sets)</td><td class="num">€3,000</td><td class="num">€6,500</td><td>Three linen sets per bed is the operational minimum for same-day turnovers.</td></tr>
+      <tr><td>Kitchen, crockery, appliances</td><td class="num">€600</td><td class="num">€1,400</td><td></td></tr>
+      <tr><td>Smart lock + wifi + basic automation</td><td class="num">€250</td><td class="num">€600</td><td>Self check-in is not optional at scale.</td></tr>
+      <tr><td>Safety kit (extinguisher, blanket, first aid, signage)</td><td class="num">€120</td><td class="num">€200</td><td>Legally required — see section 02.</td></tr>
+      <tr><td>AL plaque</td><td class="num">€30</td><td class="num">€60</td><td></td></tr>
+      <tr><td>Civil liability insurance (year 1)</td><td class="num">€120</td><td class="num">€250</td><td>€75,000 minimum cover.</td></tr>
+      <tr><td>Professional photography</td><td class="num">€0</td><td class="num">€250</td><td>The highest-ROI €250 in the whole business.</td></tr>
+      <tr><td>Accountant setup + first quarter</td><td class="num">€200</td><td class="num">€450</td><td></td></tr>
+      <tr><td>Working capital buffer</td><td class="num">€1,500</td><td class="num">€3,000</td><td>Three months of rent and fixed costs. Non-negotiable.</td></tr>
+      <tr class="tot"><td><strong>Total per unit</strong></td><td class="num"><strong>€7,620</strong></td><td class="num"><strong>€15,410</strong></td><td></td></tr>
+    </tbody>
+    <caption>Co-hosting strips this to photography, software and your time — realistically under €1,000 to start.</caption>
+  </table>
+  </div>
+  </div>
+</div>
+</section>
+
+<!-- ═══ 10 ═════════════════════════════════════════════════════════════ -->
+<section id="playbook">
+<div class="wrap">
+  <header>
+    <div class="kicker">10 — Execution</div>
+    <h3>The first 90 days</h3>
+  </header>
+
+  <div class="stack">
+  <ol class="steps">
+    <li><span class="num">1</span><div class="bd">
+      <h5>Days 1–14 · Pick a market you can actually register in</h5>
+      <p>Call the câmara municipal's <em>atividades económicas</em> desk and ask directly whether the freguesia is in contenção and whether a suspension is running under DL 151/2026. Then pull 20–30 comparable listings on AirDNA or by hand on Airbnb, note ADR and calendar density for the last 6 months, and compute the rent-to-gross ratio for real advertised rents. If nothing clears 30%, change market — don't change your assumptions.</p>
+    </div></li>
+    <li><span class="num">2</span><div class="bd">
+      <h5>Days 10–30 · Build the offer, then source landlords</h5>
+      <p>Landlords say yes to <em>certainty</em>, not to upside. Lead with: guaranteed rent paid on the 1st, professional cleaning every turnover, €75,000 liability insurance, quarterly inspections they're invited to, the property returned furnished and maintained. Source from: long-vacant listings on Idealista/OLX (30+ days is a motivated owner), owners already holding an RNAL registration who are tired of operating it, small local real-estate agencies, and — most productive of all — condominium administrators.</p>
+      <div class="meta"><span class="pill neu">Expect 1 yes per 25–40 approaches</span></div>
+    </div></li>
+    <li><span class="num">3</span><div class="bd">
+      <h5>Days 20–40 · Paper it properly</h5>
+      <p>Lawyer reviews the lease, the AL authorisation, the <em>título constitutivo</em> and the last two years of condominium minutes. Budget €300–600. This is the cheapest insurance you will ever buy.</p>
+    </div></li>
+    <li><span class="num">4</span><div class="bd">
+      <h5>Days 30–50 · Register and fit out in parallel</h5>
+      <p>Open activity → file the comunicação prévia → insurance → plaque → safety kit → furniture → photos. Registration is instant, so the fit-out is your critical path.</p>
+    </div></li>
+    <li><span class="num">5</span><div class="bd">
+      <h5>Days 45–60 · Launch pricing deliberately underpriced</h5>
+      <p>New listings have no reviews and no ranking. Open 20–25% below comparable ADR for the first 8–10 bookings, enforce a shorter minimum stay to accumulate reviews faster, then raise. Get to 10 reviews before you optimise for rate.</p>
+    </div></li>
+    <li><span class="num">6</span><div class="bd">
+      <h5>Days 60–90 · Systemise, then decide</h5>
+      <p>Cleaner with a written checklist and photo verification; PMS with a channel manager (Hostaway, Guesty, Smoobu, Lodgify) so Airbnb and Booking share one calendar; dynamic pricing (PriceLabs, Wheelhouse); automated SIBA reporting. Then look at 60 days of real numbers and decide whether door two is the same model or a different one.</p>
+    </div></li>
+  </ol>
+
+  <div class="grid3">
+    <div class="tile"><div class="lab">Target metric</div><div class="val" style="font-size:22px">Occupancy</div><div class="note">Above 65% annual. Below 55% something is wrong with price or photos, not with demand.</div></div>
+    <div class="tile"><div class="lab">Target metric</div><div class="val" style="font-size:22px">RevPAR</div><div class="note">ADR × occupancy. The only number that matters — high ADR at 40% occupancy is a failing listing.</div></div>
+    <div class="tile"><div class="lab">Target metric</div><div class="val" style="font-size:22px">Direct bookings</div><div class="note">Every point moved off-platform is 8–18% straight to margin.</div></div>
+  </div>
+  </div>
+</div>
+</section>
+
+<!-- ═══ 11 ═════════════════════════════════════════════════════════════ -->
+<section id="riscos">
+<div class="wrap">
+  <header>
+    <div class="kicker">11 — Risk</div>
+    <h3>What actually goes wrong</h3>
+  </header>
+
+  <div class="stack">
+  <div class="grid2">
+    <div class="card"><h4>Verbal authorisation</h4><p>The owner is enthusiastic, you skip the written clause, the flat sells 14 months later and the new owner terminates. You lose the fit-out and the registration. <strong>Written, or don't sign.</strong></p></div>
+    <div class="card"><h4>The condominium turns</h4><p>Neighbours document noise, an assembly passes an opposition deliberation with 50%+ of permilagem, and your operation stops while the lease continues. Mitigate with strict house rules, noise sensors, no parties, and — genuinely — introducing yourself to the neighbours before the first guest.</p></div>
+    <div class="card"><h4>Regulatory whiplash</h4><p>Portugal froze new registrations in 2023 and unfroze them in 2024; municipalities are rewriting rules through December 2026. Never build a plan that only works under the current rules. Keep the exit clause.</p></div>
+    <div class="card"><h4>Seasonality kills cash, not profit</h4><p>An annually profitable unit can still run out of money in February. Hold three months of fixed costs per door, and consider medium-term (30+ day) lets in the low season — often better than an empty calendar and outside much of the AL friction.</p></div>
+    <div class="card"><h4>Silent tax liabilities</h4><p>The 23% reverse charge on platform commissions and the VAT exemption threshold catch people 18 months in, with interest. Get a <em>contabilista certificado</em> from month one — €50–90/month.</p></div>
+    <div class="card"><h4>Over-leveraging on door one</h4><p>Signing three leases before the first has run a full low season is the most common way these businesses die. Prove one through a winter first.</p></div>
+  </div>
+  </div>
+</div>
+</section>
+
+<!-- ═══ 12 ═════════════════════════════════════════════════════════════ -->
+<section id="checklist">
+<div class="wrap">
+  <header>
+    <div class="kicker">12 — Checklist</div>
+    <h3>Launch checklist</h3>
+    <p>Ticks are saved in this browser.</p>
+  </header>
+
+  <div class="stack">
+  <div class="progress"><span id="pc">0 / 0</span><span class="bar"><i id="pbar"></i></span></div>
+  <ul class="check" id="checklist">
+    <li><input type="checkbox" id="c1"><label for="c1">Confirmed with the câmara municipal that the freguesia is not in contenção or under a DL 151/2026 suspension<span class="why">Do this before anything else — everything downstream depends on it</span></label></li>
+    <li><input type="checkbox" id="c2"><label for="c2">Read the título constitutivo and last two years of condominium minutes<span class="why">Checking for prohibition of non-residential use and any existing opposition</span></label></li>
+    <li><input type="checkbox" id="c3"><label for="c3">Written owner authorisation for subletting <em>and</em> for Alojamento Local, naming it explicitly<span class="why">Arts. 1038.º f) and 1088.º Código Civil</span></label></li>
+    <li><input type="checkbox" id="c4"><label for="c4">Written consent to register the RNAL in my name</label></li>
+    <li><input type="checkbox" id="c5"><label for="c5">Lease term of 3+ years with renewal option and a regulatory-change exit clause</label></li>
+    <li><input type="checkbox" id="c6"><label for="c6">Lawyer reviewed the contract package</label></li>
+    <li><input type="checkbox" id="c7"><label for="c7">Rent is under 30% of conservatively modelled annual gross revenue</label></li>
+    <li><input type="checkbox" id="c8"><label for="c8">Three months of fixed costs held in reserve</label></li>
+    <li><input type="checkbox" id="c9"><label for="c9">Activity opened at Finanças under CAE 55201 / 55204, Segurança Social notified</label></li>
+    <li><input type="checkbox" id="c10"><label for="c10">Certified accountant engaged</label></li>
+    <li><input type="checkbox" id="c11"><label for="c11">Civil liability insurance in force, minimum €75,000 cover</label></li>
+    <li><input type="checkbox" id="c12"><label for="c12">Comunicação prévia filed at the Balcão Único Eletrónico; RNAL number received</label></li>
+    <li><input type="checkbox" id="c13"><label for="c13">AL plaque fixed outside the building entrance</label></li>
+    <li><input type="checkbox" id="c14"><label for="c14">Fire extinguisher, fire blanket, first-aid kit, 112 signage installed</label></li>
+    <li><input type="checkbox" id="c15"><label for="c15">Livro de reclamações eletrónico registered</label></li>
+    <li><input type="checkbox" id="c16"><label for="c16">SIBA guest reporting set up and tested with a real check-in</label></li>
+    <li><input type="checkbox" id="c17"><label for="c17">Certified invoicing software configured; e-Fatura communication tested</label></li>
+    <li><input type="checkbox" id="c18"><label for="c18">Municipal tourist tax registered and collection configured in the listing</label></li>
+    <li><input type="checkbox" id="c19"><label for="c19">VIES registration done; reverse-charge process on platform commissions agreed with the accountant</label></li>
+    <li><input type="checkbox" id="c20"><label for="c20">RNAL number published on every listing and advertisement<span class="why">Platforms verify this automatically since 20 May 2026</span></label></li>
+    <li><input type="checkbox" id="c21"><label for="c21">Cleaner contracted with written checklist and photo verification</label></li>
+    <li><input type="checkbox" id="c22"><label for="c22">PMS / channel manager live; calendars synced across platforms</label></li>
+    <li><input type="checkbox" id="c23"><label for="c23">House rules, quiet hours and no-party policy published; neighbours informed</label></li>
+  </ul>
+  </div>
+</div>
+</section>
+
+<!-- ═══ 13 ═════════════════════════════════════════════════════════════ -->
+<section id="fontes">
+<div class="wrap">
+  <header>
+    <div class="kicker">13 — Sources</div>
+    <h3>Where this came from, and what to re-check</h3>
+  </header>
+
+  <div class="stack src">
+    <div class="card">
+      <h4>Primary law</h4>
+      <ol>
+        <li><a href="https://guiadoinvestidor.dre.pt/PDF.aspx?Idioma=1&amp;DecretoLeiId=52">Decreto-Lei n.º 128/2014 — consolidated text (DRE)</a></li>
+        <li><a href="https://files.diariodarepublica.pt/1s/2024/10/20600/0000300031.pdf">Decreto-Lei n.º 76/2024, de 23 de outubro (Diário da República)</a></li>
+        <li><a href="https://eur-lex.europa.eu/legal-content/PT/ALL/?uri=CELEX:32024R1028">Regulamento (UE) 2024/1028 — short-term rental data collection</a></li>
+        <li><a href="https://pgdlisboa.pt/leis/lei_mostra_articulado.php?nid=3085&amp;tabela=leis">DL 128/2014 articulated text — PGDL</a></li>
+        <li><a href="https://info.portaldasfinancas.gov.pt/pt/informacao_fiscal/codigos_tributarios/cirs_rep/Pages/irs31.aspx">Art. 31.º CIRS — regime simplificado (Portal das Finanças)</a></li>
+      </ol>
+    </div>
+    <div class="card">
+      <h4>Official guidance and data</h4>
+      <ol>
+        <li><a href="https://www.gov.pt/guias/alojamento-local">gov.pt — guia do Alojamento Local</a></li>
+        <li><a href="https://business.turismodeportugal.pt/pt/Planear_Iniciar/Como_comecar/Alojamento_Local/Paginas/alteracao-regime-juridico-alojamento-local.aspx">Turismo de Portugal — alteração ao regime jurídico do AL</a></li>
+        <li><a href="https://www.asae.gov.pt/perguntas-frequentes1/area-economica/alojamento-local.aspx">ASAE — Alojamento Local FAQ (enforcement and fines)</a></li>
+        <li><a href="https://travelbi.turismodeportugal.pt/alojamento/alojamento-local-2-trimestre-2025/">TravelBI — Alojamento Local, 2.º trimestre 2025 (occupancy, ADR, RevPAR)</a></li>
+      </ol>
+    </div>
+    <div class="card">
+      <h4>Legal and tax commentary</h4>
+      <ol>
+        <li><a href="https://www.cuatrecasas.com/pt/portugal/imobiliario/art/alteracoes-ao-regime-do-alojamento-local-1">Cuatrecasas — alterações ao regime do alojamento local</a></li>
+        <li><a href="https://www.deloitte.com/pt/pt/services/legal/blogs/al-06-11-2024.html">Deloitte Portugal — novas regras para o alojamento local</a></li>
+        <li><a href="https://abreuadvogados.com/conhecimento/publicacoes/novas-regras-para-os-estabelecimentos-de-alojamento-local/">Abreu Advogados — novas regras para os estabelecimentos de AL</a></li>
+        <li><a href="https://crs-advogados.com/legal-alert-novo-entendimento-at-quanto-a-taxa-iva-aplicavel-no-ambito-do-alojamento-local/">CRS Advogados — AT's new VAT position on AL (PIV 27356, March 2025)</a></li>
+        <li><a href="https://www.occ.pt/noticias/irs-regime-simplificado-alojamento-local/">Ordem dos Contabilistas Certificados — IRS regime simplificado e AL</a></li>
+        <li><a href="https://eco.sapo.pt/2026/07/30/autarquias-podem-regulamentar-alojamento-local-ate-ao-final-do-ano/">ECO — municipalities may regulate AL until end of 2026 (DL 151/2026)</a></li>
+      </ol>
+    </div>
+    <div class="card">
+      <h4>Market and containment status</h4>
+      <ol>
+        <li><a href="https://www.eazyal.com/pt/blog/areas-de-contencao-al-portugal-2026-onde-nao-pode-registar">EazyAL — áreas de contenção in Portugal, July 2026</a></li>
+        <li><a href="https://www.guestready.com/pt/blog/novas-areas-de-contencao-al-lisboa/">GuestReady — Lisbon containment areas, 2026</a></li>
+        <li><a href="https://www.holidu.pt/magazine/como-iniciar-um-negocio-airbnb-sem-ser-proprietario">Holidu — como iniciar um negócio Airbnb sem ser proprietário</a></li>
+        <li><a href="https://www.idealista.pt/news/imobiliario/habitacao/2024/02/01/61049-quais-as-regras-para-se-poder-subarrendar-uma-casa-em-portugal">idealista — regras do subarrendamento em Portugal</a></li>
+      </ol>
+    </div>
+  </div>
+</div>
+</section>
+
+<footer><div class="wrap">
+  <p><strong>This is research, not legal or tax advice.</strong> It was compiled in August 2026 from the sources listed above. Portuguese AL rules are being rewritten at municipal level through 31 December 2026, tax thresholds change annually, and the treatment of your specific contract structure depends on facts this document cannot know. Before signing a lease or filing a comunicação prévia, have a lawyer review the contract package and a contabilista certificado confirm the tax position.</p>
+</div></footer>
+</main>
+</div>
+
+<script>
+(function(){
+  "use strict";
+
+  /* ── theme toggle ────────────────────────────────────────────────── */
+  var modes = ["auto","light","dark"], mi = 0, btn = document.getElementById("themer");
+  try{ var s = localStorage.getItem("al-theme"); if(s && modes.indexOf(s) > -1) mi = modes.indexOf(s); }catch(e){}
+  function applyTheme(){
+    var m = modes[mi];
+    if(m === "auto") document.documentElement.removeAttribute("data-theme");
+    else document.documentElement.setAttribute("data-theme", m);
+    btn.textContent = "Theme: " + m;
+    try{ localStorage.setItem("al-theme", m); }catch(e){}
+  }
+  btn.addEventListener("click", function(){ mi = (mi + 1) % modes.length; applyTheme(); });
+  applyTheme();
+
+  /* ── scroll spy ──────────────────────────────────────────────────── */
+  var links = Array.prototype.slice.call(document.querySelectorAll("nav a"));
+  var secs = links.map(function(a){ return document.querySelector(a.getAttribute("href")); });
+  if("IntersectionObserver" in window){
+    var io = new IntersectionObserver(function(entries){
+      entries.forEach(function(en){
+        if(!en.isIntersecting) return;
+        var i = secs.indexOf(en.target);
+        if(i < 0) return;
+        links.forEach(function(l){ l.classList.remove("on"); });
+        links[i].classList.add("on");
+      });
+    }, {rootMargin:"-15% 0px -70% 0px", threshold:0});
+    secs.forEach(function(s){ if(s) io.observe(s); });
+  }
+
+  /* ── checklist persistence ───────────────────────────────────────── */
+  var boxes = Array.prototype.slice.call(document.querySelectorAll("#checklist input"));
+  var pc = document.getElementById("pc"), pbar = document.getElementById("pbar");
+  function syncProgress(){
+    var done = boxes.filter(function(b){ return b.checked; }).length;
+    pc.textContent = done + " / " + boxes.length;
+    pbar.style.width = (boxes.length ? (done / boxes.length * 100) : 0) + "%";
+  }
+  boxes.forEach(function(b){
+    try{ b.checked = localStorage.getItem("al-" + b.id) === "1"; }catch(e){}
+    b.addEventListener("change", function(){
+      try{ localStorage.setItem("al-" + b.id, b.checked ? "1" : "0"); }catch(e){}
+      syncProgress();
+    });
+  });
+  syncProgress();
+
+  /* ── calculator ──────────────────────────────────────────────────── */
+  var mode = "arb";
+  var ids = ["adr","occ","stay","rent","clean","util","fixed","setup","comm","doors","cocost","fee","coef","marg"];
+  var el = {};
+  ids.forEach(function(id){ el[id] = document.getElementById(id); });
+
+  var eur = function(n){
+    return "€" + Math.round(n).toLocaleString("en-GB");
+  };
+  var eur1 = function(n){
+    return (n < 0 ? "−€" : "€") + Math.abs(Math.round(n)).toLocaleString("en-GB");
+  };
+
+  // Typical Portuguese AL seasonality, indexed to an annual mean of 1.0
+  var SEASON = [0.68,0.72,0.83,0.97,1.04,1.10,1.24,1.32,1.14,0.99,0.79,0.68];
+  var MON = ["J","F","M","A","M","J","J","A","S","O","N","D"];
+
+  function economics(occFrac){
+    var adr = +el.adr.value, stay = +el.stay.value, fee = +el.fee.value/100;
+    var nights = 30.4 * Math.max(0, Math.min(1, occFrac));
+    var gross = adr * nights;
+    var platform = gross * fee;
+    var vatOnFee = platform * 0.23;              // reverse charge, non-deductible when art.53-exempt
+    var turnovers = stay > 0 ? nights / stay : 0;
+
+    if(mode === "cohost"){
+      var doors = +el.doors.value, comm = +el.comm.value/100, cocost = +el.cocost.value;
+      var revenue = gross * comm * doors;        // your commission across the portfolio
+      var costs = cocost * doors;
+      var pre = revenue - costs;
+      var tax = taxOn(revenue, pre);
+      return {gross:revenue, lines:[
+        ["Commission revenue (" + doors + " units)", revenue],
+        ["Servicing cost", -costs],
+        ["Tax + Segurança Social (est.)", -tax]
+      ], net: pre - tax, base: revenue};
+    }
+
+    var rent = +el.rent.value, cleanC = (+el.clean.value) * turnovers;
+    var util = +el.util.value, fixed = +el.fixed.value;
+    var pre2 = gross - rent - cleanC - util - fixed - platform - vatOnFee;
+    var tax2 = taxOn(gross, pre2);
+    return {gross:gross, lines:[
+      ["Gross bookings (" + nights.toFixed(1) + " nights @ " + eur(adr) + ")", gross],
+      ["Rent to owner", -rent],
+      ["Platform commission", -platform],
+      ["VAT self-assessed on commission (23%)", -vatOnFee],
+      ["Cleaning (" + turnovers.toFixed(1) + " turnovers)", -cleanC],
+      ["Utilities, internet, consumables", -util],
+      ["PMS, accountant, insurance, maintenance", -fixed],
+      ["IRS + Segurança Social (est.)", -tax2]
+    ], net: pre2 - tax2, base: gross};
+  }
+
+  // Simplified-regime estimate: IRS on coefficient × turnover, SS at 21.4% on 20% of turnover.
+  // Never taxes more than the actual pre-tax profit.
+  function taxOn(turnover, preTax){
+    if(preTax <= 0) return 0;
+    var irs = turnover * (+el.coef.value/100) * (+el.marg.value/100);
+    var ss  = turnover * 0.20 * 0.214;
+    return Math.min(irs + ss, preTax * 0.95);
+  }
+
+  function breakEvenOcc(){
+    var lo = 0, hi = 1;
+    if(economics(1).net < 0) return null;
+    for(var i = 0; i < 40; i++){
+      var mid = (lo + hi) / 2;
+      if(economics(mid).net < 0) lo = mid; else hi = mid;
+    }
+    return hi;
+  }
+
+  function drawChart(){
+    var svg = document.getElementById("chart");
+    var W = 660, H = 220, padL = 46, padR = 12, padT = 14, padB = 26;
+    var occ = +el.occ.value / 100;
+    var vals = SEASON.map(function(k){ return economics(occ * k).net; });
+    var max = Math.max.apply(null, vals.concat([0]));
+    var min = Math.min.apply(null, vals.concat([0]));
+    var span = (max - min) || 1;
+    var pad = span * 0.12;
+    max += pad; min -= pad;
+    var plotH = H - padT - padB, plotW = W - padL - padR;
+    var y = function(v){ return padT + (max - v) / (max - min) * plotH; };
+    var bw = plotW / 12, gap = 6;
+    var zero = y(0);
+
+    var out = '<title id="chart-t">Modelled monthly net profit across the year</title>';
+    // grid
+    [max, (max+min)/2, min].forEach(function(v){
+      out += '<line class="grid-line" x1="' + padL + '" y1="' + y(v).toFixed(1) + '" x2="' + (W-padR) + '" y2="' + y(v).toFixed(1) + '"/>';
+      out += '<text class="tick" x="' + (padL-7) + '" y="' + (y(v)+3).toFixed(1) + '" text-anchor="end">' + eur1(v) + '</text>';
+    });
+    vals.forEach(function(v, i){
+      var x = padL + i * bw + gap/2, w = bw - gap;
+      var top = v >= 0 ? y(v) : zero, h = Math.max(1.5, Math.abs(y(v) - zero));
+      var fill = v >= 0 ? "var(--accent)" : "var(--crit)";
+      out += '<rect x="' + x.toFixed(1) + '" y="' + top.toFixed(1) + '" width="' + w.toFixed(1) + '" height="' + h.toFixed(1) + '" rx="3" fill="' + fill + '"><title>' + MON[i] + ': ' + eur1(v) + '</title></rect>';
+      out += '<text class="lbl" x="' + (x + w/2).toFixed(1) + '" y="' + (H - 9) + '" text-anchor="middle">' + MON[i] + '</text>';
+    });
+    out += '<line class="zero" x1="' + padL + '" y1="' + zero.toFixed(1) + '" x2="' + (W-padR) + '" y2="' + zero.toFixed(1) + '"/>';
+    svg.innerHTML = out;
+  }
+
+  function render(){
+    document.getElementById("o-adr").textContent   = eur(+el.adr.value);
+    document.getElementById("o-occ").textContent   = el.occ.value + "%";
+    document.getElementById("o-stay").textContent  = (+el.stay.value).toFixed(1) + " nights";
+    document.getElementById("o-rent").textContent  = eur(+el.rent.value);
+    document.getElementById("o-clean").textContent = eur(+el.clean.value);
+    document.getElementById("o-util").textContent  = eur(+el.util.value);
+    document.getElementById("o-fixed").textContent = eur(+el.fixed.value);
+    document.getElementById("o-setup").textContent = eur(+el.setup.value);
+    document.getElementById("o-comm").textContent  = el.comm.value + "%";
+    document.getElementById("o-doors").textContent = el.doors.value;
+    document.getElementById("o-cocost").textContent= eur(+el.cocost.value);
+    document.getElementById("o-fee").textContent   = el.fee.value + "%";
+    document.getElementById("o-coef").textContent  = (+el.coef.value/100).toFixed(2);
+    document.getElementById("o-marg").textContent  = el.marg.value + "%";
+
+    var r = economics(+el.occ.value / 100);
+    document.getElementById("r-net").textContent = eur1(r.net);
+    document.getElementById("r-net").style.color = r.net >= 0 ? "var(--good)" : "var(--crit)";
+    document.getElementById("r-marg").textContent = r.base > 0 ? Math.round(r.net / r.base * 100) + "%" : "—";
+
+    var ul = document.getElementById("r-pl"), html = "";
+    r.lines.forEach(function(l){
+      html += '<li><span class="k">' + l[0] + '</span><span class="v">' + eur1(l[1]) + '</span></li>';
+    });
+    html += '<li class="tot"><span class="k">Net per month, after tax</span><span class="v">' + eur1(r.net) + '</span></li>';
+    ul.innerHTML = html;
+
+    var v = document.getElementById("r-verdict");
+    var third = document.getElementById("r-third"), thirdCap = document.getElementById("r-third-cap");
+
+    if(mode === "arb"){
+      var be = breakEvenOcc();
+      thirdCap.textContent = "Break-even occupancy";
+      third.textContent = be === null ? "never" : Math.round(be * 100) + "%";
+      var ratio = (+el.rent.value) / (r.gross || 1);
+      var pm = r.net > 0 ? (+el.setup.value) / r.net : Infinity;
+      var payback = pm > 60 ? "over 5 years" : pm.toFixed(1) + " months";
+      if(r.net <= 0){
+        v.className = "verdict"; v.style.background = "var(--crit-soft)"; v.style.color = "var(--crit)";
+        v.innerHTML = "<strong>This deal loses money.</strong> Rent is " + Math.round(ratio*100) + "% of gross revenue. Walk away, or renegotiate to a revenue-share.";
+      } else if(ratio > 0.35){
+        v.className = "verdict"; v.style.background = "var(--warn-soft)"; v.style.color = "var(--warn)";
+        v.innerHTML = "<strong>Marginal.</strong> Rent is " + Math.round(ratio*100) + "% of gross — above the 30% line. Payback on setup capital: " + payback + ", and a soft winter wipes it out.";
+      } else {
+        v.className = "verdict"; v.style.background = "var(--good-soft)"; v.style.color = "var(--good)";
+        v.innerHTML = "<strong>Workable.</strong> Rent is " + Math.round(ratio*100) + "% of gross. Payback on setup capital: " + payback + ". Stress-test it at " + Math.max(20, (+el.occ.value - 20)) + "% occupancy before signing.";
+      }
+    } else {
+      thirdCap.textContent = "Doors needed for €2,000/mo";
+      var perDoor = r.net / Math.max(1, +el.doors.value);
+      third.textContent = perDoor > 0 ? Math.ceil(2000 / perDoor) + " units" : "—";
+      v.className = "verdict"; v.style.background = "var(--accent-soft)"; v.style.color = "var(--accent)";
+      v.innerHTML = "<strong>" + eur1(perDoor) + " net per unit per month.</strong> No rent risk and near-zero capital — the constraint is how many owners you can sign and service, not money.";
+    }
+    drawChart();
+  }
+
+  ids.forEach(function(id){ if(el[id]) el[id].addEventListener("input", render); });
+
+  function setMode(m){
+    mode = m;
+    document.getElementById("m-arb").setAttribute("aria-pressed", String(m === "arb"));
+    document.getElementById("m-cohost").setAttribute("aria-pressed", String(m === "cohost"));
+    document.getElementById("arb-only").style.display = m === "arb" ? "flex" : "none";
+    document.getElementById("co-only").style.display  = m === "cohost" ? "flex" : "none";
+    render();
+  }
+  document.getElementById("m-arb").addEventListener("click", function(){ setMode("arb"); });
+  document.getElementById("m-cohost").addEventListener("click", function(){ setMode("cohost"); });
+
+  render();
+})();
+</script>
