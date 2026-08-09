@@ -64,6 +64,8 @@
   }
 
   * { box-sizing: border-box; }
+  /* An explicit display on .legend / .hint would otherwise beat the hidden attribute. */
+  [hidden] { display: none !important; }
   body {
     margin: 0;
     background: var(--plane);
@@ -192,6 +194,8 @@
   /* Wash swatch for the band between the two lines, matching its 10% fill. */
   .lg .key.band { height: 11px; border-radius: 3px; background: var(--s1); opacity: 0.28; }
   .lg[aria-pressed="false"] { opacity: 0.45; }
+  .lg:disabled { cursor: default; }
+  .lg:disabled:hover { background: none; }
   .lg[aria-pressed="false"] .key { background: var(--axis) !important; }
 
   .tip {
@@ -223,6 +227,29 @@
   .tip-row .nm { color: var(--ink-2); white-space: nowrap; }
   .tip-row.tip-sum { border-top: 1px solid var(--grid); margin-top: 5px; padding-top: 5px; }
   .tip-row.tip-sum .nm { color: var(--ink); font-weight: 560; }
+  .tip-row.tip-sub .nm, .tip-row.tip-sub .vv { font-size: 11.5px; }
+  .tip-row.tip-sub .nm { color: var(--muted); }
+  .lg .cnt {
+    margin-left: 5px;
+    padding: 0 5px;
+    border-radius: 999px;
+    background: var(--hover);
+    color: var(--muted);
+    font-size: 11px;
+    font-variant-numeric: tabular-nums;
+  }
+  .hint {
+    display: flex;
+    align-items: baseline;
+    gap: 9px;
+    margin: 13px 0 0;
+    font-size: 12.5px;
+    color: var(--ink-2);
+    max-width: 92ch;
+  }
+  .hint .sw { display: inline-flex; flex-direction: column; gap: 2px; flex: none; transform: translateY(2px); }
+  .hint .sw i { display: block; width: 15px; height: 6px; border-radius: 2px; background: var(--s1); }
+  .hint .sw i.a { opacity: 0.42; }
   .tip-row .vv {
     margin-left: auto;
     font-variant-numeric: tabular-nums;
@@ -342,6 +369,7 @@
       <div class="seg" role="group" aria-label="Chart view">
         <button type="button" class="seg-b" data-view="lines" aria-pressed="true">Lines</button>
         <button type="button" class="seg-b" data-view="bars" aria-pressed="false">Stacked bars</button>
+        <button type="button" class="seg-b" data-view="net" aria-pressed="false">Net worth</button>
       </div>
     </div>
     <div class="card">
@@ -352,6 +380,13 @@
         </div>
       </div>
       <div class="legend" id="legend"></div>
+      <p class="hint" id="gainHint" hidden>
+        <span class="sw"><i class="a"></i><i class="b"></i></span>
+        Within a column, the solid band is capital and the lighter band directly above it is that
+        group&rsquo;s accumulated gains. A group sitting on a cumulative loss &mdash; Crypto, at
+        &minus;&euro;95.57 &mdash; has no lighter band; hover it for the figure.
+        This view always shows all eight groups, so the legend here is a key rather than a filter.
+      </p>
     </div>
   </section>
 
@@ -471,8 +506,19 @@
 </div>
 
 <script>
-const DATA = {"inv": {"capital": [13735.33, 14076.33, 14076.33, 15461.33, 17769.86, 21194.43, 24324.95, 26534.53, 25718.31], "value": [13735.33, 14265.86, 14290.23, 15432.42, 18671.41, 22749.39, 25811.35, 27998.36, 27184.41], "returns": [0.0, 189.53, 213.9, -28.91, 901.55, 1554.96, 1486.4, 1463.83, 1466.1], "start_capital": 13735.33, "monthly_delta": [null, 189.53, 24.37, -242.81, 930.46, 653.41, -68.56, -22.57, 2.27], "income_to_cash_total": 24.4, "irr_annual": 0.15073502722430643, "irr_monthly": 0.011768787952504245, "accounts": [{"name": "Trade Republic Inv. - Brokerage", "bank": "Trade Republic", "capital": 19421.09, "returns": 1509.73, "value": 20930.82}, {"name": "Certificados de Aforro CTT - Série F", "bank": "CTT/Estado", "capital": 3661.54, "returns": 43.77, "value": 3705.31}, {"name": "Trade Republic Inv. - Crypto", "bank": "Trade Republic", "capital": 1050.95, "returns": -95.57, "value": 955.38}, {"name": "Robinhood", "bank": "Robinhood", "capital": 550.0, "returns": 0.0, "value": 550.0}, {"name": "Certificados de Aforro CTT - Série E", "bank": "CTT/Estado", "capital": 534.73, "returns": 6.81, "value": 541.54}, {"name": "Revolut - Wealth Build", "bank": "Revolut", "capital": 440.0, "returns": 0.54, "value": 440.54}, {"name": "Revolut - Fundo Emergência", "bank": "Revolut", "capital": 50.0, "returns": 0.82, "value": 50.82}, {"name": "Trading 212 Account", "bank": "Trading 212", "capital": 10.0, "returns": 0.0, "value": 10.0}]}, "labels": ["Start", "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug"], "full": ["1 January 2026", "end of January 2026", "end of February 2026", "end of March 2026", "end of April 2026", "end of May 2026", "end of June 2026", "end of July 2026", "5 August 2026"], "series": [{"name": "Trade Republic Inv. - Brokerage", "points": [7687.87, 8218.4, 8218.5, 9360.69, 11831.36, 15908.03, 18153.08, 20062.59, 20930.82]}, {"name": "Conta Corrente", "points": [344.63, 1139.74, 6619.58, 6007.09, 8013.41, 5794.29, 1622.75, 896.3, 100.0]}, {"name": "Certificados de Aforro CTT - Série F", "points": [5512.73, 5512.73, 5533.63, 5533.63, 5535.2, 5556.5, 5556.5, 5556.5, 3705.31]}, {"name": "Conta Poupança", "points": [2600.31, 1005.31, 0.07, 5.07, 10.07, 15.07, 20.07, 5.07, 6.26]}, {"name": "Trade Republic Account", "points": [340.94, 0.7, 304.02, 1096.79, 870.83, 930.56, 993.89, 119.63, 323.13]}, {"name": "Revolut", "points": [0.0, -19.36, 0.58, 976.66, 361.01, -15.48, 36.76, 11.36, 69.34]}, {"name": "Trade Republic Inv. - Crypto", "points": [0.0, 0.0, 0.0, 0.0, 766.75, 743.32, 805.23, 855.37, 955.38]}, {"name": "Other (8 accounts)", "points": [534.73, 534.73, 548.1, 606.24, 599.35, 542.76, 1297.76, 1525.12, 1594.12], "members": ["Cash Withdrawls", "Certificados de Aforro CTT - Série E", "Conta Bolsas", "PayPal", "Revolut - Fundo Emergência", "Revolut - Wealth Build", "Robinhood", "Trading 212 Account"]}], "panels": [{"name": "Trade Republic Inv. - Brokerage", "type": "Investment", "bank": "Trade Republic", "points": [7687.87, 8218.4, 8218.5, 9360.69, 11831.36, 15908.03, 18153.08, 20062.59, 20930.82]}, {"name": "Conta Corrente", "type": "Account", "bank": "Santander", "points": [344.63, 1139.74, 6619.58, 6007.09, 8013.41, 5794.29, 1622.75, 896.3, 100.0]}, {"name": "Certificados de Aforro CTT - Série F", "type": "Investment", "bank": "CTT/Estado", "points": [5512.73, 5512.73, 5533.63, 5533.63, 5535.2, 5556.5, 5556.5, 5556.5, 3705.31]}, {"name": "Conta Poupança", "type": "Account", "bank": "Santander", "points": [2600.31, 1005.31, 0.07, 5.07, 10.07, 15.07, 20.07, 5.07, 6.26]}, {"name": "Trade Republic Account", "type": "Account", "bank": "Trade Republic", "points": [340.94, 0.7, 304.02, 1096.79, 870.83, 930.56, 993.89, 119.63, 323.13]}, {"name": "Revolut", "type": "Account", "bank": "Revolut", "points": [0.0, -19.36, 0.58, 976.66, 361.01, -15.48, 36.76, 11.36, 69.34]}, {"name": "Trade Republic Inv. - Crypto", "type": "Investment", "bank": "Trade Republic", "points": [0.0, 0.0, 0.0, 0.0, 766.75, 743.32, 805.23, 855.37, 955.38]}, {"name": "Robinhood", "type": "Investment", "bank": "Robinhood", "points": [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 50.0, 550.0]}, {"name": "Certificados de Aforro CTT - Série E", "type": "Investment", "bank": "CTT/Estado", "points": [534.73, 534.73, 538.1, 538.1, 538.1, 541.54, 541.54, 541.54, 541.54]}, {"name": "Revolut - Wealth Build", "type": "Investment", "bank": "Revolut", "points": [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 250.0, 475.54, 440.54]}, {"name": "Revolut - Fundo Emergência", "type": "Investment", "bank": "Revolut", "points": [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 405.0, 446.82, 50.82]}, {"name": "Trading 212 Account", "type": "Investment", "bank": "Trading 212", "points": [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 100.0, 10.0, 10.0]}, {"name": "PayPal", "type": "Account", "bank": "PayPal", "points": [0.0, 0.0, 0.0, 58.04, 58.04, 0.0, 0.0, 0.0, 0.0]}, {"name": "Cash Withdrawls", "type": "Cash", "bank": "—", "points": [0.0, 0.0, 10.0, 10.1, 3.21, 1.22, 1.22, 1.22, 1.22]}, {"name": "Conta Bolsas", "type": "Account", "bank": "Santander", "points": [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]}], "totals": [17021.21, 16392.25, 21224.48, 23586.17, 27987.98, 29475.05, 28486.04, 29031.94, 27684.36], "table": [{"name": "Trade Republic Inv. - Brokerage", "type": "Investment", "bank": "Trade Republic", "points": [7687.87, 8218.4, 8218.5, 9360.69, 11831.36, 15908.03, 18153.08, 20062.59, 20930.82]}, {"name": "Certificados de Aforro CTT - Série F", "type": "Investment", "bank": "CTT/Estado", "points": [5512.73, 5512.73, 5533.63, 5533.63, 5535.2, 5556.5, 5556.5, 5556.5, 3705.31]}, {"name": "Trade Republic Inv. - Crypto", "type": "Investment", "bank": "Trade Republic", "points": [0.0, 0.0, 0.0, 0.0, 766.75, 743.32, 805.23, 855.37, 955.38]}, {"name": "Robinhood", "type": "Investment", "bank": "Robinhood", "points": [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 50.0, 550.0]}, {"name": "Certificados de Aforro CTT - Série E", "type": "Investment", "bank": "CTT/Estado", "points": [534.73, 534.73, 538.1, 538.1, 538.1, 541.54, 541.54, 541.54, 541.54]}, {"name": "Revolut - Wealth Build", "type": "Investment", "bank": "Revolut", "points": [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 250.0, 475.54, 440.54]}, {"name": "Trade Republic Account", "type": "Account", "bank": "Trade Republic", "points": [340.94, 0.7, 304.02, 1096.79, 870.83, 930.56, 993.89, 119.63, 323.13]}, {"name": "Conta Corrente", "type": "Account", "bank": "Santander", "points": [344.63, 1139.74, 6619.58, 6007.09, 8013.41, 5794.29, 1622.75, 896.3, 100.0]}, {"name": "Revolut", "type": "Account", "bank": "Revolut", "points": [0.0, -19.36, 0.58, 976.66, 361.01, -15.48, 36.76, 11.36, 69.34]}, {"name": "Revolut - Fundo Emergência", "type": "Investment", "bank": "Revolut", "points": [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 405.0, 446.82, 50.82]}, {"name": "Trading 212 Account", "type": "Investment", "bank": "Trading 212", "points": [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 100.0, 10.0, 10.0]}, {"name": "Conta Poupança", "type": "Account", "bank": "Santander", "points": [2600.31, 1005.31, 0.07, 5.07, 10.07, 15.07, 20.07, 5.07, 6.26]}, {"name": "Cash Withdrawls", "type": "Cash", "bank": "—", "points": [0.0, 0.0, 10.0, 10.1, 3.21, 1.22, 1.22, 1.22, 1.22]}, {"name": "Conta Bolsas", "type": "Account", "bank": "Santander", "points": [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]}, {"name": "PayPal", "type": "Account", "bank": "PayPal", "points": [0.0, 0.0, 0.0, 58.04, 58.04, 0.0, 0.0, 0.0, 0.0]}]};
+const DATA = {"inv": {"capital": [13735.33, 14076.33, 14076.33, 15461.33, 17769.86, 21194.43, 24324.95, 26534.53, 25718.31], "value": [13735.33, 14265.86, 14290.23, 15432.42, 18671.41, 22749.39, 25811.35, 27998.36, 27184.41], "returns": [0.0, 189.53, 213.9, -28.91, 901.55, 1554.96, 1486.4, 1463.83, 1466.1], "start_capital": 13735.33, "monthly_delta": [null, 189.53, 24.37, -242.81, 930.46, 653.41, -68.56, -22.57, 2.27], "income_to_cash_total": 24.4, "irr_annual": 0.15073502722430643, "irr_monthly": 0.011768787952504245, "accounts": [{"name": "Trade Republic Inv. - Brokerage", "bank": "Trade Republic", "capital": 19421.09, "returns": 1509.73, "value": 20930.82}, {"name": "Certificados de Aforro CTT - Série F", "bank": "CTT/Estado", "capital": 3661.54, "returns": 43.77, "value": 3705.31}, {"name": "Trade Republic Inv. - Crypto", "bank": "Trade Republic", "capital": 1050.95, "returns": -95.57, "value": 955.38}, {"name": "Robinhood", "bank": "Robinhood", "capital": 550.0, "returns": 0.0, "value": 550.0}, {"name": "Certificados de Aforro CTT - Série E", "bank": "CTT/Estado", "capital": 534.73, "returns": 6.81, "value": 541.54}, {"name": "Revolut - Wealth Build", "bank": "Revolut", "capital": 440.0, "returns": 0.54, "value": 440.54}, {"name": "Revolut - Fundo Emergência", "bank": "Revolut", "capital": 50.0, "returns": 0.82, "value": 50.82}, {"name": "Trading 212 Account", "bank": "Trading 212", "capital": 10.0, "returns": 0.0, "value": 10.0}]}, "labels": ["Start", "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug"], "full": ["1 January 2026", "end of January 2026", "end of February 2026", "end of March 2026", "end of April 2026", "end of May 2026", "end of June 2026", "end of July 2026", "5 August 2026"], "groups": [{"name": "Trade Republic Brokerage", "members": ["Trade Republic Inv. - Brokerage"], "value": [7687.87, 8218.4, 8218.5, 9360.69, 11831.36, 15908.03, 18153.08, 20062.59, 20930.82], "capital": [7687.87, 8028.87, 8028.87, 9360.69, 10971.46, 14396.03, 16671.55, 18555.13, 19421.09], "band": [0.0, 189.53, 189.63, 0.0, 859.9, 1512.0, 1481.53, 1507.46, 1509.73], "gain": [0.0, 189.53, 189.63, -53.18, 859.9, 1512.0, 1481.53, 1507.46, 1509.73]}, {"name": "Trade Republic Crypto", "members": ["Trade Republic Inv. - Crypto"], "value": [0.0, 0.0, 0.0, 0.0, 766.75, 743.32, 805.23, 855.37, 955.38], "capital": [0.0, 0.0, 0.0, 0.0, 750.94, 743.32, 805.23, 855.37, 955.38], "band": [0.0, 0.0, 0.0, 0.0, 15.81, 0.0, 0.0, 0.0, 0.0], "gain": [0.0, 0.0, 0.0, 0.0, 15.81, -7.62, -45.71, -95.57, -95.57]}, {"name": "Trade Republic Cash", "members": ["Trade Republic Account"], "value": [340.94, 0.7, 304.02, 1096.79, 870.83, 930.56, 993.89, 119.63, 323.13], "capital": [340.94, 0.0, 299.94, 1092.19, 865.57, 919.35, 975.88, 99.48, 298.73], "band": [0.0, 0.7, 4.08, 4.6, 5.26, 11.21, 18.01, 20.15, 24.4], "gain": [0.0, 0.76, 4.08, 4.6, 5.26, 11.21, 18.01, 20.15, 24.4]}, {"name": "Trading 212", "members": ["Trading 212 Account"], "value": [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 100.0, 10.0, 10.0], "capital": [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 100.0, 10.0, 10.0], "band": [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0], "gain": [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]}, {"name": "Robinhood", "members": ["Robinhood"], "value": [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 50.0, 550.0], "capital": [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 50.0, 550.0], "band": [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0], "gain": [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]}, {"name": "Revolut", "members": ["Revolut", "Revolut - Wealth Build", "Revolut - Fundo Emergência"], "value": [0.0, -19.36, 0.58, 976.66, 361.01, -15.48, 691.76, 933.72, 560.7], "capital": [0.0, -19.36, 0.58, 976.66, 361.01, -15.48, 691.76, 932.36, 559.34], "band": [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.36, 1.36], "gain": [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.36, 1.36]}, {"name": "Certificados CTT", "members": ["Certificados de Aforro CTT - Série E", "Certificados de Aforro CTT - Série F"], "value": [6047.46, 6047.46, 6071.73, 6071.73, 6073.3, 6098.04, 6098.04, 6098.04, 4246.85], "capital": [6047.46, 6047.46, 6047.46, 6047.46, 6047.46, 6047.46, 6047.46, 6047.46, 4196.27], "band": [0.0, 0.0, 24.27, 24.27, 25.84, 50.58, 50.58, 50.58, 50.58], "gain": [0.0, 0.0, 24.27, 24.27, 25.84, 50.58, 50.58, 50.58, 50.58]}, {"name": "Santander, PayPal & cash", "members": ["Conta Corrente", "Conta Poupança", "Conta Bolsas", "PayPal", "Cash Withdrawls"], "value": [2944.94, 2145.05, 6629.65, 6080.3, 8084.73, 5810.58, 1644.04, 902.59, 107.48], "capital": [2944.94, 2145.05, 6629.65, 6080.3, 8084.73, 5810.58, 1644.04, 902.59, 107.48], "band": [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0], "gain": [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]}], "panels": [{"name": "Trade Republic Inv. - Brokerage", "type": "Investment", "bank": "Trade Republic", "points": [7687.87, 8218.4, 8218.5, 9360.69, 11831.36, 15908.03, 18153.08, 20062.59, 20930.82]}, {"name": "Conta Corrente", "type": "Account", "bank": "Santander", "points": [344.63, 1139.74, 6619.58, 6007.09, 8013.41, 5794.29, 1622.75, 896.3, 100.0]}, {"name": "Certificados de Aforro CTT - Série F", "type": "Investment", "bank": "CTT/Estado", "points": [5512.73, 5512.73, 5533.63, 5533.63, 5535.2, 5556.5, 5556.5, 5556.5, 3705.31]}, {"name": "Conta Poupança", "type": "Account", "bank": "Santander", "points": [2600.31, 1005.31, 0.07, 5.07, 10.07, 15.07, 20.07, 5.07, 6.26]}, {"name": "Trade Republic Account", "type": "Account", "bank": "Trade Republic", "points": [340.94, 0.7, 304.02, 1096.79, 870.83, 930.56, 993.89, 119.63, 323.13]}, {"name": "Revolut", "type": "Account", "bank": "Revolut", "points": [0.0, -19.36, 0.58, 976.66, 361.01, -15.48, 36.76, 11.36, 69.34]}, {"name": "Trade Republic Inv. - Crypto", "type": "Investment", "bank": "Trade Republic", "points": [0.0, 0.0, 0.0, 0.0, 766.75, 743.32, 805.23, 855.37, 955.38]}, {"name": "Robinhood", "type": "Investment", "bank": "Robinhood", "points": [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 50.0, 550.0]}, {"name": "Certificados de Aforro CTT - Série E", "type": "Investment", "bank": "CTT/Estado", "points": [534.73, 534.73, 538.1, 538.1, 538.1, 541.54, 541.54, 541.54, 541.54]}, {"name": "Revolut - Wealth Build", "type": "Investment", "bank": "Revolut", "points": [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 250.0, 475.54, 440.54]}, {"name": "Revolut - Fundo Emergência", "type": "Investment", "bank": "Revolut", "points": [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 405.0, 446.82, 50.82]}, {"name": "Trading 212 Account", "type": "Investment", "bank": "Trading 212", "points": [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 100.0, 10.0, 10.0]}, {"name": "PayPal", "type": "Account", "bank": "PayPal", "points": [0.0, 0.0, 0.0, 58.04, 58.04, 0.0, 0.0, 0.0, 0.0]}, {"name": "Cash Withdrawls", "type": "Cash", "bank": "—", "points": [0.0, 0.0, 10.0, 10.1, 3.21, 1.22, 1.22, 1.22, 1.22]}, {"name": "Conta Bolsas", "type": "Account", "bank": "Santander", "points": [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]}], "totals": [17021.21, 16392.25, 21224.48, 23586.17, 27987.98, 29475.05, 28486.04, 29031.94, 27684.36], "table": [{"name": "Trade Republic Inv. - Brokerage", "type": "Investment", "bank": "Trade Republic", "points": [7687.87, 8218.4, 8218.5, 9360.69, 11831.36, 15908.03, 18153.08, 20062.59, 20930.82]}, {"name": "Certificados de Aforro CTT - Série F", "type": "Investment", "bank": "CTT/Estado", "points": [5512.73, 5512.73, 5533.63, 5533.63, 5535.2, 5556.5, 5556.5, 5556.5, 3705.31]}, {"name": "Trade Republic Inv. - Crypto", "type": "Investment", "bank": "Trade Republic", "points": [0.0, 0.0, 0.0, 0.0, 766.75, 743.32, 805.23, 855.37, 955.38]}, {"name": "Robinhood", "type": "Investment", "bank": "Robinhood", "points": [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 50.0, 550.0]}, {"name": "Certificados de Aforro CTT - Série E", "type": "Investment", "bank": "CTT/Estado", "points": [534.73, 534.73, 538.1, 538.1, 538.1, 541.54, 541.54, 541.54, 541.54]}, {"name": "Revolut - Wealth Build", "type": "Investment", "bank": "Revolut", "points": [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 250.0, 475.54, 440.54]}, {"name": "Trade Republic Account", "type": "Account", "bank": "Trade Republic", "points": [340.94, 0.7, 304.02, 1096.79, 870.83, 930.56, 993.89, 119.63, 323.13]}, {"name": "Conta Corrente", "type": "Account", "bank": "Santander", "points": [344.63, 1139.74, 6619.58, 6007.09, 8013.41, 5794.29, 1622.75, 896.3, 100.0]}, {"name": "Revolut", "type": "Account", "bank": "Revolut", "points": [0.0, -19.36, 0.58, 976.66, 361.01, -15.48, 36.76, 11.36, 69.34]}, {"name": "Revolut - Fundo Emergência", "type": "Investment", "bank": "Revolut", "points": [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 405.0, 446.82, 50.82]}, {"name": "Trading 212 Account", "type": "Investment", "bank": "Trading 212", "points": [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 100.0, 10.0, 10.0]}, {"name": "Conta Poupança", "type": "Account", "bank": "Santander", "points": [2600.31, 1005.31, 0.07, 5.07, 10.07, 15.07, 20.07, 5.07, 6.26]}, {"name": "Cash Withdrawls", "type": "Cash", "bank": "—", "points": [0.0, 0.0, 10.0, 10.1, 3.21, 1.22, 1.22, 1.22, 1.22]}, {"name": "Conta Bolsas", "type": "Account", "bank": "Santander", "points": [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]}, {"name": "PayPal", "type": "Account", "bank": "PayPal", "points": [0.0, 0.0, 0.0, 58.04, 58.04, 0.0, 0.0, 0.0, 0.0]}]};
+/* Hue per group. Not the plain 1..8 order: in a stacked column any two groups can
+   end up touching once the ones between them are empty, and two of this palette's
+   hues (the aqua at slot 3 and the green at slot 6) fail the normal-vision
+   separation floor against each other in dark mode. This assignment was picked by
+   enumerating the 11 adjacencies the data actually produces and searching the 68
+   permutations where every one of them is a validated pair. Among those, red goes
+   to the smallest group (Trading 212, peak EUR 100), because red is also the loss
+   cue in the return strip and a large red band would compete with it. */
 const SLOTS = ["--s1","--s2","--s3","--s4","--s5","--s6","--s7","--s8"];
+const SLOTMAP = [0, 1, 2, 7, 5, 6, 3, 4];
+const slotOf = i => SLOTS[SLOTMAP[i]];
+const slotColor = i => css(slotOf(i));
 const css = v => getComputedStyle(document.documentElement).getPropertyValue(v).trim();
 const SVGNS = "http://www.w3.org/2000/svg";
 
@@ -542,8 +588,11 @@ function colPath(x, w, yFrom, yTo, r) {
       + `Q${x + w} ${bot} ${x + w} ${bot - rr} L${x + w} ${top} Z`;
 }
 
-const BARW = 24;      // mark spec: columns never fill the band
-const GAP = 2;        // surface gap between touching segments
+const BARW = 24;            // mark spec: columns never fill the band
+const GAP = 2;              // surface gap between touching segments
+const GAIN_OPACITY = 0.42;  // gains: a lighter step of the group's own hue
+const round2 = v => Math.round(v * 100) / 100;
+const visible = () => DATA.groups.map((s, i) => ({ s, i })).filter(o => !hidden.has(o.i));
 
 function drawBars() {
   const w = Math.max(700, host.clientWidth || 700);
@@ -554,7 +603,7 @@ function drawBars() {
   svg.setAttribute("viewBox", "0 0 " + w + " " + h);
   while (svg.firstChild) svg.removeChild(svg.firstChild);
 
-  const vis = DATA.series.map((s, i) => ({ s, i })).filter(o => !hidden.has(o.i));
+  const vis = visible();
   const N = DATA.labels.length;
   const X = i => pad.l + ((i + 0.5) * (w - pad.l - pad.r)) / N;
 
@@ -565,7 +614,7 @@ function drawBars() {
   const stackTop = [], stackBot = [];
   for (let i = 0; i < N; i++) {
     let up = 0, dn = 0;
-    vis.forEach(o => { const v = o.s.points[i]; if (v >= 0) up += v; else dn += v; });
+    vis.forEach(o => { const v = o.s.value[i]; if (v >= 0) up += v; else dn += v; });
     stackTop.push(up); stackBot.push(dn);
   }
   const sc = scale(Math.min(0, ...stackBot), Math.max(...stackTop), 5);
@@ -582,18 +631,20 @@ function drawBars() {
 
   for (let i = 0; i < N; i++) {
     const x = X(i) - BARW / 2;
-    /* Fixed slot order, so a segment keeps its colour and its neighbours
-       regardless of which series are switched off. Positives stack up from the
-       baseline, negatives down, and only the outermost segment of each arm is
-       rounded — interior ends stay square. */
+    /* Fixed group order bottom-up, so a band keeps its colour and its neighbours
+       regardless of what is switched off. Each group contributes its capital in
+       the full hue and, directly above it, its accumulated gains in a lighter
+       step of the SAME hue. Positives stack up from the baseline, negatives down;
+       only the outermost band of each arm is rounded. */
     const segs = [];
     let accUp = 0, accDn = 0;
     vis.forEach(o => {
-      const v = o.s.points[i];
-      if (Math.abs(v) < 0.005) return;
-      const from = v >= 0 ? accUp : accDn;
-      if (v >= 0) accUp += v; else accDn += v;
-      segs.push({ slot: SLOTS[o.i], from, to: from + v, pos: v >= 0 });
+      [[o.s.capital[i], false], [o.s.band[i], true]].forEach(([v, isGain]) => {
+        if (Math.abs(v) < 0.005) return;
+        const from = v >= 0 ? accUp : accDn;
+        if (v >= 0) accUp += v; else accDn += v;
+        segs.push({ slot: slotOf(o.i), from, to: from + v, pos: v >= 0, isGain });
+      });
     });
     const lastPos = segs.reduce((a, s, k) => (s.pos ? k : a), -1);
     const lastNeg = segs.reduce((a, s, k) => (s.pos ? a : k), -1);
@@ -604,7 +655,7 @@ function drawBars() {
       if (span > GAP + 1) y0 += (y1 < y0 ? -GAP : GAP);
       else if (span < 0.8) y1 = y0 + (y1 < y0 ? -0.8 : 0.8);
       el("path", { d: colPath(x, BARW, y0, y1, (k === lastPos || k === lastNeg) ? 4 : 0),
-        fill: css(s.slot), stroke: "none" }, svg);
+        fill: css(s.slot), opacity: s.isGain ? GAIN_OPACITY : 1, stroke: "none" }, svg);
     });
   }
 
@@ -654,8 +705,8 @@ function drawLines() {
   svg.setAttribute("viewBox", "0 0 " + w + " " + h);
   while (svg.firstChild) svg.removeChild(svg.firstChild);
 
-  const vis = DATA.series.map((s, i) => ({ s, i })).filter(o => !hidden.has(o.i));
-  const flat = vis.flatMap(o => o.s.points);
+  const vis = visible();
+  const flat = vis.flatMap(o => o.s.value);
   const sc = scale(Math.min(0, ...flat), Math.max(0, ...flat), 5);
   const N = DATA.labels.length;
   const X = i => pad.l + (i * (w - pad.l - pad.r)) / (N - 1);
@@ -679,43 +730,153 @@ function drawLines() {
     "stroke-width": 1, opacity: 0 }, svg);
   const dots = [];
 
+  /* Washes first, in descending order of size, so a small series' fill is never
+     buried under a larger one; then every line on top of every wash. */
+  const base = Y(Math.max(sc.lo, 0));
+  vis.slice()
+    .sort((a, b) => Math.max(...b.s.value) - Math.max(...a.s.value))
+    .forEach(o => {
+      const line = o.s.value.map((v, i) => (i ? "L" : "M") + X(i) + " " + Y(v)).join(" ");
+      el("path", { d: line + " L" + X(N - 1) + " " + base + " L" + X(0) + " " + base + " Z",
+        fill: slotColor(o.i), opacity: 0.1, stroke: "none" }, svg);
+    });
+
   vis.forEach(o => {
-    const col = css(SLOTS[o.i]);
-    const dpath = o.s.points.map((v, i) => (i ? "L" : "M") + X(i) + " " + Y(v)).join(" ");
-    el("path", { d: dpath, fill: "none", stroke: col, "stroke-width": 2,
+    const col = slotColor(o.i);
+    el("path", { d: o.s.value.map((v, i) => (i ? "L" : "M") + X(i) + " " + Y(v)).join(" "),
+      fill: "none", stroke: col, "stroke-width": 2,
       "stroke-linejoin": "round", "stroke-linecap": "round" }, svg);
-    const last = o.s.points[o.s.points.length - 1];
+    const last = o.s.value[o.s.value.length - 1];
     el("circle", { cx: X(N - 1), cy: Y(last), r: 4.5, fill: col,
       stroke: css("--surface"), "stroke-width": 2 }, svg);
     dots.push({ i: o.i, col, cy: v => Y(v) });
   });
 
-  /* Direct end-labels only where lines clearly separate; the rest rely on
-     the legend and tooltip rather than a stack of nudged labels. */
-  vis.filter(o => o.i === 0 || o.i === 2).forEach(o => {
-    const last = o.s.points[o.s.points.length - 1];
+  /* Direct end-labels only for the two that clearly separate at the right edge;
+     the rest rely on the legend and tooltip rather than a stack of nudged labels. */
+  const ranked = vis.slice().sort((a, b) =>
+    b.s.value[b.s.value.length - 1] - a.s.value[a.s.value.length - 1]).slice(0, 2);
+  ranked.forEach(o => {
+    const last = o.s.value[o.s.value.length - 1];
     const t = el("text", { x: X(N - 1) + 10, y: Y(last) + 4, fill: css("--ink-2"),
       "font-size": 11.5, "font-weight": 600 }, svg);
     t.textContent = eur0(last);
   });
 
-  const hoverDots = vis.map(o => el("circle", { r: 5, fill: css(SLOTS[o.i]),
+  const hoverDots = vis.map(o => el("circle", { r: 5, fill: slotColor(o.i),
     stroke: css("--surface"), "stroke-width": 2, opacity: 0 }, svg));
 
   geom = { kind: "lines", w, h, pad, X, Y, vis, N, crosshair, hoverDots };
 }
 
+/* ------------------------------------------------ net worth view ---- */
+function drawNet() {
+  const w = Math.max(700, host.clientWidth || 700);
+  const h = Math.max(360, Math.min(480, Math.round(w * 0.44)));
+  const pad = { t: 16, r: 84, b: 34, l: 62 };
+  svg.setAttribute("width", w);
+  svg.setAttribute("height", h);
+  svg.setAttribute("viewBox", "0 0 " + w + " " + h);
+  while (svg.firstChild) svg.removeChild(svg.firstChild);
+
+  const T = DATA.totals;
+  const N = T.length;
+  const strip = 92, split = 28;
+  const topH = h - pad.b - strip - split;
+  const sc = scale(Math.min(0, ...T), Math.max(...T), 5);
+  const X = i => pad.l + (i * (w - pad.l - pad.r)) / (N - 1);
+  const Y = v => pad.t + (1 - (v - sc.lo) / (sc.hi - sc.lo)) * (topH - pad.t);
+
+  sc.ticks.forEach(v => {
+    const y = Y(v);
+    el("line", { x1: pad.l, x2: w - pad.r, y1: y, y2: y,
+      stroke: Math.abs(v) < 1e-6 ? css("--axis") : css("--grid"), "stroke-width": 1 }, svg);
+    const t = el("text", { x: pad.l - 10, y: y + 4, "text-anchor": "end", fill: css("--muted"),
+      "font-size": 11, "font-family": "var(--mono)" }, svg);
+    t.textContent = tick(v);
+  });
+
+  const line = T.map((v, i) => (i ? "L" : "M") + X(i) + " " + Y(v)).join(" ");
+  const base = Y(Math.max(sc.lo, 0));
+  el("path", { d: line + " L" + X(N - 1) + " " + base + " L" + X(0) + " " + base + " Z",
+    fill: css("--s1"), opacity: 0.13, stroke: "none" }, svg);
+  /* Where you started, as a reference line — everything above it is growth. */
+  el("line", { x1: pad.l, x2: w - pad.r, y1: Y(T[0]), y2: Y(T[0]), stroke: css("--s1"),
+    "stroke-width": 1, "stroke-dasharray": "1 3", opacity: 0.55 }, svg);
+  const sl = el("text", { x: w - pad.r + 8, y: Y(T[0]) + 4, fill: css("--muted"),
+    "font-size": 10.5, "font-family": "var(--mono)" }, svg);
+  sl.textContent = "1 JAN";
+  el("path", { d: line, fill: "none", stroke: css("--s1"), "stroke-width": 2,
+    "stroke-linejoin": "round", "stroke-linecap": "round" }, svg);
+  el("circle", { cx: X(N - 1), cy: Y(T[N - 1]), r: 4.5, fill: css("--s1"),
+    stroke: css("--surface"), "stroke-width": 2 }, svg);
+  const endLab = el("text", { x: X(N - 1) + 8, y: Y(T[N - 1]) - 8, fill: css("--ink"),
+    "font-size": 12, "font-weight": 640 }, svg);
+  endLab.textContent = eur0(T[N - 1]);
+
+  /* Month-on-month change in net worth, coloured by sign. */
+  const dRaw = T.map((v, i) => (i ? round2(v - T[i - 1]) : null));
+  const dMax = Math.max(1, ...dRaw.filter(v => v != null).map(Math.abs));
+  const dBase = h - pad.b - strip / 2;
+  const dY = v => dBase - (v / dMax) * (strip / 2 - 10);
+  el("line", { x1: pad.l, x2: w - pad.r, y1: dBase, y2: dBase, stroke: css("--axis"),
+    "stroke-width": 1 }, svg);
+  const lab = el("text", { x: pad.l, y: h - pad.b - strip + 2, fill: css("--muted"),
+    "font-size": 10.5, "font-family": "var(--mono)", "letter-spacing": "0.08em" }, svg);
+  lab.textContent = "CHANGE IN NET WORTH, MONTH ON MONTH";
+  [dMax, -dMax].forEach(v => {
+    const t = el("text", { x: pad.l - 10, y: dY(v) + 4, "text-anchor": "end", fill: css("--muted"),
+      "font-size": 10, "font-family": "var(--mono)" }, svg);
+    t.textContent = (v > 0 ? "+" : "\u2212") + tick(Math.abs(Math.round(v)));
+  });
+  dRaw.forEach((v, i) => {
+    if (v == null || Math.abs(v) < 0.005) return;
+    let y = dY(v);
+    if (Math.abs(y - dBase) < 0.8) y = dBase + (v > 0 ? -0.8 : 0.8);
+    el("path", { d: colPath(X(i) - BARW / 2, BARW, dBase, y, 4),
+      fill: css(v >= 0 ? "--s1" : "--neg"), stroke: "none" }, svg);
+  });
+
+  DATA.labels.forEach((lb, i) => {
+    const t = el("text", { x: X(i), y: h - pad.b + 20, "text-anchor": "middle",
+      fill: css("--muted"), "font-size": 11.5, "font-family": "var(--mono)" }, svg);
+    t.textContent = lb;
+  });
+
+  const cross = el("line", { y1: pad.t, y2: h - pad.b, stroke: css("--axis"),
+    "stroke-width": 1, opacity: 0 }, svg);
+  const dot = el("circle", { r: 5, fill: css("--s1"), stroke: css("--surface"),
+    "stroke-width": 2, opacity: 0 }, svg);
+  geom = { kind: "net", w, h, pad, X, Y, N, cross, dot, dRaw };
+}
+
 const SUBS = {
-  lines: "The seven accounts that carry real weight, plus the remaining eight combined. "
-       + "Hover for a month; click a name to hide or show it \u2014 the scale follows what is on screen.",
-  bars: "Each month's balance stacked by account, so the column height is your net worth and each "
-      + "band is one account's share of it. The strip underneath is the return your portfolio earned "
-      + "in that month alone.",
+  lines: "One line per group, in the same bottom-to-top order as the bars. Hover for a month; "
+       + "click a name to hide or show it \u2014 the scale follows what is on screen.",
+  bars: "Each month stacked bottom-up: Trade Republic, then the smaller brokers, Revolut, the CTT "
+      + "certificates, and everyday cash on top. Column height is your net worth. Within each group "
+      + "the solid band is capital you put in and the lighter band above it is the gains it has "
+      + "earned. The strip underneath is the portfolio's return in that month alone.",
+  net: "Net worth as one line, with 1 January marked so everything above the dashed line is growth. "
+     + "The strip underneath is how much net worth moved each month, and the tooltip splits that "
+     + "into investment return versus everything else.",
 };
 
 let view = "lines";
-function drawMain() { document.getElementById("mainSub").textContent = SUBS[view];
-  return view === "bars" ? drawBars() : drawLines(); }
+function drawMain() {
+  document.getElementById("mainSub").textContent = SUBS[view];
+  document.getElementById("legend").hidden = view === "net";
+  document.getElementById("gainHint").hidden = view !== "bars";
+  /* The stack shows every group: the validated hue assignment depends on knowing
+     exactly which bands can touch, and hiding one would create pairings that were
+     never checked. So in bar view the legend is a key, not a filter. */
+  if (view === "bars") hidden.clear();
+  document.querySelectorAll(".lg").forEach(b => {
+    b.disabled = view === "bars";
+    if (view === "bars") b.setAttribute("aria-pressed", "true");
+  });
+  return view === "bars" ? drawBars() : view === "net" ? drawNet() : drawLines();
+}
 
 document.querySelectorAll(".seg-b").forEach(b => {
   b.addEventListener("click", () => {
@@ -735,49 +896,81 @@ function moveTip(ev) {
   let idx = 0, best = Infinity;
   for (let i = 0; i < N; i++) { const dd = Math.abs(X(i) - x); if (dd < best) { best = dd; idx = i; } }
 
-  const visible = DATA.series.map((s, i) => ({ s, i })).filter(o => !hidden.has(o.i));
+  const vis = visible();
   if (geom.kind === "bars") {
     geom.band.setAttribute("x", X(idx) - (BARW + 10) / 2);
     geom.band.setAttribute("opacity", 0.045);
+  } else if (geom.kind === "net") {
+    geom.cross.setAttribute("x1", X(idx));
+    geom.cross.setAttribute("x2", X(idx));
+    geom.cross.setAttribute("opacity", 1);
+    geom.dot.setAttribute("cx", X(idx));
+    geom.dot.setAttribute("cy", geom.Y(DATA.totals[idx]));
+    geom.dot.setAttribute("opacity", 1);
   } else {
     geom.crosshair.setAttribute("x1", X(idx));
     geom.crosshair.setAttribute("x2", X(idx));
     geom.crosshair.setAttribute("opacity", 1);
-    visible.forEach((o, k) => {
+    vis.forEach((o, k) => {
       geom.hoverDots[k].setAttribute("cx", X(idx));
-      geom.hoverDots[k].setAttribute("cy", geom.Y(o.s.points[idx]));
+      geom.hoverDots[k].setAttribute("cy", geom.Y(o.s.value[idx]));
       geom.hoverDots[k].setAttribute("opacity", 1);
     });
   }
 
-  const rows = visible
-    .map(o => ({ name: o.s.name, v: o.s.points[idx], col: css(SLOTS[o.i]) }))
-    .sort((a, b) => b.v - a.v);
+  const signed = (v, good) => '<span class="vv" style="color:var(' +
+    (Math.abs(v) < 0.005 ? "--muted" : (v > 0) === good ? "--pos" : "--neg") + ')">' +
+    (v >= 0 ? "+" : "\u2212") + eur(Math.abs(v)) + "</span>";
 
-  let extra = "";
-  if (geom.kind === "bars") {
-    const total = rows.reduce((a, r2) => a + r2.v, 0);
-    const dlt = DATA.inv.monthly_delta[idx];
-    extra = '<div class="tip-row tip-sum"><span class="key" style="background:var(--axis)"></span>' +
-      '<span class="nm">Net worth</span><span class="vv">' + eur(total) + "</span></div>" +
-      (dlt == null ? "" :
-        '<div class="tip-row"><span class="key" style="background:var(' +
-        (dlt >= 0 ? "--s1" : "--neg") + ')"></span><span class="nm">Portfolio return</span>' +
-        '<span class="vv" style="color:var(' + (dlt >= 0 ? "--pos" : "--neg") + ')">' +
-        (dlt >= 0 ? "+" : "\u2212") + eur(Math.abs(dlt)) + "</span></div>");
+  if (geom.kind === "net") {
+    /* Net worth moves for two reasons: what the portfolio earned, and everything
+       else you did with money. Splitting it is the point of this view. */
+    const T = DATA.totals;
+    const chg = geom.dRaw[idx];
+    const ret = DATA.inv.monthly_delta[idx];
+    const rest = chg == null || ret == null ? null : round2(chg - ret);
+    tip.innerHTML = "<h4>" + DATA.full[idx] + "</h4>" +
+      '<div class="tip-row"><span class="key" style="background:var(--s1)"></span>' +
+      '<span class="nm">Net worth</span><span class="vv">' + eur(T[idx]) + "</span></div>" +
+      '<div class="tip-row"><span class="key" style="background:var(--axis)"></span>' +
+      '<span class="nm">Since 1 Jan</span>' + signed(round2(T[idx] - T[0]), true) + "</div>" +
+      (chg == null ? "" :
+        '<div class="tip-row tip-sum"><span class="key" style="background:var(' +
+        (chg >= 0 ? "--s1" : "--neg") + ')"></span><span class="nm">This month</span>' +
+        signed(chg, true) + "</div>" +
+        '<div class="tip-row"><span class="key" style="background:var(--s1)"></span>' +
+        '<span class="nm">&nbsp;&nbsp;investment return</span>' + signed(ret, true) + "</div>" +
+        '<div class="tip-row"><span class="key" style="background:var(--s4)"></span>' +
+        '<span class="nm">&nbsp;&nbsp;everything else</span>' + signed(rest, true) + "</div>");
+  } else {
+    const rows = vis.map(o => ({ name: o.s.name, v: o.s.value[idx], g: o.s.gain[idx],
+      col: slotColor(o.i) })).sort((a, b) => b.v - a.v);
+    let extra = "";
+    if (geom.kind === "bars") {
+      const total = rows.reduce((a, r2) => a + r2.v, 0);
+      const dlt = DATA.inv.monthly_delta[idx];
+      extra = '<div class="tip-row tip-sum"><span class="key" style="background:var(--axis)"></span>' +
+        '<span class="nm">Net worth</span><span class="vv">' + eur(total) + "</span></div>" +
+        (dlt == null ? "" :
+          '<div class="tip-row"><span class="key" style="background:var(' +
+          (dlt >= 0 ? "--s1" : "--neg") + ')"></span><span class="nm">Portfolio return</span>' +
+          signed(dlt, true) + "</div>");
+    }
+    tip.innerHTML = "<h4>" + DATA.full[idx] + "</h4>" + rows.map(r2 =>
+      '<div class="tip-row"><span class="key" style="background:' + r2.col + '"></span>' +
+      '<span class="nm">' + r2.name + '</span><span class="vv">' + eur(r2.v) + "</span></div>" +
+      (Math.abs(r2.g) < 0.005 ? "" :
+        '<div class="tip-row tip-sub"><span class="key" style="background:' + r2.col +
+        ';opacity:' + GAIN_OPACITY + '"></span><span class="nm">of which gains</span>' +
+        signed(r2.g, true) + "</div>")).join("") + extra;
   }
-
-  tip.innerHTML = "<h4>" + DATA.full[idx] + "</h4>" + rows.map(r2 =>
-    '<div class="tip-row"><span class="key" style="background:' + r2.col + '"></span>' +
-    '<span class="nm">' + r2.name + '</span><span class="vv">' + eur(r2.v) + "</span></div>")
-    .join("") + extra;
   tip.classList.add("on");
   /* Flip before the tooltip reaches the end-label gutter, so it never sits on top
      of the labels it duplicates. In bar view it is wide enough to bury several
      columns, so it takes whichever side has more room. */
   const tw = tip.offsetWidth;
   let left = X(idx) + 16;
-  if (geom.kind === "bars" ? idx >= N / 2 : left + tw > w - pad.r) left = X(idx) - tw - 16;
+  if (geom.kind !== "lines" ? idx >= N / 2 : left + tw > w - pad.r) left = X(idx) - tw - 16;
   if (left < 4) left = Math.min(X(idx) + 16, w - tw - 4);
   tip.style.left = Math.max(4, left) + "px";
   tip.style.top = Math.max(4, Math.min(h - tip.offsetHeight - 4, pad.t + 4)) + "px";
@@ -787,7 +980,10 @@ function hideTip() {
   tip.classList.remove("on");
   if (!geom) return;
   if (geom.kind === "bars") geom.band.setAttribute("opacity", 0);
-  else {
+  else if (geom.kind === "net") {
+    geom.cross.setAttribute("opacity", 0);
+    geom.dot.setAttribute("opacity", 0);
+  } else {
     geom.crosshair.setAttribute("opacity", 0);
     geom.hoverDots.forEach(d2 => d2.setAttribute("opacity", 0));
   }
@@ -797,16 +993,17 @@ svg.addEventListener("pointerleave", hideTip);
 
 /* ------------------------------------------------------------- legend ---- */
 const legend = document.getElementById("legend");
-DATA.series.forEach((s, i) => {
+DATA.groups.forEach((s, i) => {
   const b = document.createElement("button");
   b.className = "lg";
   b.type = "button";
   b.setAttribute("aria-pressed", "true");
-  b.title = s.members ? "Combined: " + s.members.join(", ") : s.name;
-  b.innerHTML = '<span class="key" style="background:var(' + SLOTS[i] + ')"></span>' + s.name;
+  b.title = s.members.length > 1 ? s.members.join(" · ") : s.name;
+  b.innerHTML = '<span class="key" style="background:var(' + slotOf(i) + ')"></span>' + s.name +
+    (s.members.length > 1 ? ' <span class="cnt">' + s.members.length + "</span>" : "");
   b.addEventListener("click", () => {
     if (hidden.has(i)) hidden.delete(i);
-    else if (hidden.size < DATA.series.length - 1) hidden.add(i);
+    else if (hidden.size < DATA.groups.length - 1) hidden.add(i);
     b.setAttribute("aria-pressed", hidden.has(i) ? "false" : "true");
     hideTip();
     drawMain();
@@ -1066,7 +1263,9 @@ minis.forEach(m => {
 });
 
 /* -------------------------------------------------------------- table ---- */
-const featured = new Map(DATA.series.map((s, i) => [s.name, SLOTS[i]]));
+// Each account wears its group's colour, so the table and the charts agree.
+const featured = new Map();
+DATA.groups.forEach((g, i) => g.members.forEach(n => featured.set(n, slotOf(i))));
 const tbl = document.getElementById("tbl");
 const head = ["Account", "Type", "1 Jan"].concat(DATA.labels.slice(1));
 tbl.innerHTML =

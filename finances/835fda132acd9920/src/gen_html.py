@@ -6,35 +6,64 @@ d = json.load(open("balances.json"))
 accounts = d["accounts"]
 by_name = {a["name"]: a for a in accounts}
 
-# Main chart: the seven accounts that carry real weight, in fixed palette-slot order,
-# plus everything else folded into "Other" (the 8-slot cap; each of those eight is
-# still shown individually in the small multiples below).
-FEATURED = [
-    "Trade Republic Inv. - Brokerage",
-    "Conta Corrente",
-    "Certificados de Aforro CTT - Série F",
-    "Conta Poupança",
-    "Trade Republic Account",
-    "Revolut",
-    "Trade Republic Inv. - Crypto",
-]
-others = [a["name"] for a in accounts if a["name"] not in FEATURED]
+inv = json.load(open("investments.json"))
+inv_by_name = {a["name"]: a for a in inv["accounts"]}
+NM = len(d["months"])
 
-series = []
-for name in FEATURED:
-    a = by_name[name]
-    series.append({"name": name, "points": [a["start"]] + a["balances"]})
-other_pts = [round(sum(by_name[n]["start"] for n in others), 2)]
-for i in range(len(d["months"])):
-    other_pts.append(round(sum(by_name[n]["balances"][i] for n in others), 2))
-series.append({"name": f"Other ({len(others)} accounts)", "points": other_pts,
-               "members": sorted(others)})
+# Stack order, bottom of the column upward: the Trade Republic holdings first,
+# then the smaller brokers, then Revolut, the state savings certificates, and
+# everyday cash on top. Eight groups, which is exactly the categorical cap — hue
+# carries the group, and a lighter step of the same hue carries its gains.
+GROUPS = [
+    ("Trade Republic Brokerage",  ["Trade Republic Inv. - Brokerage"]),
+    ("Trade Republic Crypto",     ["Trade Republic Inv. - Crypto"]),
+    ("Trade Republic Cash",       ["Trade Republic Account"]),
+    ("Trading 212",               ["Trading 212 Account"]),
+    ("Robinhood",                 ["Robinhood"]),
+    ("Revolut",                   ["Revolut", "Revolut - Wealth Build",
+                                   "Revolut - Fundo Emergência"]),
+    ("Certificados CTT",          ["Certificados de Aforro CTT - Série E",
+                                   "Certificados de Aforro CTT - Série F"]),
+    ("Santander, PayPal & cash",  ["Conta Corrente", "Conta Poupança", "Conta Bolsas",
+                                   "PayPal", "Cash Withdrawls"]),
+]
+assert sorted(n for _g, ms in GROUPS for n in ms) == sorted(by_name), "group cover mismatch"
+
+# Cumulative gain per account. Investment accounts carry their portfolio deltas;
+# Trade Republic Cash carries the dividends and 2% interest credited to it; plain
+# cash accounts earn nothing.
+months_keys = inv["months"]
+tr_cash_gain, acc = [], 0.0
+for m in months_keys:
+    acc += inv["income_to_cash"][m]
+    tr_cash_gain.append(round(acc, 2))
+
+def gains_for(name):
+    if name in inv_by_name:
+        return inv_by_name[name]["returns"]
+    if name == "Trade Republic Account":
+        return tr_cash_gain
+    return [0.0] * NM
+
+groups = []
+for gname, members in GROUPS:
+    value = [round(sum(by_name[n]["start"] for n in members), 2)]
+    gain = [0.0]
+    for i in range(NM):
+        value.append(round(sum(by_name[n]["balances"][i] for n in members), 2))
+        gain.append(round(sum(gains_for(n)[i] for n in members), 2))
+    # The gain band is a slice of the group's value, never an addition to it, so
+    # the column height stays equal to net worth. A group sitting on a cumulative
+    # loss shows no band — the number lives in the tooltip instead.
+    capital = [round(v - max(0.0, min(g, v)), 2) for v, g in zip(value, gain)]
+    band = [round(v - c, 2) for v, c in zip(value, capital)]
+    groups.append({"name": gname, "members": members, "value": value,
+                   "capital": capital, "band": band, "gain": gain})
 
 panels = [{"name": a["name"], "type": a["type"], "bank": a["bank"],
            "points": [a["start"]] + a["balances"]}
           for a in sorted(accounts, key=lambda a: -max(abs(v) for v in [a["start"]] + a["balances"]))]
 
-inv = json.load(open("investments.json"))
 payload = {
     "inv": {
         "capital": [inv["start_capital"]] + inv["capital"],
@@ -56,7 +85,7 @@ payload = {
     "full": ["1 January 2026", "end of January 2026", "end of February 2026",
              "end of March 2026", "end of April 2026", "end of May 2026",
              "end of June 2026", "end of July 2026", "5 August 2026"],
-    "series": series,
+    "groups": groups,
     "panels": panels,
     "totals": [d["start_total"]] + d["totals"],
     "table": [{"name": a["name"], "type": a["type"], "bank": a["bank"],
@@ -124,6 +153,8 @@ HTML = """<title>Account balances — Personal Finance Tracker 2026</title>
   }
 
   * { box-sizing: border-box; }
+  /* An explicit display on .legend / .hint would otherwise beat the hidden attribute. */
+  [hidden] { display: none !important; }
   body {
     margin: 0;
     background: var(--plane);
@@ -252,6 +283,8 @@ HTML = """<title>Account balances — Personal Finance Tracker 2026</title>
   /* Wash swatch for the band between the two lines, matching its 10% fill. */
   .lg .key.band { height: 11px; border-radius: 3px; background: var(--s1); opacity: 0.28; }
   .lg[aria-pressed="false"] { opacity: 0.45; }
+  .lg:disabled { cursor: default; }
+  .lg:disabled:hover { background: none; }
   .lg[aria-pressed="false"] .key { background: var(--axis) !important; }
 
   .tip {
@@ -283,6 +316,29 @@ HTML = """<title>Account balances — Personal Finance Tracker 2026</title>
   .tip-row .nm { color: var(--ink-2); white-space: nowrap; }
   .tip-row.tip-sum { border-top: 1px solid var(--grid); margin-top: 5px; padding-top: 5px; }
   .tip-row.tip-sum .nm { color: var(--ink); font-weight: 560; }
+  .tip-row.tip-sub .nm, .tip-row.tip-sub .vv { font-size: 11.5px; }
+  .tip-row.tip-sub .nm { color: var(--muted); }
+  .lg .cnt {
+    margin-left: 5px;
+    padding: 0 5px;
+    border-radius: 999px;
+    background: var(--hover);
+    color: var(--muted);
+    font-size: 11px;
+    font-variant-numeric: tabular-nums;
+  }
+  .hint {
+    display: flex;
+    align-items: baseline;
+    gap: 9px;
+    margin: 13px 0 0;
+    font-size: 12.5px;
+    color: var(--ink-2);
+    max-width: 92ch;
+  }
+  .hint .sw { display: inline-flex; flex-direction: column; gap: 2px; flex: none; transform: translateY(2px); }
+  .hint .sw i { display: block; width: 15px; height: 6px; border-radius: 2px; background: var(--s1); }
+  .hint .sw i.a { opacity: 0.42; }
   .tip-row .vv {
     margin-left: auto;
     font-variant-numeric: tabular-nums;
@@ -400,6 +456,7 @@ HTML = """<title>Account balances — Personal Finance Tracker 2026</title>
       <div class="seg" role="group" aria-label="Chart view">
         <button type="button" class="seg-b" data-view="lines" aria-pressed="true">Lines</button>
         <button type="button" class="seg-b" data-view="bars" aria-pressed="false">Stacked bars</button>
+        <button type="button" class="seg-b" data-view="net" aria-pressed="false">Net worth</button>
       </div>
     </div>
     <div class="card">
@@ -410,6 +467,13 @@ HTML = """<title>Account balances — Personal Finance Tracker 2026</title>
         </div>
       </div>
       <div class="legend" id="legend"></div>
+      <p class="hint" id="gainHint" hidden>
+        <span class="sw"><i class="a"></i><i class="b"></i></span>
+        Within a column, the solid band is capital and the lighter band directly above it is that
+        group&rsquo;s accumulated gains. A group sitting on a cumulative loss &mdash; Crypto, at
+        &minus;&euro;95.57 &mdash; has no lighter band; hover it for the figure.
+        This view always shows all eight groups, so the legend here is a key rather than a filter.
+      </p>
     </div>
   </section>
 
@@ -530,7 +594,18 @@ HTML = """<title>Account balances — Personal Finance Tracker 2026</title>
 
 <script>
 const DATA = __DATA__;
+/* Hue per group. Not the plain 1..8 order: in a stacked column any two groups can
+   end up touching once the ones between them are empty, and two of this palette's
+   hues (the aqua at slot 3 and the green at slot 6) fail the normal-vision
+   separation floor against each other in dark mode. This assignment was picked by
+   enumerating the 11 adjacencies the data actually produces and searching the 68
+   permutations where every one of them is a validated pair. Among those, red goes
+   to the smallest group (Trading 212, peak EUR 100), because red is also the loss
+   cue in the return strip and a large red band would compete with it. */
 const SLOTS = ["--s1","--s2","--s3","--s4","--s5","--s6","--s7","--s8"];
+const SLOTMAP = __SLOTMAP__;
+const slotOf = i => SLOTS[SLOTMAP[i]];
+const slotColor = i => css(slotOf(i));
 const css = v => getComputedStyle(document.documentElement).getPropertyValue(v).trim();
 const SVGNS = "http://www.w3.org/2000/svg";
 
@@ -600,8 +675,11 @@ function colPath(x, w, yFrom, yTo, r) {
       + `Q${x + w} ${bot} ${x + w} ${bot - rr} L${x + w} ${top} Z`;
 }
 
-const BARW = 24;      // mark spec: columns never fill the band
-const GAP = 2;        // surface gap between touching segments
+const BARW = 24;            // mark spec: columns never fill the band
+const GAP = 2;              // surface gap between touching segments
+const GAIN_OPACITY = 0.42;  // gains: a lighter step of the group's own hue
+const round2 = v => Math.round(v * 100) / 100;
+const visible = () => DATA.groups.map((s, i) => ({ s, i })).filter(o => !hidden.has(o.i));
 
 function drawBars() {
   const w = Math.max(700, host.clientWidth || 700);
@@ -612,7 +690,7 @@ function drawBars() {
   svg.setAttribute("viewBox", "0 0 " + w + " " + h);
   while (svg.firstChild) svg.removeChild(svg.firstChild);
 
-  const vis = DATA.series.map((s, i) => ({ s, i })).filter(o => !hidden.has(o.i));
+  const vis = visible();
   const N = DATA.labels.length;
   const X = i => pad.l + ((i + 0.5) * (w - pad.l - pad.r)) / N;
 
@@ -623,7 +701,7 @@ function drawBars() {
   const stackTop = [], stackBot = [];
   for (let i = 0; i < N; i++) {
     let up = 0, dn = 0;
-    vis.forEach(o => { const v = o.s.points[i]; if (v >= 0) up += v; else dn += v; });
+    vis.forEach(o => { const v = o.s.value[i]; if (v >= 0) up += v; else dn += v; });
     stackTop.push(up); stackBot.push(dn);
   }
   const sc = scale(Math.min(0, ...stackBot), Math.max(...stackTop), 5);
@@ -640,18 +718,20 @@ function drawBars() {
 
   for (let i = 0; i < N; i++) {
     const x = X(i) - BARW / 2;
-    /* Fixed slot order, so a segment keeps its colour and its neighbours
-       regardless of which series are switched off. Positives stack up from the
-       baseline, negatives down, and only the outermost segment of each arm is
-       rounded — interior ends stay square. */
+    /* Fixed group order bottom-up, so a band keeps its colour and its neighbours
+       regardless of what is switched off. Each group contributes its capital in
+       the full hue and, directly above it, its accumulated gains in a lighter
+       step of the SAME hue. Positives stack up from the baseline, negatives down;
+       only the outermost band of each arm is rounded. */
     const segs = [];
     let accUp = 0, accDn = 0;
     vis.forEach(o => {
-      const v = o.s.points[i];
-      if (Math.abs(v) < 0.005) return;
-      const from = v >= 0 ? accUp : accDn;
-      if (v >= 0) accUp += v; else accDn += v;
-      segs.push({ slot: SLOTS[o.i], from, to: from + v, pos: v >= 0 });
+      [[o.s.capital[i], false], [o.s.band[i], true]].forEach(([v, isGain]) => {
+        if (Math.abs(v) < 0.005) return;
+        const from = v >= 0 ? accUp : accDn;
+        if (v >= 0) accUp += v; else accDn += v;
+        segs.push({ slot: slotOf(o.i), from, to: from + v, pos: v >= 0, isGain });
+      });
     });
     const lastPos = segs.reduce((a, s, k) => (s.pos ? k : a), -1);
     const lastNeg = segs.reduce((a, s, k) => (s.pos ? a : k), -1);
@@ -662,7 +742,7 @@ function drawBars() {
       if (span > GAP + 1) y0 += (y1 < y0 ? -GAP : GAP);
       else if (span < 0.8) y1 = y0 + (y1 < y0 ? -0.8 : 0.8);
       el("path", { d: colPath(x, BARW, y0, y1, (k === lastPos || k === lastNeg) ? 4 : 0),
-        fill: css(s.slot), stroke: "none" }, svg);
+        fill: css(s.slot), opacity: s.isGain ? GAIN_OPACITY : 1, stroke: "none" }, svg);
     });
   }
 
@@ -712,8 +792,8 @@ function drawLines() {
   svg.setAttribute("viewBox", "0 0 " + w + " " + h);
   while (svg.firstChild) svg.removeChild(svg.firstChild);
 
-  const vis = DATA.series.map((s, i) => ({ s, i })).filter(o => !hidden.has(o.i));
-  const flat = vis.flatMap(o => o.s.points);
+  const vis = visible();
+  const flat = vis.flatMap(o => o.s.value);
   const sc = scale(Math.min(0, ...flat), Math.max(0, ...flat), 5);
   const N = DATA.labels.length;
   const X = i => pad.l + (i * (w - pad.l - pad.r)) / (N - 1);
@@ -737,43 +817,153 @@ function drawLines() {
     "stroke-width": 1, opacity: 0 }, svg);
   const dots = [];
 
+  /* Washes first, in descending order of size, so a small series' fill is never
+     buried under a larger one; then every line on top of every wash. */
+  const base = Y(Math.max(sc.lo, 0));
+  vis.slice()
+    .sort((a, b) => Math.max(...b.s.value) - Math.max(...a.s.value))
+    .forEach(o => {
+      const line = o.s.value.map((v, i) => (i ? "L" : "M") + X(i) + " " + Y(v)).join(" ");
+      el("path", { d: line + " L" + X(N - 1) + " " + base + " L" + X(0) + " " + base + " Z",
+        fill: slotColor(o.i), opacity: 0.1, stroke: "none" }, svg);
+    });
+
   vis.forEach(o => {
-    const col = css(SLOTS[o.i]);
-    const dpath = o.s.points.map((v, i) => (i ? "L" : "M") + X(i) + " " + Y(v)).join(" ");
-    el("path", { d: dpath, fill: "none", stroke: col, "stroke-width": 2,
+    const col = slotColor(o.i);
+    el("path", { d: o.s.value.map((v, i) => (i ? "L" : "M") + X(i) + " " + Y(v)).join(" "),
+      fill: "none", stroke: col, "stroke-width": 2,
       "stroke-linejoin": "round", "stroke-linecap": "round" }, svg);
-    const last = o.s.points[o.s.points.length - 1];
+    const last = o.s.value[o.s.value.length - 1];
     el("circle", { cx: X(N - 1), cy: Y(last), r: 4.5, fill: col,
       stroke: css("--surface"), "stroke-width": 2 }, svg);
     dots.push({ i: o.i, col, cy: v => Y(v) });
   });
 
-  /* Direct end-labels only where lines clearly separate; the rest rely on
-     the legend and tooltip rather than a stack of nudged labels. */
-  vis.filter(o => o.i === 0 || o.i === 2).forEach(o => {
-    const last = o.s.points[o.s.points.length - 1];
+  /* Direct end-labels only for the two that clearly separate at the right edge;
+     the rest rely on the legend and tooltip rather than a stack of nudged labels. */
+  const ranked = vis.slice().sort((a, b) =>
+    b.s.value[b.s.value.length - 1] - a.s.value[a.s.value.length - 1]).slice(0, 2);
+  ranked.forEach(o => {
+    const last = o.s.value[o.s.value.length - 1];
     const t = el("text", { x: X(N - 1) + 10, y: Y(last) + 4, fill: css("--ink-2"),
       "font-size": 11.5, "font-weight": 600 }, svg);
     t.textContent = eur0(last);
   });
 
-  const hoverDots = vis.map(o => el("circle", { r: 5, fill: css(SLOTS[o.i]),
+  const hoverDots = vis.map(o => el("circle", { r: 5, fill: slotColor(o.i),
     stroke: css("--surface"), "stroke-width": 2, opacity: 0 }, svg));
 
   geom = { kind: "lines", w, h, pad, X, Y, vis, N, crosshair, hoverDots };
 }
 
+/* ------------------------------------------------ net worth view ---- */
+function drawNet() {
+  const w = Math.max(700, host.clientWidth || 700);
+  const h = Math.max(360, Math.min(480, Math.round(w * 0.44)));
+  const pad = { t: 16, r: 84, b: 34, l: 62 };
+  svg.setAttribute("width", w);
+  svg.setAttribute("height", h);
+  svg.setAttribute("viewBox", "0 0 " + w + " " + h);
+  while (svg.firstChild) svg.removeChild(svg.firstChild);
+
+  const T = DATA.totals;
+  const N = T.length;
+  const strip = 92, split = 28;
+  const topH = h - pad.b - strip - split;
+  const sc = scale(Math.min(0, ...T), Math.max(...T), 5);
+  const X = i => pad.l + (i * (w - pad.l - pad.r)) / (N - 1);
+  const Y = v => pad.t + (1 - (v - sc.lo) / (sc.hi - sc.lo)) * (topH - pad.t);
+
+  sc.ticks.forEach(v => {
+    const y = Y(v);
+    el("line", { x1: pad.l, x2: w - pad.r, y1: y, y2: y,
+      stroke: Math.abs(v) < 1e-6 ? css("--axis") : css("--grid"), "stroke-width": 1 }, svg);
+    const t = el("text", { x: pad.l - 10, y: y + 4, "text-anchor": "end", fill: css("--muted"),
+      "font-size": 11, "font-family": "var(--mono)" }, svg);
+    t.textContent = tick(v);
+  });
+
+  const line = T.map((v, i) => (i ? "L" : "M") + X(i) + " " + Y(v)).join(" ");
+  const base = Y(Math.max(sc.lo, 0));
+  el("path", { d: line + " L" + X(N - 1) + " " + base + " L" + X(0) + " " + base + " Z",
+    fill: css("--s1"), opacity: 0.13, stroke: "none" }, svg);
+  /* Where you started, as a reference line — everything above it is growth. */
+  el("line", { x1: pad.l, x2: w - pad.r, y1: Y(T[0]), y2: Y(T[0]), stroke: css("--s1"),
+    "stroke-width": 1, "stroke-dasharray": "1 3", opacity: 0.55 }, svg);
+  const sl = el("text", { x: w - pad.r + 8, y: Y(T[0]) + 4, fill: css("--muted"),
+    "font-size": 10.5, "font-family": "var(--mono)" }, svg);
+  sl.textContent = "1 JAN";
+  el("path", { d: line, fill: "none", stroke: css("--s1"), "stroke-width": 2,
+    "stroke-linejoin": "round", "stroke-linecap": "round" }, svg);
+  el("circle", { cx: X(N - 1), cy: Y(T[N - 1]), r: 4.5, fill: css("--s1"),
+    stroke: css("--surface"), "stroke-width": 2 }, svg);
+  const endLab = el("text", { x: X(N - 1) + 8, y: Y(T[N - 1]) - 8, fill: css("--ink"),
+    "font-size": 12, "font-weight": 640 }, svg);
+  endLab.textContent = eur0(T[N - 1]);
+
+  /* Month-on-month change in net worth, coloured by sign. */
+  const dRaw = T.map((v, i) => (i ? round2(v - T[i - 1]) : null));
+  const dMax = Math.max(1, ...dRaw.filter(v => v != null).map(Math.abs));
+  const dBase = h - pad.b - strip / 2;
+  const dY = v => dBase - (v / dMax) * (strip / 2 - 10);
+  el("line", { x1: pad.l, x2: w - pad.r, y1: dBase, y2: dBase, stroke: css("--axis"),
+    "stroke-width": 1 }, svg);
+  const lab = el("text", { x: pad.l, y: h - pad.b - strip + 2, fill: css("--muted"),
+    "font-size": 10.5, "font-family": "var(--mono)", "letter-spacing": "0.08em" }, svg);
+  lab.textContent = "CHANGE IN NET WORTH, MONTH ON MONTH";
+  [dMax, -dMax].forEach(v => {
+    const t = el("text", { x: pad.l - 10, y: dY(v) + 4, "text-anchor": "end", fill: css("--muted"),
+      "font-size": 10, "font-family": "var(--mono)" }, svg);
+    t.textContent = (v > 0 ? "+" : "\\u2212") + tick(Math.abs(Math.round(v)));
+  });
+  dRaw.forEach((v, i) => {
+    if (v == null || Math.abs(v) < 0.005) return;
+    let y = dY(v);
+    if (Math.abs(y - dBase) < 0.8) y = dBase + (v > 0 ? -0.8 : 0.8);
+    el("path", { d: colPath(X(i) - BARW / 2, BARW, dBase, y, 4),
+      fill: css(v >= 0 ? "--s1" : "--neg"), stroke: "none" }, svg);
+  });
+
+  DATA.labels.forEach((lb, i) => {
+    const t = el("text", { x: X(i), y: h - pad.b + 20, "text-anchor": "middle",
+      fill: css("--muted"), "font-size": 11.5, "font-family": "var(--mono)" }, svg);
+    t.textContent = lb;
+  });
+
+  const cross = el("line", { y1: pad.t, y2: h - pad.b, stroke: css("--axis"),
+    "stroke-width": 1, opacity: 0 }, svg);
+  const dot = el("circle", { r: 5, fill: css("--s1"), stroke: css("--surface"),
+    "stroke-width": 2, opacity: 0 }, svg);
+  geom = { kind: "net", w, h, pad, X, Y, N, cross, dot, dRaw };
+}
+
 const SUBS = {
-  lines: "The seven accounts that carry real weight, plus the remaining eight combined. "
-       + "Hover for a month; click a name to hide or show it \\u2014 the scale follows what is on screen.",
-  bars: "Each month's balance stacked by account, so the column height is your net worth and each "
-      + "band is one account's share of it. The strip underneath is the return your portfolio earned "
-      + "in that month alone.",
+  lines: "One line per group, in the same bottom-to-top order as the bars. Hover for a month; "
+       + "click a name to hide or show it \\u2014 the scale follows what is on screen.",
+  bars: "Each month stacked bottom-up: Trade Republic, then the smaller brokers, Revolut, the CTT "
+      + "certificates, and everyday cash on top. Column height is your net worth. Within each group "
+      + "the solid band is capital you put in and the lighter band above it is the gains it has "
+      + "earned. The strip underneath is the portfolio's return in that month alone.",
+  net: "Net worth as one line, with 1 January marked so everything above the dashed line is growth. "
+     + "The strip underneath is how much net worth moved each month, and the tooltip splits that "
+     + "into investment return versus everything else.",
 };
 
 let view = "lines";
-function drawMain() { document.getElementById("mainSub").textContent = SUBS[view];
-  return view === "bars" ? drawBars() : drawLines(); }
+function drawMain() {
+  document.getElementById("mainSub").textContent = SUBS[view];
+  document.getElementById("legend").hidden = view === "net";
+  document.getElementById("gainHint").hidden = view !== "bars";
+  /* The stack shows every group: the validated hue assignment depends on knowing
+     exactly which bands can touch, and hiding one would create pairings that were
+     never checked. So in bar view the legend is a key, not a filter. */
+  if (view === "bars") hidden.clear();
+  document.querySelectorAll(".lg").forEach(b => {
+    b.disabled = view === "bars";
+    if (view === "bars") b.setAttribute("aria-pressed", "true");
+  });
+  return view === "bars" ? drawBars() : view === "net" ? drawNet() : drawLines();
+}
 
 document.querySelectorAll(".seg-b").forEach(b => {
   b.addEventListener("click", () => {
@@ -793,49 +983,81 @@ function moveTip(ev) {
   let idx = 0, best = Infinity;
   for (let i = 0; i < N; i++) { const dd = Math.abs(X(i) - x); if (dd < best) { best = dd; idx = i; } }
 
-  const visible = DATA.series.map((s, i) => ({ s, i })).filter(o => !hidden.has(o.i));
+  const vis = visible();
   if (geom.kind === "bars") {
     geom.band.setAttribute("x", X(idx) - (BARW + 10) / 2);
     geom.band.setAttribute("opacity", 0.045);
+  } else if (geom.kind === "net") {
+    geom.cross.setAttribute("x1", X(idx));
+    geom.cross.setAttribute("x2", X(idx));
+    geom.cross.setAttribute("opacity", 1);
+    geom.dot.setAttribute("cx", X(idx));
+    geom.dot.setAttribute("cy", geom.Y(DATA.totals[idx]));
+    geom.dot.setAttribute("opacity", 1);
   } else {
     geom.crosshair.setAttribute("x1", X(idx));
     geom.crosshair.setAttribute("x2", X(idx));
     geom.crosshair.setAttribute("opacity", 1);
-    visible.forEach((o, k) => {
+    vis.forEach((o, k) => {
       geom.hoverDots[k].setAttribute("cx", X(idx));
-      geom.hoverDots[k].setAttribute("cy", geom.Y(o.s.points[idx]));
+      geom.hoverDots[k].setAttribute("cy", geom.Y(o.s.value[idx]));
       geom.hoverDots[k].setAttribute("opacity", 1);
     });
   }
 
-  const rows = visible
-    .map(o => ({ name: o.s.name, v: o.s.points[idx], col: css(SLOTS[o.i]) }))
-    .sort((a, b) => b.v - a.v);
+  const signed = (v, good) => '<span class="vv" style="color:var(' +
+    (Math.abs(v) < 0.005 ? "--muted" : (v > 0) === good ? "--pos" : "--neg") + ')">' +
+    (v >= 0 ? "+" : "\\u2212") + eur(Math.abs(v)) + "</span>";
 
-  let extra = "";
-  if (geom.kind === "bars") {
-    const total = rows.reduce((a, r2) => a + r2.v, 0);
-    const dlt = DATA.inv.monthly_delta[idx];
-    extra = '<div class="tip-row tip-sum"><span class="key" style="background:var(--axis)"></span>' +
-      '<span class="nm">Net worth</span><span class="vv">' + eur(total) + "</span></div>" +
-      (dlt == null ? "" :
-        '<div class="tip-row"><span class="key" style="background:var(' +
-        (dlt >= 0 ? "--s1" : "--neg") + ')"></span><span class="nm">Portfolio return</span>' +
-        '<span class="vv" style="color:var(' + (dlt >= 0 ? "--pos" : "--neg") + ')">' +
-        (dlt >= 0 ? "+" : "\\u2212") + eur(Math.abs(dlt)) + "</span></div>");
+  if (geom.kind === "net") {
+    /* Net worth moves for two reasons: what the portfolio earned, and everything
+       else you did with money. Splitting it is the point of this view. */
+    const T = DATA.totals;
+    const chg = geom.dRaw[idx];
+    const ret = DATA.inv.monthly_delta[idx];
+    const rest = chg == null || ret == null ? null : round2(chg - ret);
+    tip.innerHTML = "<h4>" + DATA.full[idx] + "</h4>" +
+      '<div class="tip-row"><span class="key" style="background:var(--s1)"></span>' +
+      '<span class="nm">Net worth</span><span class="vv">' + eur(T[idx]) + "</span></div>" +
+      '<div class="tip-row"><span class="key" style="background:var(--axis)"></span>' +
+      '<span class="nm">Since 1 Jan</span>' + signed(round2(T[idx] - T[0]), true) + "</div>" +
+      (chg == null ? "" :
+        '<div class="tip-row tip-sum"><span class="key" style="background:var(' +
+        (chg >= 0 ? "--s1" : "--neg") + ')"></span><span class="nm">This month</span>' +
+        signed(chg, true) + "</div>" +
+        '<div class="tip-row"><span class="key" style="background:var(--s1)"></span>' +
+        '<span class="nm">&nbsp;&nbsp;investment return</span>' + signed(ret, true) + "</div>" +
+        '<div class="tip-row"><span class="key" style="background:var(--s4)"></span>' +
+        '<span class="nm">&nbsp;&nbsp;everything else</span>' + signed(rest, true) + "</div>");
+  } else {
+    const rows = vis.map(o => ({ name: o.s.name, v: o.s.value[idx], g: o.s.gain[idx],
+      col: slotColor(o.i) })).sort((a, b) => b.v - a.v);
+    let extra = "";
+    if (geom.kind === "bars") {
+      const total = rows.reduce((a, r2) => a + r2.v, 0);
+      const dlt = DATA.inv.monthly_delta[idx];
+      extra = '<div class="tip-row tip-sum"><span class="key" style="background:var(--axis)"></span>' +
+        '<span class="nm">Net worth</span><span class="vv">' + eur(total) + "</span></div>" +
+        (dlt == null ? "" :
+          '<div class="tip-row"><span class="key" style="background:var(' +
+          (dlt >= 0 ? "--s1" : "--neg") + ')"></span><span class="nm">Portfolio return</span>' +
+          signed(dlt, true) + "</div>");
+    }
+    tip.innerHTML = "<h4>" + DATA.full[idx] + "</h4>" + rows.map(r2 =>
+      '<div class="tip-row"><span class="key" style="background:' + r2.col + '"></span>' +
+      '<span class="nm">' + r2.name + '</span><span class="vv">' + eur(r2.v) + "</span></div>" +
+      (Math.abs(r2.g) < 0.005 ? "" :
+        '<div class="tip-row tip-sub"><span class="key" style="background:' + r2.col +
+        ';opacity:' + GAIN_OPACITY + '"></span><span class="nm">of which gains</span>' +
+        signed(r2.g, true) + "</div>")).join("") + extra;
   }
-
-  tip.innerHTML = "<h4>" + DATA.full[idx] + "</h4>" + rows.map(r2 =>
-    '<div class="tip-row"><span class="key" style="background:' + r2.col + '"></span>' +
-    '<span class="nm">' + r2.name + '</span><span class="vv">' + eur(r2.v) + "</span></div>")
-    .join("") + extra;
   tip.classList.add("on");
   /* Flip before the tooltip reaches the end-label gutter, so it never sits on top
      of the labels it duplicates. In bar view it is wide enough to bury several
      columns, so it takes whichever side has more room. */
   const tw = tip.offsetWidth;
   let left = X(idx) + 16;
-  if (geom.kind === "bars" ? idx >= N / 2 : left + tw > w - pad.r) left = X(idx) - tw - 16;
+  if (geom.kind !== "lines" ? idx >= N / 2 : left + tw > w - pad.r) left = X(idx) - tw - 16;
   if (left < 4) left = Math.min(X(idx) + 16, w - tw - 4);
   tip.style.left = Math.max(4, left) + "px";
   tip.style.top = Math.max(4, Math.min(h - tip.offsetHeight - 4, pad.t + 4)) + "px";
@@ -845,7 +1067,10 @@ function hideTip() {
   tip.classList.remove("on");
   if (!geom) return;
   if (geom.kind === "bars") geom.band.setAttribute("opacity", 0);
-  else {
+  else if (geom.kind === "net") {
+    geom.cross.setAttribute("opacity", 0);
+    geom.dot.setAttribute("opacity", 0);
+  } else {
     geom.crosshair.setAttribute("opacity", 0);
     geom.hoverDots.forEach(d2 => d2.setAttribute("opacity", 0));
   }
@@ -855,16 +1080,17 @@ svg.addEventListener("pointerleave", hideTip);
 
 /* ------------------------------------------------------------- legend ---- */
 const legend = document.getElementById("legend");
-DATA.series.forEach((s, i) => {
+DATA.groups.forEach((s, i) => {
   const b = document.createElement("button");
   b.className = "lg";
   b.type = "button";
   b.setAttribute("aria-pressed", "true");
-  b.title = s.members ? "Combined: " + s.members.join(", ") : s.name;
-  b.innerHTML = '<span class="key" style="background:var(' + SLOTS[i] + ')"></span>' + s.name;
+  b.title = s.members.length > 1 ? s.members.join(" · ") : s.name;
+  b.innerHTML = '<span class="key" style="background:var(' + slotOf(i) + ')"></span>' + s.name +
+    (s.members.length > 1 ? ' <span class="cnt">' + s.members.length + "</span>" : "");
   b.addEventListener("click", () => {
     if (hidden.has(i)) hidden.delete(i);
-    else if (hidden.size < DATA.series.length - 1) hidden.add(i);
+    else if (hidden.size < DATA.groups.length - 1) hidden.add(i);
     b.setAttribute("aria-pressed", hidden.has(i) ? "false" : "true");
     hideTip();
     drawMain();
@@ -1124,7 +1350,9 @@ minis.forEach(m => {
 });
 
 /* -------------------------------------------------------------- table ---- */
-const featured = new Map(DATA.series.map((s, i) => [s.name, SLOTS[i]]));
+// Each account wears its group's colour, so the table and the charts agree.
+const featured = new Map();
+DATA.groups.forEach((g, i) => g.members.forEach(n => featured.set(n, slotOf(i))));
 const tbl = document.getElementById("tbl");
 const head = ["Account", "Type", "1 Jan"].concat(DATA.labels.slice(1));
 tbl.innerHTML =
@@ -1155,7 +1383,9 @@ new MutationObserver(drawAll).observe(document.documentElement,
 </script>
 """
 
-body = HTML.replace("__DATA__", json.dumps(payload, ensure_ascii=False))
+slotmap = json.load(open("slotmap.json"))
+body = (HTML.replace("__DATA__", json.dumps(payload, ensure_ascii=False))
+            .replace("__SLOTMAP__", json.dumps(slotmap)))
 
 # Body-only fragment, for hosts that supply their own document shell.
 with open("balances.html", "w") as fh:
