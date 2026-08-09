@@ -42,7 +42,8 @@ GAINS = {
 # One-sided outflows from investment accounts — losses.
 LOSSES = {
     BROK:   {"2026-03": 242.81,   # Portfolio Delta - March
-             "2026-06": 40.68},   # labelled "(+)" in Notion but entered as an outflow
+             "2026-06": 40.68},   # entered as an outflow, so a loss; its "(+)" label
+                                  # has since been corrected to "(-)" in Notion
     CRYPTO: {"2026-05": 23.43, "2026-06": 38.09, "2026-07": 49.86},
 }
 
@@ -118,9 +119,15 @@ flows[n] += val_t[n - 1]
 monthly = irr(flows)
 annual = (1 + monthly) ** 12 - 1 if monthly is not None else None
 
+# Return earned in each month on its own, i.e. the portfolio-delta rows for that
+# month — the first differences of the cumulative return.
+monthly_delta = [round(ret_t[0], 2)] + [round(ret_t[k] - ret_t[k - 1], 2)
+                                        for k in range(1, len(MONTHS))]
+
 out = {
     "months": MONTHS, "accounts": rows,
     "capital": cap_t, "returns": ret_t, "value": val_t, "start_capital": start_cap,
+    "monthly_delta": monthly_delta,
     "income_to_cash": INCOME_TO_CASH,
     "income_to_cash_total": round(sum(INCOME_TO_CASH.values()), 2),
     "irr_monthly": monthly, "irr_annual": annual, "irr_through": "2026-07",

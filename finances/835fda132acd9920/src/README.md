@@ -67,15 +67,15 @@ The monthly aggregates in `build.py` (`INCOME`, `EXPENSES`, `TRANSFER_IN`,
 re-run the four scripts. Adding a month means appending to `MONTHS` in `build.py`
 and to `labels` / `full` in `gen_html.py`.
 
-## Known data issues in Notion
+## Data notes
 
-1. **Revolut goes negative** — −€19.36 (Jan) and −€15.48 (May). Points to a missing
-   or mis-dated top-up, not a real overdraft.
+1. **Revolut dips negative** — −€19.36 (Jan) and −€15.48 (May). Confirmed as real
+   points where the account needed a top-up, so they are drawn as they happened.
 2. **Two transfers are double-tagged** — *Investimentos - Trading 212* (29 Jun) and
    *Reembolso - Trading 212* (6 Jul) each name both Trading 212 and Robinhood.
-   Attributed to Trading 212; they cancel out so no end balance moves.
-3. **One delta row is mislabelled** — the 30 Jun brokerage row says
-   `Portfolio Delta - June 2026 (+)` but was entered as €40.68 *leaving* the
-   account. It is counted by direction, not by label.
+   Attributed to Trading 212; they cancel out so no end balance moves. Still open.
+3. **The 30 Jun brokerage label is fixed** — it read `Portfolio Delta - June 2026 (+)`
+   on a €40.68 *outflow*, and has since been corrected to `(-)` in Notion. No figure
+   changed: delta rows are counted by the direction they were entered, never by label.
 4. **The brokerage's June delta was entered on 31 July**, which is why June looks
    flat and July carries two months of movement.

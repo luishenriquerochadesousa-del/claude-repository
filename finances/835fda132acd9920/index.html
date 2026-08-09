@@ -152,6 +152,23 @@
   }
 
   /* ---- charts ---- */
+  .head-row { display: flex; align-items: flex-end; justify-content: space-between; gap: 20px; flex-wrap: wrap; }
+  .seg { display: inline-flex; border: 1px solid var(--border); border-radius: 8px; overflow: hidden; flex: none; }
+  .seg-b {
+    appearance: none;
+    border: 0;
+    background: none;
+    padding: 6px 14px;
+    font-family: var(--sans);
+    font-size: 12.5px;
+    font-weight: 520;
+    color: var(--ink-2);
+    cursor: pointer;
+  }
+  .seg-b + .seg-b { border-left: 1px solid var(--border); }
+  .seg-b:hover { background: var(--hover); }
+  .seg-b:focus-visible { outline: 2px solid var(--s1); outline-offset: -2px; }
+  .seg-b[aria-pressed="true"] { background: var(--ink); color: var(--surface); }
   .scroller { overflow-x: auto; }
   .chart-host { position: relative; }
   svg { display: block; }
@@ -204,6 +221,8 @@
   .tip-row { display: flex; align-items: center; gap: 7px; white-space: nowrap; }
   .tip-row .key { width: 11px; height: 3px; border-radius: 2px; flex: none; }
   .tip-row .nm { color: var(--ink-2); white-space: nowrap; }
+  .tip-row.tip-sum { border-top: 1px solid var(--grid); margin-top: 5px; padding-top: 5px; }
+  .tip-row.tip-sum .nm { color: var(--ink); font-weight: 560; }
   .tip-row .vv {
     margin-left: auto;
     font-variant-numeric: tabular-nums;
@@ -315,10 +334,15 @@
   </section>
 
   <section>
-    <div>
-      <h2>Balance evolution</h2>
-      <p class="sub">The seven accounts that carry real weight, plus the remaining eight combined.
-        Hover for a month; click a name to hide or show it &mdash; the scale follows what is on screen.</p>
+    <div class="head-row">
+      <div>
+        <h2>Balance evolution</h2>
+        <p class="sub" id="mainSub"></p>
+      </div>
+      <div class="seg" role="group" aria-label="Chart view">
+        <button type="button" class="seg-b" data-view="lines" aria-pressed="true">Lines</button>
+        <button type="button" class="seg-b" data-view="bars" aria-pressed="false">Stacked bars</button>
+      </div>
     </div>
     <div class="card">
       <div class="scroller">
@@ -422,12 +446,12 @@
           delta row, so the value line steps at month ends rather than moving daily &mdash; and any
           month you skip shows as flat rather than unknown. Crypto has deltas through July but the
           brokerage's June delta was entered on 31 July, which is why June looks quiet.</li>
-        <li><b>One delta row is mislabelled.</b> The 30 June brokerage row reads
-          <i>Portfolio Delta - June 2026 <b>(+)</b></i> but was entered as &euro;40.68 leaving the
-          account, i.e. a loss. It is counted by its direction, not its label.</li>
-        <li><b>Revolut goes slightly negative</b> in January (&minus;&euro;19.36) and May
-          (&minus;&euro;15.48). That almost certainly means a top-up is missing or mis-dated in
-          Notion rather than a real overdraft &mdash; worth a look.</li>
+        <li><b>The 30 June brokerage label has been corrected in Notion</b> (it read
+          <i>(+)</i> on a &euro;40.68 outflow; it is now <i>(&minus;)</i>). No figure here changes,
+          because delta rows are counted by the direction they were entered, never by their label.</li>
+        <li><b>Revolut dips slightly negative</b> in January (&minus;&euro;19.36) and May
+          (&minus;&euro;15.48) &mdash; confirmed as points where the account genuinely needed a
+          top-up, so the dips are real and are drawn as they happened.</li>
         <li><b>Two transfers are double-tagged.</b> <i>Investimentos - Trading 212</i> (29 Jun,
           &euro;100 in) and <i>Reembolso - Trading 212</i> (6 Jul, &euro;100 out) each name both
           Trading 212 and Robinhood as the account. Both are counted here against Trading 212, which
@@ -447,7 +471,7 @@
 </div>
 
 <script>
-const DATA = {"inv": {"capital": [13735.33, 14076.33, 14076.33, 15461.33, 17769.86, 21194.43, 24324.95, 26534.53, 25718.31], "value": [13735.33, 14265.86, 14290.23, 15432.42, 18671.41, 22749.39, 25811.35, 27998.36, 27184.41], "returns": [0.0, 189.53, 213.9, -28.91, 901.55, 1554.96, 1486.4, 1463.83, 1466.1], "start_capital": 13735.33, "income_to_cash_total": 24.4, "irr_annual": 0.15073502722430643, "irr_monthly": 0.011768787952504245, "accounts": [{"name": "Trade Republic Inv. - Brokerage", "bank": "Trade Republic", "capital": 19421.09, "returns": 1509.73, "value": 20930.82}, {"name": "Certificados de Aforro CTT - Série F", "bank": "CTT/Estado", "capital": 3661.54, "returns": 43.77, "value": 3705.31}, {"name": "Trade Republic Inv. - Crypto", "bank": "Trade Republic", "capital": 1050.95, "returns": -95.57, "value": 955.38}, {"name": "Robinhood", "bank": "Robinhood", "capital": 550.0, "returns": 0.0, "value": 550.0}, {"name": "Certificados de Aforro CTT - Série E", "bank": "CTT/Estado", "capital": 534.73, "returns": 6.81, "value": 541.54}, {"name": "Revolut - Wealth Build", "bank": "Revolut", "capital": 440.0, "returns": 0.54, "value": 440.54}, {"name": "Revolut - Fundo Emergência", "bank": "Revolut", "capital": 50.0, "returns": 0.82, "value": 50.82}, {"name": "Trading 212 Account", "bank": "Trading 212", "capital": 10.0, "returns": 0.0, "value": 10.0}]}, "labels": ["Start", "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug"], "full": ["1 January 2026", "end of January 2026", "end of February 2026", "end of March 2026", "end of April 2026", "end of May 2026", "end of June 2026", "end of July 2026", "5 August 2026"], "series": [{"name": "Trade Republic Inv. - Brokerage", "points": [7687.87, 8218.4, 8218.5, 9360.69, 11831.36, 15908.03, 18153.08, 20062.59, 20930.82]}, {"name": "Conta Corrente", "points": [344.63, 1139.74, 6619.58, 6007.09, 8013.41, 5794.29, 1622.75, 896.3, 100.0]}, {"name": "Certificados de Aforro CTT - Série F", "points": [5512.73, 5512.73, 5533.63, 5533.63, 5535.2, 5556.5, 5556.5, 5556.5, 3705.31]}, {"name": "Conta Poupança", "points": [2600.31, 1005.31, 0.07, 5.07, 10.07, 15.07, 20.07, 5.07, 6.26]}, {"name": "Trade Republic Account", "points": [340.94, 0.7, 304.02, 1096.79, 870.83, 930.56, 993.89, 119.63, 323.13]}, {"name": "Revolut", "points": [0.0, -19.36, 0.58, 976.66, 361.01, -15.48, 36.76, 11.36, 69.34]}, {"name": "Trade Republic Inv. - Crypto", "points": [0.0, 0.0, 0.0, 0.0, 766.75, 743.32, 805.23, 855.37, 955.38]}, {"name": "Other (8 accounts)", "points": [534.73, 534.73, 548.1, 606.24, 599.35, 542.76, 1297.76, 1525.12, 1594.12], "members": ["Cash Withdrawls", "Certificados de Aforro CTT - Série E", "Conta Bolsas", "PayPal", "Revolut - Fundo Emergência", "Revolut - Wealth Build", "Robinhood", "Trading 212 Account"]}], "panels": [{"name": "Trade Republic Inv. - Brokerage", "type": "Investment", "bank": "Trade Republic", "points": [7687.87, 8218.4, 8218.5, 9360.69, 11831.36, 15908.03, 18153.08, 20062.59, 20930.82]}, {"name": "Conta Corrente", "type": "Account", "bank": "Santander", "points": [344.63, 1139.74, 6619.58, 6007.09, 8013.41, 5794.29, 1622.75, 896.3, 100.0]}, {"name": "Certificados de Aforro CTT - Série F", "type": "Investment", "bank": "CTT/Estado", "points": [5512.73, 5512.73, 5533.63, 5533.63, 5535.2, 5556.5, 5556.5, 5556.5, 3705.31]}, {"name": "Conta Poupança", "type": "Account", "bank": "Santander", "points": [2600.31, 1005.31, 0.07, 5.07, 10.07, 15.07, 20.07, 5.07, 6.26]}, {"name": "Trade Republic Account", "type": "Account", "bank": "Trade Republic", "points": [340.94, 0.7, 304.02, 1096.79, 870.83, 930.56, 993.89, 119.63, 323.13]}, {"name": "Revolut", "type": "Account", "bank": "Revolut", "points": [0.0, -19.36, 0.58, 976.66, 361.01, -15.48, 36.76, 11.36, 69.34]}, {"name": "Trade Republic Inv. - Crypto", "type": "Investment", "bank": "Trade Republic", "points": [0.0, 0.0, 0.0, 0.0, 766.75, 743.32, 805.23, 855.37, 955.38]}, {"name": "Robinhood", "type": "Investment", "bank": "Robinhood", "points": [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 50.0, 550.0]}, {"name": "Certificados de Aforro CTT - Série E", "type": "Investment", "bank": "CTT/Estado", "points": [534.73, 534.73, 538.1, 538.1, 538.1, 541.54, 541.54, 541.54, 541.54]}, {"name": "Revolut - Wealth Build", "type": "Investment", "bank": "Revolut", "points": [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 250.0, 475.54, 440.54]}, {"name": "Revolut - Fundo Emergência", "type": "Investment", "bank": "Revolut", "points": [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 405.0, 446.82, 50.82]}, {"name": "Trading 212 Account", "type": "Investment", "bank": "Trading 212", "points": [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 100.0, 10.0, 10.0]}, {"name": "PayPal", "type": "Account", "bank": "PayPal", "points": [0.0, 0.0, 0.0, 58.04, 58.04, 0.0, 0.0, 0.0, 0.0]}, {"name": "Cash Withdrawls", "type": "Cash", "bank": "—", "points": [0.0, 0.0, 10.0, 10.1, 3.21, 1.22, 1.22, 1.22, 1.22]}, {"name": "Conta Bolsas", "type": "Account", "bank": "Santander", "points": [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]}], "totals": [17021.21, 16392.25, 21224.48, 23586.17, 27987.98, 29475.05, 28486.04, 29031.94, 27684.36], "table": [{"name": "Trade Republic Inv. - Brokerage", "type": "Investment", "bank": "Trade Republic", "points": [7687.87, 8218.4, 8218.5, 9360.69, 11831.36, 15908.03, 18153.08, 20062.59, 20930.82]}, {"name": "Certificados de Aforro CTT - Série F", "type": "Investment", "bank": "CTT/Estado", "points": [5512.73, 5512.73, 5533.63, 5533.63, 5535.2, 5556.5, 5556.5, 5556.5, 3705.31]}, {"name": "Trade Republic Inv. - Crypto", "type": "Investment", "bank": "Trade Republic", "points": [0.0, 0.0, 0.0, 0.0, 766.75, 743.32, 805.23, 855.37, 955.38]}, {"name": "Robinhood", "type": "Investment", "bank": "Robinhood", "points": [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 50.0, 550.0]}, {"name": "Certificados de Aforro CTT - Série E", "type": "Investment", "bank": "CTT/Estado", "points": [534.73, 534.73, 538.1, 538.1, 538.1, 541.54, 541.54, 541.54, 541.54]}, {"name": "Revolut - Wealth Build", "type": "Investment", "bank": "Revolut", "points": [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 250.0, 475.54, 440.54]}, {"name": "Trade Republic Account", "type": "Account", "bank": "Trade Republic", "points": [340.94, 0.7, 304.02, 1096.79, 870.83, 930.56, 993.89, 119.63, 323.13]}, {"name": "Conta Corrente", "type": "Account", "bank": "Santander", "points": [344.63, 1139.74, 6619.58, 6007.09, 8013.41, 5794.29, 1622.75, 896.3, 100.0]}, {"name": "Revolut", "type": "Account", "bank": "Revolut", "points": [0.0, -19.36, 0.58, 976.66, 361.01, -15.48, 36.76, 11.36, 69.34]}, {"name": "Revolut - Fundo Emergência", "type": "Investment", "bank": "Revolut", "points": [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 405.0, 446.82, 50.82]}, {"name": "Trading 212 Account", "type": "Investment", "bank": "Trading 212", "points": [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 100.0, 10.0, 10.0]}, {"name": "Conta Poupança", "type": "Account", "bank": "Santander", "points": [2600.31, 1005.31, 0.07, 5.07, 10.07, 15.07, 20.07, 5.07, 6.26]}, {"name": "Cash Withdrawls", "type": "Cash", "bank": "—", "points": [0.0, 0.0, 10.0, 10.1, 3.21, 1.22, 1.22, 1.22, 1.22]}, {"name": "Conta Bolsas", "type": "Account", "bank": "Santander", "points": [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]}, {"name": "PayPal", "type": "Account", "bank": "PayPal", "points": [0.0, 0.0, 0.0, 58.04, 58.04, 0.0, 0.0, 0.0, 0.0]}]};
+const DATA = {"inv": {"capital": [13735.33, 14076.33, 14076.33, 15461.33, 17769.86, 21194.43, 24324.95, 26534.53, 25718.31], "value": [13735.33, 14265.86, 14290.23, 15432.42, 18671.41, 22749.39, 25811.35, 27998.36, 27184.41], "returns": [0.0, 189.53, 213.9, -28.91, 901.55, 1554.96, 1486.4, 1463.83, 1466.1], "start_capital": 13735.33, "monthly_delta": [null, 189.53, 24.37, -242.81, 930.46, 653.41, -68.56, -22.57, 2.27], "income_to_cash_total": 24.4, "irr_annual": 0.15073502722430643, "irr_monthly": 0.011768787952504245, "accounts": [{"name": "Trade Republic Inv. - Brokerage", "bank": "Trade Republic", "capital": 19421.09, "returns": 1509.73, "value": 20930.82}, {"name": "Certificados de Aforro CTT - Série F", "bank": "CTT/Estado", "capital": 3661.54, "returns": 43.77, "value": 3705.31}, {"name": "Trade Republic Inv. - Crypto", "bank": "Trade Republic", "capital": 1050.95, "returns": -95.57, "value": 955.38}, {"name": "Robinhood", "bank": "Robinhood", "capital": 550.0, "returns": 0.0, "value": 550.0}, {"name": "Certificados de Aforro CTT - Série E", "bank": "CTT/Estado", "capital": 534.73, "returns": 6.81, "value": 541.54}, {"name": "Revolut - Wealth Build", "bank": "Revolut", "capital": 440.0, "returns": 0.54, "value": 440.54}, {"name": "Revolut - Fundo Emergência", "bank": "Revolut", "capital": 50.0, "returns": 0.82, "value": 50.82}, {"name": "Trading 212 Account", "bank": "Trading 212", "capital": 10.0, "returns": 0.0, "value": 10.0}]}, "labels": ["Start", "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug"], "full": ["1 January 2026", "end of January 2026", "end of February 2026", "end of March 2026", "end of April 2026", "end of May 2026", "end of June 2026", "end of July 2026", "5 August 2026"], "series": [{"name": "Trade Republic Inv. - Brokerage", "points": [7687.87, 8218.4, 8218.5, 9360.69, 11831.36, 15908.03, 18153.08, 20062.59, 20930.82]}, {"name": "Conta Corrente", "points": [344.63, 1139.74, 6619.58, 6007.09, 8013.41, 5794.29, 1622.75, 896.3, 100.0]}, {"name": "Certificados de Aforro CTT - Série F", "points": [5512.73, 5512.73, 5533.63, 5533.63, 5535.2, 5556.5, 5556.5, 5556.5, 3705.31]}, {"name": "Conta Poupança", "points": [2600.31, 1005.31, 0.07, 5.07, 10.07, 15.07, 20.07, 5.07, 6.26]}, {"name": "Trade Republic Account", "points": [340.94, 0.7, 304.02, 1096.79, 870.83, 930.56, 993.89, 119.63, 323.13]}, {"name": "Revolut", "points": [0.0, -19.36, 0.58, 976.66, 361.01, -15.48, 36.76, 11.36, 69.34]}, {"name": "Trade Republic Inv. - Crypto", "points": [0.0, 0.0, 0.0, 0.0, 766.75, 743.32, 805.23, 855.37, 955.38]}, {"name": "Other (8 accounts)", "points": [534.73, 534.73, 548.1, 606.24, 599.35, 542.76, 1297.76, 1525.12, 1594.12], "members": ["Cash Withdrawls", "Certificados de Aforro CTT - Série E", "Conta Bolsas", "PayPal", "Revolut - Fundo Emergência", "Revolut - Wealth Build", "Robinhood", "Trading 212 Account"]}], "panels": [{"name": "Trade Republic Inv. - Brokerage", "type": "Investment", "bank": "Trade Republic", "points": [7687.87, 8218.4, 8218.5, 9360.69, 11831.36, 15908.03, 18153.08, 20062.59, 20930.82]}, {"name": "Conta Corrente", "type": "Account", "bank": "Santander", "points": [344.63, 1139.74, 6619.58, 6007.09, 8013.41, 5794.29, 1622.75, 896.3, 100.0]}, {"name": "Certificados de Aforro CTT - Série F", "type": "Investment", "bank": "CTT/Estado", "points": [5512.73, 5512.73, 5533.63, 5533.63, 5535.2, 5556.5, 5556.5, 5556.5, 3705.31]}, {"name": "Conta Poupança", "type": "Account", "bank": "Santander", "points": [2600.31, 1005.31, 0.07, 5.07, 10.07, 15.07, 20.07, 5.07, 6.26]}, {"name": "Trade Republic Account", "type": "Account", "bank": "Trade Republic", "points": [340.94, 0.7, 304.02, 1096.79, 870.83, 930.56, 993.89, 119.63, 323.13]}, {"name": "Revolut", "type": "Account", "bank": "Revolut", "points": [0.0, -19.36, 0.58, 976.66, 361.01, -15.48, 36.76, 11.36, 69.34]}, {"name": "Trade Republic Inv. - Crypto", "type": "Investment", "bank": "Trade Republic", "points": [0.0, 0.0, 0.0, 0.0, 766.75, 743.32, 805.23, 855.37, 955.38]}, {"name": "Robinhood", "type": "Investment", "bank": "Robinhood", "points": [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 50.0, 550.0]}, {"name": "Certificados de Aforro CTT - Série E", "type": "Investment", "bank": "CTT/Estado", "points": [534.73, 534.73, 538.1, 538.1, 538.1, 541.54, 541.54, 541.54, 541.54]}, {"name": "Revolut - Wealth Build", "type": "Investment", "bank": "Revolut", "points": [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 250.0, 475.54, 440.54]}, {"name": "Revolut - Fundo Emergência", "type": "Investment", "bank": "Revolut", "points": [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 405.0, 446.82, 50.82]}, {"name": "Trading 212 Account", "type": "Investment", "bank": "Trading 212", "points": [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 100.0, 10.0, 10.0]}, {"name": "PayPal", "type": "Account", "bank": "PayPal", "points": [0.0, 0.0, 0.0, 58.04, 58.04, 0.0, 0.0, 0.0, 0.0]}, {"name": "Cash Withdrawls", "type": "Cash", "bank": "—", "points": [0.0, 0.0, 10.0, 10.1, 3.21, 1.22, 1.22, 1.22, 1.22]}, {"name": "Conta Bolsas", "type": "Account", "bank": "Santander", "points": [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]}], "totals": [17021.21, 16392.25, 21224.48, 23586.17, 27987.98, 29475.05, 28486.04, 29031.94, 27684.36], "table": [{"name": "Trade Republic Inv. - Brokerage", "type": "Investment", "bank": "Trade Republic", "points": [7687.87, 8218.4, 8218.5, 9360.69, 11831.36, 15908.03, 18153.08, 20062.59, 20930.82]}, {"name": "Certificados de Aforro CTT - Série F", "type": "Investment", "bank": "CTT/Estado", "points": [5512.73, 5512.73, 5533.63, 5533.63, 5535.2, 5556.5, 5556.5, 5556.5, 3705.31]}, {"name": "Trade Republic Inv. - Crypto", "type": "Investment", "bank": "Trade Republic", "points": [0.0, 0.0, 0.0, 0.0, 766.75, 743.32, 805.23, 855.37, 955.38]}, {"name": "Robinhood", "type": "Investment", "bank": "Robinhood", "points": [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 50.0, 550.0]}, {"name": "Certificados de Aforro CTT - Série E", "type": "Investment", "bank": "CTT/Estado", "points": [534.73, 534.73, 538.1, 538.1, 538.1, 541.54, 541.54, 541.54, 541.54]}, {"name": "Revolut - Wealth Build", "type": "Investment", "bank": "Revolut", "points": [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 250.0, 475.54, 440.54]}, {"name": "Trade Republic Account", "type": "Account", "bank": "Trade Republic", "points": [340.94, 0.7, 304.02, 1096.79, 870.83, 930.56, 993.89, 119.63, 323.13]}, {"name": "Conta Corrente", "type": "Account", "bank": "Santander", "points": [344.63, 1139.74, 6619.58, 6007.09, 8013.41, 5794.29, 1622.75, 896.3, 100.0]}, {"name": "Revolut", "type": "Account", "bank": "Revolut", "points": [0.0, -19.36, 0.58, 976.66, 361.01, -15.48, 36.76, 11.36, 69.34]}, {"name": "Revolut - Fundo Emergência", "type": "Investment", "bank": "Revolut", "points": [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 405.0, 446.82, 50.82]}, {"name": "Trading 212 Account", "type": "Investment", "bank": "Trading 212", "points": [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 100.0, 10.0, 10.0]}, {"name": "Conta Poupança", "type": "Account", "bank": "Santander", "points": [2600.31, 1005.31, 0.07, 5.07, 10.07, 15.07, 20.07, 5.07, 6.26]}, {"name": "Cash Withdrawls", "type": "Cash", "bank": "—", "points": [0.0, 0.0, 10.0, 10.1, 3.21, 1.22, 1.22, 1.22, 1.22]}, {"name": "Conta Bolsas", "type": "Account", "bank": "Santander", "points": [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]}, {"name": "PayPal", "type": "Account", "bank": "PayPal", "points": [0.0, 0.0, 0.0, 58.04, 58.04, 0.0, 0.0, 0.0, 0.0]}]};
 const SLOTS = ["--s1","--s2","--s3","--s4","--s5","--s6","--s7","--s8"];
 const css = v => getComputedStyle(document.documentElement).getPropertyValue(v).trim();
 const SVGNS = "http://www.w3.org/2000/svg";
@@ -476,9 +500,13 @@ function scale(min, max, target) {
   const ticks = [];
   for (let v = 0; v <= hi + 1e-6; v += step) ticks.push(v);
   if (min < -1e-6) {
-    const sub = step / 5;
-    lo = -Math.ceil(-min / sub) * sub;
-    ticks.unshift(lo);
+    // Size the negative arm from the dip itself, not from the positive step: a
+    // -19 blip under a 21,000 stack must not buy a whole -5,000 band.
+    const m = Math.abs(min);
+    const mg = Math.pow(10, Math.floor(Math.log10(m)));
+    lo = -([1, 2, 2.5, 5, 10].map(x => x * mg).find(s => s >= m) || 10 * mg);
+    // Only label it when it is far enough from zero to be a distinct gridline.
+    if (Math.abs(lo) > (hi - lo) * 0.02) ticks.unshift(lo);
   }
   return { lo, hi, ticks };
 }
@@ -501,7 +529,123 @@ const svg = document.getElementById("main");
 const tip = document.getElementById("mainTip");
 let geom = null;
 
-function drawMain() {
+/* Column with the outer end rounded and the baseline end square. */
+function colPath(x, w, yFrom, yTo, r) {
+  const up = yTo < yFrom;                       // grows upward from the baseline
+  const h = Math.abs(yTo - yFrom);
+  const rr = Math.min(r, h, w / 2);
+  const top = Math.min(yFrom, yTo), bot = Math.max(yFrom, yTo);
+  return up
+    ? `M${x} ${bot} L${x} ${top + rr} Q${x} ${top} ${x + rr} ${top} L${x + w - rr} ${top} `
+      + `Q${x + w} ${top} ${x + w} ${top + rr} L${x + w} ${bot} Z`
+    : `M${x} ${top} L${x} ${bot - rr} Q${x} ${bot} ${x + rr} ${bot} L${x + w - rr} ${bot} `
+      + `Q${x + w} ${bot} ${x + w} ${bot - rr} L${x + w} ${top} Z`;
+}
+
+const BARW = 24;      // mark spec: columns never fill the band
+const GAP = 2;        // surface gap between touching segments
+
+function drawBars() {
+  const w = Math.max(700, host.clientWidth || 700);
+  const h = Math.max(400, Math.min(560, Math.round(w * 0.52)));
+  const pad = { t: 16, r: 22, b: 34, l: 62 };
+  svg.setAttribute("width", w);
+  svg.setAttribute("height", h);
+  svg.setAttribute("viewBox", "0 0 " + w + " " + h);
+  while (svg.firstChild) svg.removeChild(svg.firstChild);
+
+  const vis = DATA.series.map((s, i) => ({ s, i })).filter(o => !hidden.has(o.i));
+  const N = DATA.labels.length;
+  const X = i => pad.l + ((i + 0.5) * (w - pad.l - pad.r)) / N;
+
+  /* Two stacked panels sharing the x-axis: balances on top, the month's
+     portfolio return underneath, each with its own baseline and scale. */
+  const strip = 96, split = 30;
+  const topH = h - pad.b - strip - split;
+  const stackTop = [], stackBot = [];
+  for (let i = 0; i < N; i++) {
+    let up = 0, dn = 0;
+    vis.forEach(o => { const v = o.s.points[i]; if (v >= 0) up += v; else dn += v; });
+    stackTop.push(up); stackBot.push(dn);
+  }
+  const sc = scale(Math.min(0, ...stackBot), Math.max(...stackTop), 5);
+  const Y = v => pad.t + (1 - (v - sc.lo) / (sc.hi - sc.lo)) * (topH - pad.t);
+
+  sc.ticks.forEach(v => {
+    const y = Y(v);
+    el("line", { x1: pad.l, x2: w - pad.r, y1: y, y2: y,
+      stroke: Math.abs(v) < 1e-6 ? css("--axis") : css("--grid"), "stroke-width": 1 }, svg);
+    const t = el("text", { x: pad.l - 10, y: y + 4, "text-anchor": "end", fill: css("--muted"),
+      "font-size": 11, "font-family": "var(--mono)" }, svg);
+    t.textContent = tick(v);
+  });
+
+  for (let i = 0; i < N; i++) {
+    const x = X(i) - BARW / 2;
+    /* Fixed slot order, so a segment keeps its colour and its neighbours
+       regardless of which series are switched off. Positives stack up from the
+       baseline, negatives down, and only the outermost segment of each arm is
+       rounded — interior ends stay square. */
+    const segs = [];
+    let accUp = 0, accDn = 0;
+    vis.forEach(o => {
+      const v = o.s.points[i];
+      if (Math.abs(v) < 0.005) return;
+      const from = v >= 0 ? accUp : accDn;
+      if (v >= 0) accUp += v; else accDn += v;
+      segs.push({ slot: SLOTS[o.i], from, to: from + v, pos: v >= 0 });
+    });
+    const lastPos = segs.reduce((a, s, k) => (s.pos ? k : a), -1);
+    const lastNeg = segs.reduce((a, s, k) => (s.pos ? a : k), -1);
+    segs.forEach((s, k) => {
+      let y0 = Y(s.from), y1 = Y(s.to);
+      const span = Math.abs(y1 - y0);
+      // Pull the segment back by the surface gap, but never below a hairline.
+      if (span > GAP + 1) y0 += (y1 < y0 ? -GAP : GAP);
+      else if (span < 0.8) y1 = y0 + (y1 < y0 ? -0.8 : 0.8);
+      el("path", { d: colPath(x, BARW, y0, y1, (k === lastPos || k === lastNeg) ? 4 : 0),
+        fill: css(s.slot), stroke: "none" }, svg);
+    });
+  }
+
+  /* Monthly portfolio return: polarity, so the diverging pair, not series colours. */
+  const dRaw = DATA.inv.monthly_delta;
+  const dVals = dRaw.filter(v => v != null);
+  const dMax = Math.max(1, ...dVals.map(Math.abs));
+  const dBase = h - pad.b - strip / 2;
+  const dY = v => dBase - (v / dMax) * (strip / 2 - 10);
+
+  el("line", { x1: pad.l, x2: w - pad.r, y1: dBase, y2: dBase,
+    stroke: css("--axis"), "stroke-width": 1 }, svg);
+  const lab = el("text", { x: pad.l, y: h - pad.b - strip + 2, fill: css("--muted"),
+    "font-size": 10.5, "font-family": "var(--mono)", "letter-spacing": "0.08em" }, svg);
+  lab.textContent = "MONTHLY PORTFOLIO RETURN";
+  [dMax, -dMax].forEach(v => {
+    const t = el("text", { x: pad.l - 10, y: dY(v) + 4, "text-anchor": "end",
+      fill: css("--muted"), "font-size": 10, "font-family": "var(--mono)" }, svg);
+    t.textContent = (v > 0 ? "+" : "\u2212") + tick(Math.abs(Math.round(v)));
+  });
+  dRaw.forEach((v, i) => {
+    if (v == null || Math.abs(v) < 0.005) return;
+    const x = X(i) - BARW / 2;
+    let y = dY(v);
+    if (Math.abs(y - dBase) < 0.8) y = dBase + (v > 0 ? -0.8 : 0.8);
+    el("path", { d: colPath(x, BARW, dBase, y, 4),
+      fill: css(v >= 0 ? "--s1" : "--neg"), stroke: "none" }, svg);
+  });
+
+  DATA.labels.forEach((lb, i) => {
+    const t = el("text", { x: X(i), y: h - pad.b + 20, "text-anchor": "middle",
+      fill: css("--muted"), "font-size": 11.5, "font-family": "var(--mono)" }, svg);
+    t.textContent = lb;
+  });
+
+  const band = el("rect", { y: pad.t, height: h - pad.b - pad.t, width: BARW + 10,
+    fill: css("--ink"), opacity: 0, rx: 4 }, svg);
+  geom = { kind: "bars", w, h, pad, X, N, band };
+}
+
+function drawLines() {
   const w = Math.max(700, host.clientWidth || 700);
   const h = Math.max(330, Math.min(460, Math.round(w * 0.42)));
   const pad = { t: 16, r: 74, b: 34, l: 62 };
@@ -558,46 +702,95 @@ function drawMain() {
   const hoverDots = vis.map(o => el("circle", { r: 5, fill: css(SLOTS[o.i]),
     stroke: css("--surface"), "stroke-width": 2, opacity: 0 }, svg));
 
-  geom = { w, h, pad, X, Y, vis, N, crosshair, hoverDots };
+  geom = { kind: "lines", w, h, pad, X, Y, vis, N, crosshair, hoverDots };
 }
+
+const SUBS = {
+  lines: "The seven accounts that carry real weight, plus the remaining eight combined. "
+       + "Hover for a month; click a name to hide or show it \u2014 the scale follows what is on screen.",
+  bars: "Each month's balance stacked by account, so the column height is your net worth and each "
+      + "band is one account's share of it. The strip underneath is the return your portfolio earned "
+      + "in that month alone.",
+};
+
+let view = "lines";
+function drawMain() { document.getElementById("mainSub").textContent = SUBS[view];
+  return view === "bars" ? drawBars() : drawLines(); }
+
+document.querySelectorAll(".seg-b").forEach(b => {
+  b.addEventListener("click", () => {
+    view = b.dataset.view;
+    document.querySelectorAll(".seg-b").forEach(o =>
+      o.setAttribute("aria-pressed", String(o.dataset.view === view)));
+    hideTip();
+    drawMain();
+  });
+});
 
 function moveTip(ev) {
   if (!geom) return;
   const r = svg.getBoundingClientRect();
   const x = ev.clientX - r.left;
-  const { pad, X, Y, vis, N, w, h } = geom;
+  const { pad, X, N, w, h } = geom;
   let idx = 0, best = Infinity;
   for (let i = 0; i < N; i++) { const dd = Math.abs(X(i) - x); if (dd < best) { best = dd; idx = i; } }
 
-  geom.crosshair.setAttribute("x1", X(idx));
-  geom.crosshair.setAttribute("x2", X(idx));
-  geom.crosshair.setAttribute("opacity", 1);
+  const visible = DATA.series.map((s, i) => ({ s, i })).filter(o => !hidden.has(o.i));
+  if (geom.kind === "bars") {
+    geom.band.setAttribute("x", X(idx) - (BARW + 10) / 2);
+    geom.band.setAttribute("opacity", 0.045);
+  } else {
+    geom.crosshair.setAttribute("x1", X(idx));
+    geom.crosshair.setAttribute("x2", X(idx));
+    geom.crosshair.setAttribute("opacity", 1);
+    visible.forEach((o, k) => {
+      geom.hoverDots[k].setAttribute("cx", X(idx));
+      geom.hoverDots[k].setAttribute("cy", geom.Y(o.s.points[idx]));
+      geom.hoverDots[k].setAttribute("opacity", 1);
+    });
+  }
 
-  const rows = vis.map((o, k) => {
-    const v = o.s.points[idx];
-    geom.hoverDots[k].setAttribute("cx", X(idx));
-    geom.hoverDots[k].setAttribute("cy", Y(v));
-    geom.hoverDots[k].setAttribute("opacity", 1);
-    return { name: o.s.name, v, col: css(SLOTS[o.i]) };
-  }).sort((a, b) => b.v - a.v);
+  const rows = visible
+    .map(o => ({ name: o.s.name, v: o.s.points[idx], col: css(SLOTS[o.i]) }))
+    .sort((a, b) => b.v - a.v);
+
+  let extra = "";
+  if (geom.kind === "bars") {
+    const total = rows.reduce((a, r2) => a + r2.v, 0);
+    const dlt = DATA.inv.monthly_delta[idx];
+    extra = '<div class="tip-row tip-sum"><span class="key" style="background:var(--axis)"></span>' +
+      '<span class="nm">Net worth</span><span class="vv">' + eur(total) + "</span></div>" +
+      (dlt == null ? "" :
+        '<div class="tip-row"><span class="key" style="background:var(' +
+        (dlt >= 0 ? "--s1" : "--neg") + ')"></span><span class="nm">Portfolio return</span>' +
+        '<span class="vv" style="color:var(' + (dlt >= 0 ? "--pos" : "--neg") + ')">' +
+        (dlt >= 0 ? "+" : "\u2212") + eur(Math.abs(dlt)) + "</span></div>");
+  }
 
   tip.innerHTML = "<h4>" + DATA.full[idx] + "</h4>" + rows.map(r2 =>
     '<div class="tip-row"><span class="key" style="background:' + r2.col + '"></span>' +
-    '<span class="nm">' + r2.name + '</span><span class="vv">' + eur(r2.v) + "</span></div>").join("");
+    '<span class="nm">' + r2.name + '</span><span class="vv">' + eur(r2.v) + "</span></div>")
+    .join("") + extra;
   tip.classList.add("on");
   /* Flip before the tooltip reaches the end-label gutter, so it never sits on top
-     of the labels it duplicates. */
+     of the labels it duplicates. In bar view it is wide enough to bury several
+     columns, so it takes whichever side has more room. */
   const tw = tip.offsetWidth;
   let left = X(idx) + 16;
-  if (left + tw > w - pad.r) left = X(idx) - tw - 16;
+  if (geom.kind === "bars" ? idx >= N / 2 : left + tw > w - pad.r) left = X(idx) - tw - 16;
+  if (left < 4) left = Math.min(X(idx) + 16, w - tw - 4);
   tip.style.left = Math.max(4, left) + "px";
   tip.style.top = Math.max(4, Math.min(h - tip.offsetHeight - 4, pad.t + 4)) + "px";
 }
 
 function hideTip() {
   tip.classList.remove("on");
-  if (geom) { geom.crosshair.setAttribute("opacity", 0);
-    geom.hoverDots.forEach(d2 => d2.setAttribute("opacity", 0)); }
+  if (!geom) return;
+  if (geom.kind === "bars") geom.band.setAttribute("opacity", 0);
+  else {
+    geom.crosshair.setAttribute("opacity", 0);
+    geom.hoverDots.forEach(d2 => d2.setAttribute("opacity", 0));
+  }
 }
 svg.addEventListener("pointermove", moveTip);
 svg.addEventListener("pointerleave", hideTip);
