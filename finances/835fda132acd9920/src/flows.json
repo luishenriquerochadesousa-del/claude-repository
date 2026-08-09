@@ -1,0 +1,674 @@
+{
+ "months": [
+  "2026-01",
+  "2026-02",
+  "2026-03",
+  "2026-04",
+  "2026-05",
+  "2026-06",
+  "2026-07",
+  "2026-08"
+ ],
+ "accounts": [
+  [
+   "Conta Bolsas",
+   "Account",
+   "Santander",
+   0.0
+  ],
+  [
+   "Conta Corrente",
+   "Account",
+   "Santander",
+   344.63
+  ],
+  [
+   "Conta Poupan\u00e7a",
+   "Account",
+   "Santander",
+   2600.31
+  ],
+  [
+   "PayPal",
+   "Account",
+   "PayPal",
+   0.0
+  ],
+  [
+   "Revolut",
+   "Account",
+   "Revolut",
+   0.0
+  ],
+  [
+   "Trade Republic Account",
+   "Account",
+   "Trade Republic",
+   340.94
+  ],
+  [
+   "Cash Withdrawls",
+   "Cash",
+   "\u2014",
+   0.0
+  ],
+  [
+   "Certificados de Aforro CTT - S\u00e9rie E",
+   "Investment",
+   "CTT/Estado",
+   534.73
+  ],
+  [
+   "Certificados de Aforro CTT - S\u00e9rie F",
+   "Investment",
+   "CTT/Estado",
+   5512.73
+  ],
+  [
+   "Revolut - Fundo Emerg\u00eancia",
+   "Investment",
+   "Revolut",
+   0.0
+  ],
+  [
+   "Revolut - Wealth Build",
+   "Investment",
+   "Revolut",
+   0.0
+  ],
+  [
+   "Robinhood",
+   "Investment",
+   "Robinhood",
+   0.0
+  ],
+  [
+   "Trade Republic Inv. - Brokerage",
+   "Investment",
+   "Trade Republic",
+   7687.87
+  ],
+  [
+   "Trade Republic Inv. - Crypto",
+   "Investment",
+   "Trade Republic",
+   0.0
+  ],
+  [
+   "Trading 212 Account",
+   "Investment",
+   "Trading 212",
+   0.0
+  ]
+ ],
+ "flows": [
+  [
+   "Conta Bolsas",
+   "2026-03",
+   0.0,
+   0.0,
+   4.0,
+   4.0
+  ],
+  [
+   "Conta Corrente",
+   "2026-01",
+   330.0,
+   1863.43,
+   4114.7,
+   1786.16
+  ],
+  [
+   "Conta Corrente",
+   "2026-02",
+   6928.7,
+   2955.16,
+   2821.54,
+   1315.24
+  ],
+  [
+   "Conta Corrente",
+   "2026-03",
+   3402.11,
+   811.12,
+   4.0,
+   3207.48
+  ],
+  [
+   "Conta Corrente",
+   "2026-04",
+   5012.96,
+   552.79,
+   0.45,
+   2454.3
+  ],
+  [
+   "Conta Corrente",
+   "2026-05",
+   3499.29,
+   970.97,
+   28.46,
+   4775.9
+  ],
+  [
+   "Conta Corrente",
+   "2026-06",
+   3499.29,
+   940.35,
+   1011.87,
+   7742.35
+  ],
+  [
+   "Conta Corrente",
+   "2026-07",
+   2446.4,
+   954.4,
+   252.26,
+   2470.71
+  ],
+  [
+   "Conta Corrente",
+   "2026-08",
+   0.0,
+   895.0,
+   1850.0,
+   1751.3
+  ],
+  [
+   "Conta Poupan\u00e7a",
+   "2026-01",
+   0.0,
+   0.0,
+   5.0,
+   1600.0
+  ],
+  [
+   "Conta Poupan\u00e7a",
+   "2026-02",
+   0.0,
+   0.0,
+   5.0,
+   1010.24
+  ],
+  [
+   "Conta Poupan\u00e7a",
+   "2026-03",
+   0.0,
+   0.0,
+   5.0,
+   0.0
+  ],
+  [
+   "Conta Poupan\u00e7a",
+   "2026-04",
+   0.0,
+   0.0,
+   5.0,
+   0.0
+  ],
+  [
+   "Conta Poupan\u00e7a",
+   "2026-05",
+   0.0,
+   0.0,
+   5.0,
+   0.0
+  ],
+  [
+   "Conta Poupan\u00e7a",
+   "2026-06",
+   0.0,
+   0.0,
+   5.0,
+   0.0
+  ],
+  [
+   "Conta Poupan\u00e7a",
+   "2026-07",
+   0.0,
+   0.0,
+   5.0,
+   20.0
+  ],
+  [
+   "Conta Poupan\u00e7a",
+   "2026-08",
+   0.0,
+   0.0,
+   1851.19,
+   1850.0
+  ],
+  [
+   "PayPal",
+   "2026-01",
+   0.0,
+   0.0,
+   5.0,
+   5.0
+  ],
+  [
+   "PayPal",
+   "2026-03",
+   0.0,
+   0.0,
+   99.03,
+   40.99
+  ],
+  [
+   "PayPal",
+   "2026-05",
+   0.0,
+   0.0,
+   17.76,
+   75.8
+  ],
+  [
+   "PayPal",
+   "2026-06",
+   0.0,
+   0.0,
+   23.46,
+   23.46
+  ],
+  [
+   "PayPal",
+   "2026-07",
+   0.0,
+   0.0,
+   42.5,
+   42.5
+  ],
+  [
+   "Revolut",
+   "2026-01",
+   0.0,
+   1795.52,
+   1781.16,
+   5.0
+  ],
+  [
+   "Revolut",
+   "2026-02",
+   0.0,
+   987.69,
+   1007.63,
+   0.0
+  ],
+  [
+   "Revolut",
+   "2026-03",
+   0.0,
+   648.82,
+   1731.48,
+   106.58
+  ],
+  [
+   "Revolut",
+   "2026-04",
+   0.0,
+   638.08,
+   39.43,
+   17.0
+  ],
+  [
+   "Revolut",
+   "2026-05",
+   0.0,
+   586.02,
+   307.29,
+   97.76
+  ],
+  [
+   "Revolut",
+   "2026-06",
+   0.0,
+   308.23,
+   1815.0,
+   1454.53
+  ],
+  [
+   "Revolut",
+   "2026-07",
+   0.0,
+   310.9,
+   959.0,
+   673.5
+  ],
+  [
+   "Revolut",
+   "2026-08",
+   0.0,
+   102.02,
+   531.0,
+   371.0
+  ],
+  [
+   "Trade Republic Account",
+   "2026-01",
+   0.0,
+   0.0,
+   0.76,
+   341.0
+  ],
+  [
+   "Trade Republic Account",
+   "2026-02",
+   0.0,
+   0.0,
+   303.32,
+   0.0
+  ],
+  [
+   "Trade Republic Account",
+   "2026-03",
+   0.0,
+   302.75,
+   2480.52,
+   1385.0
+  ],
+  [
+   "Trade Republic Account",
+   "2026-04",
+   0.0,
+   361.93,
+   2444.5,
+   2308.53
+  ],
+  [
+   "Trade Republic Account",
+   "2026-05",
+   0.0,
+   1021.65,
+   4505.95,
+   3424.57
+  ],
+  [
+   "Trade Republic Account",
+   "2026-06",
+   0.0,
+   1599.89,
+   4038.74,
+   2375.52
+  ],
+  [
+   "Trade Republic Account",
+   "2026-07",
+   0.0,
+   227.93,
+   1337.25,
+   1983.58
+  ],
+  [
+   "Trade Republic Account",
+   "2026-08",
+   0.0,
+   357.08,
+   1526.55,
+   965.97
+  ],
+  [
+   "Cash Withdrawls",
+   "2026-02",
+   0.0,
+   0.0,
+   10.0,
+   0.0
+  ],
+  [
+   "Cash Withdrawls",
+   "2026-03",
+   0.0,
+   45.89,
+   45.99,
+   0.0
+  ],
+  [
+   "Cash Withdrawls",
+   "2026-04",
+   0.0,
+   0.0,
+   0.0,
+   6.89
+  ],
+  [
+   "Cash Withdrawls",
+   "2026-05",
+   0.0,
+   0.0,
+   0.0,
+   1.99
+  ],
+  [
+   "Certificados de Aforro CTT - S\u00e9rie E",
+   "2026-02",
+   0.0,
+   0.0,
+   3.37,
+   0.0
+  ],
+  [
+   "Certificados de Aforro CTT - S\u00e9rie E",
+   "2026-05",
+   0.0,
+   0.0,
+   3.44,
+   0.0
+  ],
+  [
+   "Certificados de Aforro CTT - S\u00e9rie F",
+   "2026-02",
+   0.0,
+   0.0,
+   20.9,
+   0.0
+  ],
+  [
+   "Certificados de Aforro CTT - S\u00e9rie F",
+   "2026-04",
+   0.0,
+   0.0,
+   1.57,
+   0.0
+  ],
+  [
+   "Certificados de Aforro CTT - S\u00e9rie F",
+   "2026-05",
+   0.0,
+   0.0,
+   21.3,
+   0.0
+  ],
+  [
+   "Certificados de Aforro CTT - S\u00e9rie F",
+   "2026-08",
+   0.0,
+   0.0,
+   0.0,
+   1851.19
+  ],
+  [
+   "Revolut - Fundo Emerg\u00eancia",
+   "2026-06",
+   0.0,
+   0.0,
+   750.0,
+   345.0
+  ],
+  [
+   "Revolut - Fundo Emerg\u00eancia",
+   "2026-07",
+   0.0,
+   0.0,
+   250.82,
+   209.0
+  ],
+  [
+   "Revolut - Fundo Emerg\u00eancia",
+   "2026-08",
+   0.0,
+   0.0,
+   0.0,
+   396.0
+  ],
+  [
+   "Revolut - Wealth Build",
+   "2026-06",
+   0.0,
+   0.0,
+   250.0,
+   0.0
+  ],
+  [
+   "Revolut - Wealth Build",
+   "2026-07",
+   0.0,
+   0.0,
+   250.54,
+   25.0
+  ],
+  [
+   "Revolut - Wealth Build",
+   "2026-08",
+   0.0,
+   0.0,
+   0.0,
+   35.0
+  ],
+  [
+   "Robinhood",
+   "2026-07",
+   0.0,
+   0.0,
+   50.0,
+   0.0
+  ],
+  [
+   "Robinhood",
+   "2026-08",
+   0.0,
+   0.0,
+   500.0,
+   0.0
+  ],
+  [
+   "Trade Republic Inv. - Brokerage",
+   "2026-01",
+   0.0,
+   0.0,
+   530.53,
+   0.0
+  ],
+  [
+   "Trade Republic Inv. - Brokerage",
+   "2026-02",
+   0.0,
+   0.0,
+   0.1,
+   0.0
+  ],
+  [
+   "Trade Republic Inv. - Brokerage",
+   "2026-03",
+   0.0,
+   0.0,
+   1385.0,
+   242.81
+  ],
+  [
+   "Trade Republic Inv. - Brokerage",
+   "2026-04",
+   0.0,
+   0.0,
+   2470.67,
+   0.0
+  ],
+  [
+   "Trade Republic Inv. - Brokerage",
+   "2026-05",
+   0.0,
+   0.0,
+   4076.67,
+   0.0
+  ],
+  [
+   "Trade Republic Inv. - Brokerage",
+   "2026-06",
+   0.0,
+   0.0,
+   2285.73,
+   40.68
+  ],
+  [
+   "Trade Republic Inv. - Brokerage",
+   "2026-07",
+   0.0,
+   0.0,
+   1909.51,
+   0.0
+  ],
+  [
+   "Trade Republic Inv. - Brokerage",
+   "2026-08",
+   0.0,
+   0.0,
+   868.23,
+   0.0
+  ],
+  [
+   "Trade Republic Inv. - Crypto",
+   "2026-04",
+   0.0,
+   0.0,
+   766.75,
+   0.0
+  ],
+  [
+   "Trade Republic Inv. - Crypto",
+   "2026-05",
+   0.0,
+   0.0,
+   0.0,
+   23.43
+  ],
+  [
+   "Trade Republic Inv. - Crypto",
+   "2026-06",
+   0.0,
+   0.0,
+   100.0,
+   38.09
+  ],
+  [
+   "Trade Republic Inv. - Crypto",
+   "2026-07",
+   0.0,
+   0.0,
+   100.0,
+   49.86
+  ],
+  [
+   "Trade Republic Inv. - Crypto",
+   "2026-08",
+   0.0,
+   0.0,
+   100.01,
+   0.0
+  ],
+  [
+   "Trading 212 Account",
+   "2026-06",
+   0.0,
+   0.0,
+   100.0,
+   0.0
+  ],
+  [
+   "Trading 212 Account",
+   "2026-07",
+   0.0,
+   0.0,
+   10.0,
+   100.0
+  ]
+ ]
+}
