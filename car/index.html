@@ -1,0 +1,1206 @@
+<title>Shift Light</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;600;700;800&family=IBM+Plex+Mono:wght@400;500;600&family=Source+Sans+3:ital,wght@0,400;0,600;1,400&display=swap">
+
+<style>
+:root{
+  color-scheme: light;
+  --bg:#F2F3F4; --surf:#FFFFFF; --surf2:#FAFBFB;
+  --ink:#15181B; --ink2:#3D454C; --muted:#5E6771; --faint:#8A939C;
+  --line:#DCE0E4; --line2:#EBEEF0;
+  --accent:#B4671D; --accent-soft:#F3E5D3;
+  --s1:#CE7A2A; --s2:#2C7FA8;
+  --good:#2E7D57; --good-bg:#E4F0EA;
+  --warn:#9A6B12; --warn-bg:#F6EBD6;
+  --bad:#B23B33;  --bad-bg:#F7E4E2;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    color-scheme: dark;
+    --bg:#0F1214; --surf:#171B1E; --surf2:#1C2125;
+    --ink:#E7EAEC; --ink2:#C2C9CF; --muted:#8B959E; --faint:#6B747C;
+    --line:#262C31; --line2:#20262A;
+    --accent:#D9903A; --accent-soft:#2A2119;
+    --s1:#C47B2E; --s2:#3F92BF;
+    --good:#4E9E76; --good-bg:#16241E;
+    --warn:#C79235; --warn-bg:#241E12;
+    --bad:#CC5F55;  --bad-bg:#251715;
+  }
+}
+:root[data-theme="dark"]{
+  color-scheme: dark;
+  --bg:#0F1214; --surf:#171B1E; --surf2:#1C2125;
+  --ink:#E7EAEC; --ink2:#C2C9CF; --muted:#8B959E; --faint:#6B747C;
+  --line:#262C31; --line2:#20262A;
+  --accent:#D9903A; --accent-soft:#2A2119;
+  --s1:#C47B2E; --s2:#3F92BF;
+  --good:#4E9E76; --good-bg:#16241E;
+  --warn:#C79235; --warn-bg:#241E12;
+  --bad:#CC5F55;  --bad-bg:#251715;
+}
+
+*{box-sizing:border-box}
+body{
+  background:var(--bg); color:var(--ink);
+  font-family:"Source Sans 3",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+  font-size:16.5px; line-height:1.62; margin:0;
+  -webkit-font-smoothing:antialiased;
+}
+.wrap{max-width:1120px; margin:0 auto; padding:0 24px 96px}
+.col{max-width:70ch}
+
+h1,h2,h3,h4{font-family:Archivo,sans-serif; text-wrap:balance; margin:0}
+h1{font-size:clamp(2.3rem,5.4vw,3.5rem); font-weight:800; letter-spacing:-.028em; line-height:1.04}
+h2{font-size:clamp(1.5rem,2.9vw,2rem); font-weight:700; letter-spacing:-.02em; line-height:1.14}
+h3{font-size:1.16rem; font-weight:700; letter-spacing:-.01em}
+h4{font-size:.94rem; font-weight:700; letter-spacing:-.005em}
+p{margin:0 0 1.05em}
+a{color:var(--accent)}
+strong{font-weight:600; color:var(--ink)}
+em{font-style:italic}
+
+.mono{font-family:"IBM Plex Mono",ui-monospace,monospace; font-variant-numeric:tabular-nums}
+.eyebrow{
+  font-family:"IBM Plex Mono",monospace; font-size:.685rem; font-weight:500;
+  letter-spacing:.15em; text-transform:uppercase; color:var(--faint);
+}
+
+/* ---------- masthead ---------- */
+header.top{padding:64px 0 40px; border-bottom:2px solid var(--ink)}
+.kicker{display:flex; gap:14px; align-items:baseline; flex-wrap:wrap; margin-bottom:22px}
+.lede{font-size:1.16rem; color:var(--ink2); max-width:62ch; margin-top:20px}
+.stamp{
+  margin-top:26px; display:flex; gap:10px 26px; flex-wrap:wrap;
+  font-family:"IBM Plex Mono",monospace; font-size:.75rem; color:var(--muted);
+}
+.stamp b{color:var(--ink); font-weight:500}
+
+/* ---------- sections ---------- */
+section{padding:56px 0 8px; border-bottom:1px solid var(--line); scroll-margin-top:20px}
+section:last-of-type{border-bottom:0}
+.shead{display:flex; gap:16px; align-items:baseline; margin-bottom:24px; flex-wrap:wrap}
+.snum{
+  font-family:"IBM Plex Mono",monospace; font-size:.78rem; font-weight:600;
+  color:var(--accent); letter-spacing:.06em; padding-top:.24em;
+}
+
+/* ---------- verdict ---------- */
+.verdict{
+  background:var(--surf); border:1px solid var(--line);
+  border-left:4px solid var(--accent); border-radius:3px;
+  padding:30px 32px; margin:36px 0 8px;
+}
+.verdict .big{
+  font-family:Archivo,sans-serif; font-size:clamp(1.35rem,2.7vw,1.75rem);
+  font-weight:700; letter-spacing:-.018em; line-height:1.28; margin:0 0 16px;
+  text-wrap:balance;
+}
+.verdict p:last-child{margin-bottom:0}
+
+.grid2{display:grid; grid-template-columns:repeat(auto-fit,minmax(260px,1fr)); gap:18px; margin:28px 0}
+.card{background:var(--surf); border:1px solid var(--line); border-radius:3px; padding:20px 22px}
+.card h4{margin-bottom:8px}
+.card p{font-size:.93rem; color:var(--ink2); margin-bottom:0}
+
+.stat{background:var(--surf); border:1px solid var(--line); border-radius:3px; padding:18px 20px}
+.stat .lab{font-family:"IBM Plex Mono",monospace; font-size:.7rem; letter-spacing:.1em;
+  text-transform:uppercase; color:var(--faint); display:block; margin-bottom:8px}
+.stat .val{font-family:Archivo,sans-serif; font-size:1.72rem; font-weight:700;
+  letter-spacing:-.024em; font-variant-numeric:tabular-nums; line-height:1}
+.stat .sub{font-size:.83rem; color:var(--muted); margin-top:7px; line-height:1.4}
+.statrow{display:grid; grid-template-columns:repeat(auto-fit,minmax(190px,1fr)); gap:14px; margin:26px 0}
+
+/* ---------- tables ---------- */
+.tw{overflow-x:auto; margin:26px 0; border:1px solid var(--line); border-radius:3px; background:var(--surf)}
+table{border-collapse:collapse; width:100%; font-size:.9rem; min-width:520px}
+th,td{padding:11px 15px; text-align:left; border-bottom:1px solid var(--line2)}
+thead th{
+  font-family:"IBM Plex Mono",monospace; font-size:.68rem; font-weight:600;
+  letter-spacing:.1em; text-transform:uppercase; color:var(--muted);
+  background:var(--surf2); border-bottom:1px solid var(--line); white-space:nowrap;
+}
+tbody tr:last-child td{border-bottom:0}
+td.n,th.n{text-align:right; font-family:"IBM Plex Mono",monospace; font-variant-numeric:tabular-nums; white-space:nowrap}
+tbody tr.hi td{background:var(--accent-soft)}
+tbody tr.hi td:first-child{font-weight:600}
+caption{caption-side:bottom; text-align:left; padding:11px 15px; font-size:.79rem;
+  color:var(--muted); border-top:1px solid var(--line2)}
+
+.pill{display:inline-block; padding:2px 9px; border-radius:2px; font-family:"IBM Plex Mono",monospace;
+  font-size:.7rem; font-weight:600; letter-spacing:.04em; white-space:nowrap}
+.p-good{background:var(--good-bg); color:var(--good)}
+.p-warn{background:var(--warn-bg); color:var(--warn)}
+.p-bad{background:var(--bad-bg); color:var(--bad)}
+
+/* ---------- calculator ---------- */
+.calc{background:var(--surf); border:1px solid var(--line); border-radius:3px; margin:28px 0; overflow:hidden}
+.calc-in{padding:24px 26px; border-bottom:1px solid var(--line); background:var(--surf2)}
+.fields{display:grid; grid-template-columns:repeat(auto-fit,minmax(215px,1fr)); gap:20px 24px}
+.f label{display:block; font-family:"IBM Plex Mono",monospace; font-size:.68rem;
+  letter-spacing:.09em; text-transform:uppercase; color:var(--muted); margin-bottom:7px}
+.f .row{display:flex; align-items:baseline; gap:7px; margin-bottom:6px}
+.f .cur{font-family:"IBM Plex Mono",monospace; color:var(--faint); font-size:.9rem}
+.f output{font-family:Archivo,sans-serif; font-size:1.32rem; font-weight:700;
+  font-variant-numeric:tabular-nums; letter-spacing:-.02em}
+input[type=range]{width:100%; accent-color:var(--accent); height:20px; margin:0; cursor:pointer}
+input[type=range]:focus-visible{outline:2px solid var(--accent); outline-offset:3px}
+.hint{font-size:.76rem; color:var(--faint); margin-top:3px; line-height:1.35}
+.calc-out{padding:24px 26px}
+.answer{display:flex; gap:16px; align-items:flex-start; flex-wrap:wrap; margin-bottom:22px}
+.answer .headline{font-family:Archivo,sans-serif; font-size:clamp(1.2rem,2.4vw,1.5rem);
+  font-weight:700; letter-spacing:-.018em; line-height:1.3; flex:1 1 300px; text-wrap:balance}
+.bd{display:grid; grid-template-columns:repeat(auto-fit,minmax(150px,1fr)); gap:2px;
+  background:var(--line); border:1px solid var(--line); border-radius:2px; overflow:hidden; margin-bottom:22px}
+.bd div{background:var(--surf); padding:12px 14px}
+.bd .k{font-family:"IBM Plex Mono",monospace; font-size:.67rem; letter-spacing:.08em;
+  text-transform:uppercase; color:var(--faint); display:block; margin-bottom:5px}
+.bd .v{font-family:"IBM Plex Mono",monospace; font-size:1.02rem; font-weight:600;
+  font-variant-numeric:tabular-nums}
+
+/* ---------- charts ---------- */
+figure{margin:28px 0; background:var(--surf); border:1px solid var(--line); border-radius:3px; padding:22px 24px}
+figcaption{font-size:.82rem; color:var(--muted); margin-top:14px; line-height:1.45}
+.figtitle{font-family:Archivo,sans-serif; font-weight:700; font-size:1rem; margin-bottom:3px}
+.figsub{font-size:.82rem; color:var(--muted); margin-bottom:18px}
+.chartbox{overflow-x:auto}
+svg{display:block; max-width:100%}
+.legend{display:flex; gap:18px; flex-wrap:wrap; margin-bottom:16px}
+.legend span{display:flex; align-items:center; gap:7px; font-size:.82rem; color:var(--ink2)}
+.swatch{width:11px; height:11px; border-radius:2px; flex:none}
+
+/* ---------- misc ---------- */
+ul.clean{list-style:none; padding:0; margin:0 0 1.2em}
+ul.clean li{padding:9px 0 9px 26px; position:relative; border-bottom:1px solid var(--line2); font-size:.95rem}
+ul.clean li:last-child{border-bottom:0}
+ul.clean li::before{content:"—"; position:absolute; left:0; color:var(--accent);
+  font-family:"IBM Plex Mono",monospace; font-size:.85rem}
+ol.steps{list-style:none; counter-reset:s; padding:0; margin:0}
+ol.steps li{counter-increment:s; position:relative; padding:0 0 26px 46px; border-left:1px solid var(--line); margin-left:11px}
+ol.steps li:last-child{border-left:1px solid transparent; padding-bottom:0}
+ol.steps li::before{
+  content:counter(s,decimal-leading-zero); position:absolute; left:-12px; top:-2px;
+  width:24px; height:24px; border-radius:50%; background:var(--accent); color:#fff;
+  font-family:"IBM Plex Mono",monospace; font-size:.66rem; font-weight:600;
+  display:grid; place-items:center;
+}
+ol.steps h4{margin-bottom:5px}
+ol.steps .when{font-family:"IBM Plex Mono",monospace; font-size:.7rem; letter-spacing:.08em;
+  text-transform:uppercase; color:var(--accent); display:block; margin-bottom:6px}
+ol.steps p{font-size:.93rem; color:var(--ink2); margin-bottom:0}
+
+.note{border-left:3px solid var(--line); padding:2px 0 2px 18px; margin:24px 0;
+  font-size:.92rem; color:var(--ink2)}
+.note strong{color:var(--ink)}
+.flag{background:var(--warn-bg); border:1px solid var(--line); border-left:3px solid var(--warn);
+  border-radius:3px; padding:16px 20px; margin:24px 0; font-size:.93rem}
+.flag h4{margin-bottom:6px; color:var(--warn)}
+.flag p:last-child{margin-bottom:0}
+
+footer{padding:44px 0 0; border-top:2px solid var(--ink); margin-top:56px;
+  font-size:.85rem; color:var(--muted)}
+footer h4{margin-bottom:12px; color:var(--ink)}
+footer code{font-family:"IBM Plex Mono",monospace; font-size:.85em; color:var(--ink2)}
+
+@media (max-width:640px){
+  body{font-size:16px}
+  .wrap{padding:0 17px 64px}
+  header.top{padding:40px 0 30px}
+  section{padding:40px 0 6px}
+  .verdict{padding:22px 20px}
+  .calc-in,.calc-out{padding:20px 18px}
+  figure{padding:18px 16px}
+}
+@media (prefers-reduced-motion:reduce){*{animation:none!important; transition:none!important}}
+</style>
+
+<div class="wrap">
+
+<header class="top">
+  <div class="kicker">
+    <span class="eyebrow">Purchase plan</span>
+    <span class="eyebrow" style="color:var(--accent)">M4 · C63 · 2026–2030</span>
+  </div>
+  <h1>Shift Light</h1>
+  <p class="lede">What it actually takes to put an M4 or a C63 on your driveway, costed against
+  your real tracker figures rather than the ones that feel right. The short answer is that the
+  car is reachable, the timing is not what you hoped, and one number you haven't given me
+  decides everything.</p>
+  <div class="stamp">
+    <span>Prepared <b>31 Aug 2026</b></span>
+    <span>Position as of <b>Aug 2026</b></span>
+    <span>Source <b>Notion Personal Finance Tracker</b></span>
+    <span>Currency <b>EUR</b></span>
+  </div>
+</header>
+
+<!-- ============ VERDICT ============ -->
+<section id="verdict">
+  <div class="shead"><span class="snum">01</span><h2>The verdict</h2></div>
+
+  <div class="verdict">
+    <p class="big">Helsing's €80,000 nets you €3,922 a month. In a Munich one-bedroom that makes
+    the C63 S a 46-month car. In a WG for the first year it becomes a 33-month car. Your housing
+    decision moves the date more than your salary does.</p>
+    <p>Your Berlin numbers were good: you saved <span class="mono">€1,037</span> a month from
+    March to August. But €80k gross in Munich leaves you saving
+    <span class="mono">€1,042</span> — within a fiver of what you already managed on €3,499 in
+    Berlin. The raise is real and it goes almost entirely to the city. Meanwhile you start the new
+    job with <span class="mono">€501</span> in cash and a <span class="mono">€51</span> emergency
+    fund, and about <span class="mono">€1,800</span> of your net worth belongs to your parents.</p>
+  </div>
+
+  <div class="statrow">
+    <div class="stat">
+      <span class="lab">Net worth, Aug 2026</span>
+      <span class="val">€27,684</span>
+      <span class="sub">€27,184 invested · <strong>€501 in cash</strong></span>
+    </div>
+    <div class="stat">
+      <span class="lab">Free for a car today</span>
+      <span class="val" style="color:var(--bad)">≈ €4,500</span>
+      <span class="sub">After the Munich move and a real buffer</span>
+    </div>
+    <div class="stat">
+      <span class="lab">Helsing net, confirmed</span>
+      <span class="val">€3,922</span>
+      <span class="sub">€80,000 gross · saves €1,042/mo</span>
+    </div>
+    <div class="stat">
+      <span class="lab">A used M4 costs</span>
+      <span class="val">≈ €1,083<span style="font-size:.9rem;font-weight:500">/mo</span></span>
+      <span class="sub">All-in over a 3-year hold</span>
+    </div>
+  </div>
+
+  <div class="col">
+    <p>Those last two numbers are the whole story. The car costs roughly what you currently save.
+    Buy it at the wrong moment and your net worth stops growing for three years; buy it at the
+    right one and it barely registers.</p>
+  </div>
+</section>
+
+<!-- ============ RECONCILIATION ============ -->
+<section id="reality">
+  <div class="shead"><span class="snum">02</span><h2>First, a reconciliation</h2></div>
+  <div class="col">
+    <p>You picked four bands for me before I found the tracker. Three of them were off, all in
+    the optimistic direction. That matters more than it sounds, because the plan is built on the
+    gap between what comes in and what goes out — and that gap is where small errors compound.</p>
+  </div>
+
+  <div class="tw">
+    <table>
+      <caption>Self-reported bands against the tracker, Jan–Aug 2026.</caption>
+      <thead>
+        <tr><th>Item</th><th>What you said</th><th>What the tracker shows</th><th>Verdict</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Net monthly income</td>
+          <td class="mono">€3,400–4,200</td>
+          <td class="mono">€3,499 <span style="color:var(--muted)">(Tesla, steady)</span></td>
+          <td><span class="pill p-good">BOTTOM OF BAND</span></td>
+        </tr>
+        <tr>
+          <td>Liquid savings</td>
+          <td class="mono">€10,000–25,000</td>
+          <td class="mono">€27,684 <span style="color:var(--muted)">— but €501 in cash</span></td>
+          <td><span class="pill p-warn">NOT LIQUID</span></td>
+        </tr>
+        <tr>
+          <td>Monthly outgoings</td>
+          <td class="mono">€1,200–1,600</td>
+          <td class="mono">€1,939 <span style="color:var(--muted)">(Mar–Aug avg)</span></td>
+          <td><span class="pill p-bad">UNDER BY €340–740</span></td>
+        </tr>
+        <tr>
+          <td>Employment</td>
+          <td>Permanent, settled</td>
+          <td>Tesla ended · <strong>€0 income in August</strong> · Helsing Munich accepted</td>
+          <td><span class="pill p-bad">IN TRANSITION</span></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="col">
+    <p>None of this is a scolding — an 8-month-old tracker showing a 23% savings rate through a
+    country move and a job change is a genuinely good result. But "I spend about €1,400" versus
+    "I spend €1,939" is the difference between the C63 arriving in year three and arriving in
+    year five.</p>
+  </div>
+
+  <figure>
+    <div class="figtitle">Net worth, first eight months of tracking</div>
+    <div class="figsub">Steady build to May, then flat. June onward is the job transition.</div>
+    <div class="chartbox" id="nw-chart"></div>
+    <figcaption>Rebuilt from account rows in the tracker. The August dip is the
+    €1,851 pulled out of Certificados de Aforro Série F, plus a month with no salary.</figcaption>
+  </figure>
+</section>
+
+<!-- ============ POSITION ============ -->
+<section id="position">
+  <div class="shead"><span class="snum">03</span><h2>Where the money actually is</h2></div>
+  <div class="col">
+    <p>You have €27,684, and almost none of it is spendable this week. That is fine for
+    wealth-building and bad for a person about to sign a Munich lease.</p>
+  </div>
+
+  <div class="tw">
+    <table>
+      <caption>All accounts, August 2026. Investment balances are marketable but not instant, and
+      selling to fund a car means realising gains and paying spread.</caption>
+      <thead><tr><th>Account</th><th>Type</th><th class="n">Balance</th></tr></thead>
+      <tbody>
+        <tr><td>Trade Republic — Brokerage</td><td>Investment</td><td class="n">20,931</td></tr>
+        <tr><td>Certificados de Aforro CTT — Série F</td><td>Investment</td><td class="n">3,705</td></tr>
+        <tr><td>Trade Republic — Crypto</td><td>Investment</td><td class="n">955</td></tr>
+        <tr><td>Robinhood</td><td>Investment</td><td class="n">550</td></tr>
+        <tr><td>Certificados de Aforro CTT — Série E</td><td>Investment</td><td class="n">542</td></tr>
+        <tr><td>Revolut — Wealth Build</td><td>Investment</td><td class="n">441</td></tr>
+        <tr class="hi"><td>All current accounts + cash</td><td>Cash</td><td class="n">501</td></tr>
+        <tr class="hi"><td>Revolut — Fundo Emergência</td><td>“Emergency”</td><td class="n">51</td></tr>
+        <tr><td><strong>Total</strong></td><td></td><td class="n"><strong>27,684</strong></td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="col">
+    <p>Now subtract what is already committed. This is the number that actually governs the plan:</p>
+  </div>
+
+  <div class="tw">
+    <table>
+      <caption>Munich move assumes a three-cold-month Kaution plus first rent, Anmeldung, furniture
+      and transport. Emergency fund at five months of projected Munich outgoings.</caption>
+      <thead><tr><th>Step</th><th class="n">Amount</th><th class="n">Running</th></tr></thead>
+      <tbody>
+        <tr><td>Net worth</td><td class="n">27,684</td><td class="n">27,684</td></tr>
+        <tr><td>Owed / earmarked to your parents <span style="color:var(--muted)">(the “1800 restantes” note)</span></td><td class="n">−1,800</td><td class="n">25,884</td></tr>
+        <tr><td>Munich move — Kaution, first rent, setup</td><td class="n">−7,000</td><td class="n">18,884</td></tr>
+        <tr><td>Emergency fund — 5 months</td><td class="n">−14,400</td><td class="n">4,484</td></tr>
+        <tr class="hi"><td><strong>Genuinely free for a car</strong></td><td class="n"></td><td class="n"><strong>≈ 4,484</strong></td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="flag">
+    <h4>Fix this before anything else</h4>
+    <p>A €51 emergency fund and a €501 cash balance is the single most fragile thing in your
+    finances, and you are about to move cities on it. If the Munich Kaution lands before the first
+    Helsing payslip, you are selling brokerage positions at whatever the market happens to be that
+    week. Build cash to one month of costs <em>before</em> you sign anything, even if it means
+    pausing investment contributions for six weeks.</p>
+  </div>
+</section>
+
+<!-- ============ MUNICH ============ -->
+<section id="munich">
+  <div class="shead"><span class="snum">04</span><h2>Munich will eat the raise</h2></div>
+  <div class="col">
+    <p>€80,000 gross is a real step up from Tesla. Here is what survives the German deduction
+    stack, at Steuerklasse 1 in Bavaria with no church tax, public health insurance, and the
+    childless surcharge on Pflegeversicherung:</p>
+  </div>
+
+  <div class="tw">
+    <table>
+      <caption>2026 rates. Assumes no 13th-month split — if Helsing pays 12 × €6,667 rather than
+      13 smaller instalments, this is your monthly figure.</caption>
+      <thead><tr><th>Line</th><th class="n">€/year</th><th>Note</th></tr></thead>
+      <tbody>
+        <tr><td>Gross salary</td><td class="n">80,000</td><td></td></tr>
+        <tr><td>Rentenversicherung</td><td class="n">−7,440</td><td>9.3%</td></tr>
+        <tr><td>Krankenversicherung</td><td class="n">−6,103</td><td>7.3% + half the Zusatzbeitrag, capped at the BBG</td></tr>
+        <tr><td>Pflegeversicherung</td><td class="n">−1,674</td><td>1.8% + 0.6% childless surcharge</td></tr>
+        <tr><td>Arbeitslosenversicherung</td><td class="n">−1,040</td><td>1.3%</td></tr>
+        <tr><td>Lohnsteuer</td><td class="n">−16,676</td><td>Solidaritätszuschlag is €0 at this level</td></tr>
+        <tr class="hi"><td><strong>Net</strong></td><td class="n"><strong>47,066</strong></td><td><strong>€3,922 / month</strong></td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="col">
+    <p>That is €423 a month more than Tesla paid you. Now the other side of the ledger — because
+    this is the part most people get wrong when they change city for more money. Munich is
+    Germany's most expensive rental market; Berlin, where you have been living in a shared flat,
+    is not. A projected budget for a one-bedroom in Munich:</p>
+  </div>
+
+  <div class="tw">
+    <table>
+      <caption>Projected Munich monthly outgoings. Health insurance and pension are already
+      deducted before net pay in Germany, so they do not appear here.</caption>
+      <thead><tr><th>Category</th><th class="n">€/month</th><th>Note</th></tr></thead>
+      <tbody>
+        <tr><td>Rent + Nebenkosten</td><td class="n">1,600</td><td>1-bed warm; a WG saves €350–500</td></tr>
+        <tr><td>Social, eating out, gym</td><td class="n">400</td><td></td></tr>
+        <tr><td>Groceries</td><td class="n">350</td><td></td></tr>
+        <tr><td>Travel — flights home, trips</td><td class="n">200</td><td></td></tr>
+        <tr><td>Misc, clothes, subscriptions</td><td class="n">150</td><td></td></tr>
+        <tr><td>Transport — Deutschlandticket</td><td class="n">65</td><td>Drops if the car replaces it</td></tr>
+        <tr><td>Phone + internet</td><td class="n">55</td><td></td></tr>
+        <tr><td>Haftpflicht, Hausrat</td><td class="n">60</td><td></td></tr>
+        <tr class="hi"><td><strong>Total</strong></td><td class="n"><strong>2,880</strong></td><td>vs €1,939 actual in Berlin</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="col">
+    <p>Munich costs about <strong>€940 a month more</strong> than Berlin did. Your raise is €423.
+    Net effect: you save <span class="mono">€1,042</span> a month — within a fiver of the
+    <span class="mono">€1,037</span> you were already saving on a smaller salary in a cheaper city.
+    <strong>The whole raise goes to the city, and then some.</strong></p>
+    <p>That is not an argument against the move; Helsing is the better job and Munich is where it
+    is. But it means the car cannot be funded out of the raise, because there isn't one in
+    cash-flow terms. It has to come out of a deliberate choice somewhere else — and there is
+    exactly one big lever available.</p>
+  </div>
+
+  <h3 style="margin:36px 0 14px">The lever: one year in a WG</h3>
+  <div class="col">
+    <p>A Munich WG room runs €900–1,300 warm against €1,600 for your own one-bedroom. Taking a
+    room for the first year — while you are new in the city and would benefit from knowing people
+    anyway — moves the car by roughly a year. Not by a month or two. A year.</p>
+  </div>
+
+  <div class="tw">
+    <table>
+      <caption>Months from November 2026 to a full cash purchase, at €3,922 net. Everything else
+      held identical — same salary, same buffer, same car.</caption>
+      <thead>
+        <tr><th>Car</th><th class="n">Price</th><th class="n">Own 1-bed<br>saves €1,042</th>
+        <th class="n">WG year one<br>saves €1,492</th><th class="n">Pulled forward</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>M2 Competition (F87)</td><td class="n">38,000</td><td class="n">30 mo</td><td class="n">22 mo</td><td class="n">8 months</td></tr>
+        <tr class="hi"><td>F82 M4 Competition</td><td class="n">46,000</td><td class="n">37 mo</td><td class="n">27 mo</td><td class="n">10 months</td></tr>
+        <tr><td>W205 C63 S (V8)</td><td class="n">57,000</td><td class="n">46 mo</td><td class="n">33 mo</td><td class="n">13 months</td></tr>
+        <tr><td>G82 M4 Competition</td><td class="n">66,000</td><td class="n">53 mo</td><td class="n">38 mo</td><td class="n">15 months</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="col">
+    <p>In your own flat, the C63 S arrives in <strong>September 2030</strong>. In a WG for the
+    first year it arrives in <strong>August 2029</strong> — inside the window you asked about.
+    Same job, same salary, same car. The only difference is where you sleep for twelve months.</p>
+  </div>
+</section>
+
+<!-- ============ CALCULATOR ============ -->
+<section id="calc">
+  <div class="shead"><span class="snum">05</span><h2>Your timeline, with your numbers</h2></div>
+  <div class="col">
+    <p>The salary is now your real one. Everything else is still my estimate, so change what you
+    know better than I do — particularly the Munich spend, which is the number that decides this.
+    Drop it to <span class="mono">€2,430</span> to see the WG case. The month count runs from
+    November 2026, when the first full Helsing salary should land.</p>
+  </div>
+
+  <div class="calc">
+    <div class="calc-in">
+      <div class="fields">
+        <div class="f">
+          <label for="i-net">Helsing net salary</label>
+          <div class="row"><span class="cur">€</span><output id="o-net">3,922</output><span class="cur">/mo</span></div>
+          <input type="range" id="i-net" min="3000" max="6000" step="1" value="3922">
+          <div class="hint">Confirmed — €80,000 gross, Steuerklasse 1, Bavaria</div>
+        </div>
+        <div class="f">
+          <label for="i-spend">Munich monthly spend</label>
+          <div class="row"><span class="cur">€</span><output id="o-spend">2,880</output><span class="cur">/mo</span></div>
+          <input type="range" id="i-spend" min="1800" max="4200" step="20" value="2880">
+          <div class="hint">Everything except the car</div>
+        </div>
+        <div class="f">
+          <label for="i-price">Target car price</label>
+          <div class="row"><span class="cur">€</span><output id="o-price">46,000</output></div>
+          <input type="range" id="i-price" min="25000" max="120000" step="1000" value="46000">
+          <div class="hint" id="h-price">F82 M4 Competition, 2017</div>
+        </div>
+        <div class="f">
+          <label for="i-dep">Paid in cash</label>
+          <div class="row"><output id="o-dep">100</output><span class="cur">%</span></div>
+          <input type="range" id="i-dep" min="30" max="100" step="5" value="100">
+          <div class="hint" id="h-dep">Rest on a bank loan at 6.5% over 48 months</div>
+        </div>
+        <div class="f">
+          <label for="i-ef">Emergency fund held back</label>
+          <div class="row"><output id="o-ef">5</output><span class="cur">months</span></div>
+          <input type="range" id="i-ef" min="0" max="9" step="1" value="5">
+          <div class="hint">Untouchable buffer before car money starts</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="calc-out">
+      <div class="answer">
+        <div class="headline" id="a-head">—</div>
+        <div id="a-pill"></div>
+      </div>
+
+      <div class="bd">
+        <div><span class="k">Car fund seed</span><span class="v" id="a-seed">—</span></div>
+        <div><span class="k">Saved / month</span><span class="v" id="a-save">—</span></div>
+        <div><span class="k">Cash needed</span><span class="v" id="a-need">—</span></div>
+        <div><span class="k">Ready by</span><span class="v" id="a-date">—</span></div>
+        <div><span class="k">Loan payment</span><span class="v" id="a-loan">—</span></div>
+        <div><span class="k">Left over after running costs</span><span class="v" id="a-left">—</span></div>
+      </div>
+
+      <div class="chartbox" id="acc-chart"></div>
+      <p class="hint" id="a-note" style="margin-top:14px; font-size:.85rem"></p>
+    </div>
+  </div>
+</section>
+
+<!-- ============ WHAT CARS COST ============ -->
+<section id="cost">
+  <div class="shead"><span class="snum">06</span><h2>What these cars actually cost</h2></div>
+  <div class="col">
+    <p>Purchase price is the number people compare. It is the wrong one. Over a three-year hold,
+    what you lose is depreciation plus running costs, and for a used performance car the running
+    costs are the larger half.</p>
+    <p>Everything below assumes Munich, 9,000 km a year, a garage, and comprehensive insurance
+    once you have three or four claim-free years behind you.</p>
+  </div>
+
+  <figure>
+    <div class="figtitle">Three years of ownership, by where the money goes</div>
+    <div class="figsub">Munich · 9,000 km/yr · garaged · bought used except where noted</div>
+    <div class="legend">
+      <span><span class="swatch" style="background:var(--s1)"></span>Depreciation</span>
+      <span><span class="swatch" style="background:var(--s2)"></span>Running costs, 3 years</span>
+    </div>
+    <div class="chartbox" id="tco-chart"></div>
+    <figcaption>The new M4 loses more in depreciation alone than the 2017 car costs to buy and run
+    for three years combined.</figcaption>
+  </figure>
+
+  <div class="tw">
+    <table>
+      <caption>Running costs comprise insurance, Kfz-Steuer, fuel at €2.00/l Super Plus, servicing,
+      tyres, brakes, a repair reserve, garage at €125/month and amortised HU.</caption>
+      <thead>
+        <tr><th>Car</th><th class="n">Buy</th><th class="n">Sell at 3yr</th>
+        <th class="n">Deprec.</th><th class="n">Running/yr</th><th class="n">Total 3yr</th><th class="n">€/mo</th></tr>
+      </thead>
+      <tbody>
+        <tr class="hi"><td>2017 M4 Competition (F82)</td><td class="n">46,000</td><td class="n">37,600</td><td class="n">8,400</td><td class="n">10,194</td><td class="n">38,982</td><td class="n">1,083</td></tr>
+        <tr><td>2018 AMG C63 S (W205, V8)</td><td class="n">57,000</td><td class="n">47,343</td><td class="n">9,657</td><td class="n">10,390</td><td class="n">40,827</td><td class="n">1,134</td></tr>
+        <tr><td>2021 M4 Competition (G82)</td><td class="n">66,000</td><td class="n">50,560</td><td class="n">15,440</td><td class="n">9,648</td><td class="n">44,384</td><td class="n">1,233</td></tr>
+        <tr><td>New M4 Competition xDrive</td><td class="n">118,000</td><td class="n">71,267</td><td class="n">46,733</td><td class="n">8,028</td><td class="n">70,817</td><td class="n">1,967</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="col">
+    <p>Two things fall out of this table.</p>
+    <p>First, <strong>the cheapest car to run is the most expensive car to own.</strong> The new M4
+    has the lowest running costs on the list — warranty, free servicing, no repair reserve — and
+    costs nearly twice as much per month as the 2017 car. Depreciation swamps everything.</p>
+    <p>Second, <strong>the spread between the three used cars is small.</strong> €46k to €66k of
+    purchase price compresses into €1,083 to €1,233 a month. If you are going to do this at all,
+    the jump from the F82 to the C63 S costs you about €50 a month. Buy the one you actually want.</p>
+  </div>
+
+  <div class="note">
+    <p><strong>On the C63 specifically.</strong> The W205 C63 S is the last V8 C-class AMG; its
+    replacement is a four-cylinder hybrid the market did not take to. That has flattened V8 values
+    in a way that makes the 2018 car unusually good at holding money — the 6%/year I have modelled
+    is conservative rather than optimistic. The same logic applies to a manual G82 M4, the last
+    manual M car. Both are near the bottom of their depreciation curves.</p>
+  </div>
+</section>
+
+<!-- ============ FINANCING ============ -->
+<section id="finance">
+  <div class="shead"><span class="snum">07</span><h2>How to pay for it, given you'll sell it</h2></div>
+  <div class="col">
+    <p>You told me you would not keep the car forever. That single constraint eliminates two of
+    the three products a German dealer will offer you.</p>
+  </div>
+
+  <div class="grid2">
+    <div class="card">
+      <h4>Leasing <span class="pill p-bad" style="margin-left:6px">NO</span></h4>
+      <p>Structurally attractive — fixed cost, hand it back, no residual risk. But you cannot sell
+      a leased car, so the moment you want out you are stuck paying to the end of the term.
+      Mileage caps bite, modifications are out, and used performance cars lease badly anyway.</p>
+    </div>
+    <div class="card">
+      <h4>Ballonfinanzierung <span class="pill p-bad" style="margin-left:6px">NO</span></h4>
+      <p>The dealer standard: low monthly, large final payment. Selling mid-term is messy, the
+      balloon routinely exceeds the car's real value if you go over the contracted mileage, and you
+      pay interest on the whole sum throughout. Built for people who never do the arithmetic.</p>
+    </div>
+    <div class="card">
+      <h4>Bank Ratenkredit <span class="pill p-good" style="margin-left:6px">YES</span></h4>
+      <p>A plain instalment loan from a direct bank — ING, DKB, Santander. You own the car outright,
+      so you can sell whenever you like and settle the balance. German consumer credit law caps
+      early-repayment compensation at 1% (0.5% inside the final year), so exiting is cheap.</p>
+    </div>
+    <div class="card">
+      <h4>Cash <span class="pill p-good" style="margin-left:6px">BEST</span></h4>
+      <p>No interest, no lender, complete freedom to sell. The cost is your liquidity, which is
+      why the emergency fund gets carved out first. If the timeline allows it, this is the answer.</p>
+    </div>
+  </div>
+
+  <div class="col">
+    <p>There is a second, quieter advantage to the bank loan: arriving as a cash buyer. A dealer
+    quoting you a financed price is pricing the finance commission into the deal. Walking in with
+    funds already approved is worth <strong>3–8% off the screen price</strong> on a €57,000 car —
+    €1,700 to €4,500, which is most of the interest you will pay.</p>
+  </div>
+
+  <div class="tw">
+    <table>
+      <caption>A €57,000 C63 S on a 48-month Ratenkredit at 6.5% effective.</caption>
+      <thead><tr><th>Structure</th><th class="n">Loan</th><th class="n">Monthly</th><th class="n">Total interest</th></tr></thead>
+      <tbody>
+        <tr><td>50% cash</td><td class="n">28,500</td><td class="n">676</td><td class="n">3,942</td></tr>
+        <tr class="hi"><td>65% cash</td><td class="n">19,950</td><td class="n">473</td><td class="n">2,759</td></tr>
+        <tr><td>80% cash</td><td class="n">11,400</td><td class="n">270</td><td class="n">1,577</td></tr>
+        <tr><td>100% cash</td><td class="n">0</td><td class="n">0</td><td class="n">0</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="col">
+    <p>At 65% down you are never underwater. The car is worth €53,580 after a year against
+    €15,436 outstanding; €50,365 against €10,621 after two. You can sell at any point, clear the
+    loan, and walk away with the equity. That is the whole reason to use this structure rather
+    than the dealer's.</p>
+  </div>
+</section>
+
+<!-- ============ INSURANCE ============ -->
+<section id="insurance">
+  <div class="shead"><span class="snum">08</span><h2>The lever nobody mentions</h2></div>
+  <div class="col">
+    <p>German car insurance is priced off your <em>Schadenfreiheitsklasse</em> — the count of
+    consecutive claim-free years you personally have on a policy. You have never insured a car in
+    Germany, which puts you at SF 0, paying roughly 100% of base premium. On an M4 in Munich that
+    is somewhere around <span class="mono">€4,000–4,600</span> a year.</p>
+    <p>Three or four claim-free years takes you to SF 3–4 and around 65–70% of base. Over a
+    three-year hold that difference is worth <strong>€4,000 to €6,000</strong> — comparable to the
+    entire depreciation on the F82.</p>
+  </div>
+
+  <ul class="clean">
+    <li><strong>Start the clock now.</strong> Insure something cheap in your own name the moment
+    you land in Munich. Every claim-free year counts whether the car is a Polo or an M4.</li>
+    <li><strong>Bring your Portuguese history over.</strong> If you have ever held a policy in your
+    own name in Portugal, request the <em>declaração de não sinistralidade</em> from that insurer.
+    Most German insurers will credit EU no-claims history — this can skip you several classes at a
+    stroke, and it costs one email.</li>
+    <li><strong>Ask your parents about an SF transfer.</strong> German insurers allow a
+    Schadenfreiheitsklasse to be transferred from a parent who is giving up a vehicle. If either of
+    them has a long claim-free record and a car they are retiring, that record can move to you.</li>
+    <li><strong>Saisonkennzeichen 03–10.</strong> Register the car for eight months instead of
+    twelve. Insurance and Kfz-Steuer both drop by around a third, you skip a €1,400 set of winter
+    tyres, and the car never sees road salt. In a city with Munich's public transport this costs
+    you almost nothing.</li>
+    <li><strong>Garage it, raise the excess, declare low mileage.</strong> A €1,000 comprehensive
+    excess, 9,000 km declared, and a registered night-time garage space stack to another 25–35%
+    off. Workshop binding saves more again if you can live without main-dealer stamps.</li>
+  </ul>
+
+  <div class="note">
+    <p>Do the first two this autumn. They cost nothing, they compound quietly in the background,
+    and by the time you are actually buying they will have taken four figures a year off the
+    running-cost line in section 06.</p>
+  </div>
+</section>
+
+<!-- ============ PLAN ============ -->
+<section id="plan">
+  <div class="shead"><span class="snum">09</span><h2>The plan</h2></div>
+  <div class="col">
+    <p>Five phases, on your confirmed €3,922 net. Dates shown for the own-flat case; the WG case
+    in phase one pulls everything from phase four onward forward by about a year.</p>
+  </div>
+
+  <ol class="steps">
+    <li>
+      <span class="when">Sep – Oct 2026 · Land safely</span>
+      <h4>Take a WG room, and don't sell investments to move</h4>
+      <p>The housing decision is the car decision — a room for year one is worth thirteen months
+      off the C63 date, and a smaller Kaution to find right now while you have €501 in cash. Get
+      one month of Munich costs into cash before any deposit is due, settle the €1,800 with your
+      parents so the number stops being ambiguous, and pause investment contributions if you have
+      to. Six weeks of not buying ETFs is nothing; forced-selling into a bad week is real money.</p>
+    </li>
+    <li>
+      <span class="when">Oct 2026 · Free wins</span>
+      <h4>Start the insurance clock and request your Portuguese record</h4>
+      <p>One email to your Portuguese insurer, one conversation with your parents about an SF
+      transfer, and a cheap car insured in your own name if that makes sense once you see Munich
+      rents. This is the highest-return hour of work in the entire plan.</p>
+    </li>
+    <li>
+      <span class="when">Nov 2026 – late 2027 · Rebuild</span>
+      <h4>Emergency fund to five months, then everything to the car fund</h4>
+      <p>Target €14,400 held somewhere stable — Certificados de Aforro Série F pays reasonably and
+      is liquid after three months, which is a better home for it than the brokerage account.
+      Until that is full, there is no car fund.</p>
+    </li>
+    <li>
+      <span class="when">2028 – 2029 · Accumulate and choose</span>
+      <h4>Build the car fund, and drive the shortlist</h4>
+      <p>Drive an F82 and a W205 C63 S back to back long before you can afford either. They are
+      completely different cars, and the €50/month between them is noise next to picking the wrong
+      one. Watch listings monthly so you know what a good example costs and what is overpriced.</p>
+    </li>
+    <li>
+      <span class="when">When the fund clears the target · Buy</span>
+      <h4>Cash, or 65% down on a 48-month Ratenkredit</h4>
+      <p>Loan approved before you walk in, negotiating as a cash buyer. Full service history,
+      a pre-purchase inspection, and Saisonkennzeichen from day one. Plan the exit at 30–36 months,
+      before the next major service interval lands.</p>
+    </li>
+  </ol>
+</section>
+
+<!-- ============ RISKS ============ -->
+<section id="risks">
+  <div class="shead"><span class="snum">10</span><h2>What could break this</h2></div>
+
+  <div class="grid2">
+    <div class="card">
+      <h4>Moving back to Portugal</h4>
+      <p>The big one. Importing a €57,000 German car into Portugal triggers ISV, which on a 4.0
+      V8 with high CO₂ runs into the tens of thousands. There is an exemption for
+      <em>transferência de residência</em> — you must have owned the car six months, lived abroad
+      twelve, apply within twelve months of moving and keep it a further twelve. Miss the paperwork
+      and the tax exceeds the car's value. Given you were job-hunting across Europe this summer,
+      treat this as a live risk, not a footnote.</p>
+    </div>
+    <div class="card">
+      <h4>Munich rent overshooting</h4>
+      <p>My €1,600 is a reasonable one-bedroom. Munich can easily be €1,900 warm for the same
+      flat. Every €100 over budget pushes the purchase back about two months. A WG for the first
+      year is worth roughly nine months off the timeline.</p>
+    </div>
+    <div class="card">
+      <h4>Another job change</h4>
+      <p>You have moved employer once already this year, with a zero-income month in the gap.
+      A €473/month loan payment through a second gap is survivable; the same gap with no buffer is
+      not. This is why the emergency fund comes before the car and not alongside it.</p>
+    </div>
+    <div class="card">
+      <h4>Buying at the top of your range</h4>
+      <p>The failure mode isn't the car, it's stretching to the G82 at €66k and having nothing
+      left. At €3,922 net, a €66k car consumes every euro you save. Keep the purchase at or below
+      what the calculator says, not at the edge of what a bank will lend.</p>
+    </div>
+  </div>
+
+  <div class="note">
+    <p><strong>The honest opportunity cost.</strong> Three years of the F82 costs about €38,982 in
+    depreciation and running. The same money left invested at 6% would be worth roughly €42,500 by
+    the end. That is what the car costs you in real terms — and it is a completely reasonable thing
+    to spend money on at 27, as long as you are choosing it rather than discovering it later.</p>
+  </div>
+</section>
+
+<!-- ============ GAPS ============ -->
+<section id="gaps">
+  <div class="shead"><span class="snum">11</span><h2>What I still don't know</h2></div>
+  <div class="col">
+    <p>The salary was the big one and it is now closed. These are the rest, ordered by how much
+    they move the answer. The first three are worth more than everything below them combined.</p>
+  </div>
+
+  <div class="tw">
+    <table>
+      <caption>Everything marked “assumed” is my estimate standing in for a fact you have.</caption>
+      <thead><tr><th>Missing</th><th>What I assumed</th><th class="n">Swing</th></tr></thead>
+      <tbody>
+        <tr class="hi">
+          <td><strong>Munich housing</strong> — signed yet? WG or own flat? What rent, what Kaution?</td>
+          <td class="mono">€1,600 warm</td><td class="n">±13 months</td>
+        </tr>
+        <tr class="hi">
+          <td><strong>Relocation package</strong> — does Helsing pay moving costs, temporary housing, or a signing bonus?</td>
+          <td class="mono">€0, you fund the €7,000</td><td class="n">±7 months</td>
+        </tr>
+        <tr class="hi">
+          <td><strong>Bonus and equity</strong> — is €80k base only? Any bonus, VSOP or options?</td>
+          <td>Base only, no variable pay</td><td class="n">Potentially large</td>
+        </tr>
+        <tr>
+          <td><strong>Start date and any unpaid gap</strong> — August was €0. When does pay resume?</td>
+          <td class="mono">First full salary Nov 2026</td><td class="n">±3 months</td>
+        </tr>
+        <tr>
+          <td><strong>Insurance history</strong> — ever held a policy in your own name, in Portugal or Germany?</td>
+          <td>None; you start at SF 0</td><td class="n">€4,000–6,000</td>
+        </tr>
+        <tr>
+          <td><strong>The €1,800 to your parents</strong> — owed back, or a gift toward the Kaution?</td>
+          <td>Owed, deducted in full</td><td class="n">±2 months</td>
+        </tr>
+        <tr>
+          <td><strong>Is the brokerage available?</strong> €20,931 in Trade Republic — car money or untouchable?</td>
+          <td>Available after the buffer</td><td class="n">±14 months</td>
+        </tr>
+        <tr>
+          <td><strong>How long you'd keep it</strong> — “not forever” could be two years or six.</td>
+          <td>3-year hold</td><td class="n">Changes deprec.</td>
+        </tr>
+        <tr>
+          <td><strong>Portugal</strong> — realistic odds of moving back inside five years?</td>
+          <td>Possible, not planned</td><td class="n">ISV exposure</td>
+        </tr>
+        <tr>
+          <td><strong>Must it be an M4 or C63?</strong> An M2 Competition is 7 months sooner.</td>
+          <td>Those two, plus near neighbours</td><td class="n">±8 months</td>
+        </tr>
+        <tr>
+          <td><strong>Any debt the tracker doesn't see</strong> — it only starts January 2026.</td>
+          <td>None</td><td class="n">Unknown</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="flag">
+    <h4>If you answer only one</h4>
+    <p>Tell me the housing decision. Whether you take a WG room or your own flat in Munich changes
+    the C63 date by thirteen months — more than the entire difference between your Tesla salary and
+    your Helsing one. Every other unknown on this list is a rounding error next to it.</p>
+  </div>
+</section>
+
+<footer>
+  <h4>Assumptions, and what to check</h4>
+  <p>Position, income and spending come from your Notion Personal Finance Tracker, rebuilt from
+  account rows for January–August 2026 (<code>balances.json</code>, <code>flows.json</code>). Net
+  worth ties to €27,684.36 at August 2026.</p>
+  <p style="margin-top:1em"><strong>Confirmed:</strong> Helsing salary €80,000 gross. Net of
+  €3,922/month is my calculation at 2026 rates — Steuerklasse 1, Bavaria, no church tax, public
+  health insurance with an average Zusatzbeitrag, childless Pflegeversicherung surcharge, twelve
+  monthly instalments. Check it against your first payslip; a 13th-month split or a different
+  Krankenkasse moves it by €30–60.</p>
+  <p style="margin-top:1em"><strong>Assumed, not verified:</strong> Munich rent at €1,600 warm.
+  Move costs at €7,000. No relocation support from Helsing. Base salary with no bonus or equity.
+  The €1,800 to your parents read from an ambiguous note on the Finances page. Car prices and
+  depreciation are German market estimates for August 2026 and move with the market. Insurance
+  figures are indicative: get real quotes with your actual postcode and SF class before committing
+  to any of this. Section 11 lists all of it with the swing attached.</p>
+  <p style="margin-top:1em">This is planning arithmetic, not financial advice. Confirm the ISV
+  position with a Portuguese <em>despachante</em> before importing anything, and get written
+  insurance quotes before you buy.</p>
+</footer>
+
+</div>
+
+<script>
+"use strict";
+const eur = n => "€" + Math.round(n).toLocaleString("en-US");
+const eur0 = n => Math.round(n).toLocaleString("en-US");
+const css = v => getComputedStyle(document.documentElement).getPropertyValue(v).trim();
+const SVGNS = "http://www.w3.org/2000/svg";
+function el(tag, attrs, parent){
+  const n = document.createElementNS(SVGNS, tag);
+  for (const k in attrs) n.setAttribute(k, attrs[k]);
+  if (parent) parent.appendChild(n);
+  return n;
+}
+
+/* ---------- 1. Net worth chart ---------- */
+const NW = [["Jan",16392],["Feb",21224],["Mar",23586],["Apr",27988],
+            ["May",29475],["Jun",28486],["Jul",29032],["Aug",27684]];
+
+function drawNetWorth(){
+  const box = document.getElementById("nw-chart");
+  box.innerHTML = "";
+  const W = Math.max(box.clientWidth || 640, 460), H = 250;
+  const m = {t:14, r:16, b:30, l:52};
+  const iw = W-m.l-m.r, ih = H-m.t-m.b;
+  const svg = el("svg",{viewBox:`0 0 ${W} ${H}`,width:W,height:H,
+    role:"img","aria-label":"Net worth from January to August 2026, rising from 16,392 to a May peak of 29,475 then easing to 27,684 euros."},box);
+
+  const maxV = 32000;
+  const x = i => m.l + (i/(NW.length-1))*iw;
+  const y = v => m.t + ih - (v/maxV)*ih;
+
+  for (let v=0; v<=32000; v+=8000){
+    el("line",{x1:m.l,x2:m.l+iw,y1:y(v),y2:y(v),stroke:css("--line"),"stroke-width":1},svg);
+    const t = el("text",{x:m.l-10,y:y(v)+4,"text-anchor":"end",fill:css("--faint"),
+      "font-size":11,"font-family":"IBM Plex Mono, monospace"},svg);
+    t.textContent = v===0 ? "0" : (v/1000)+"k";
+  }
+
+  const pts = NW.map((d,i)=>[x(i),y(d[1])]);
+  const line = pts.map((p,i)=>(i?"L":"M")+p[0].toFixed(1)+" "+p[1].toFixed(1)).join(" ");
+  const grad = el("linearGradient",{id:"nwg",x1:0,y1:0,x2:0,y2:1},el("defs",{},svg));
+  el("stop",{offset:"0%","stop-color":css("--s2"),"stop-opacity":.22},grad);
+  el("stop",{offset:"100%","stop-color":css("--s2"),"stop-opacity":0},grad);
+  el("path",{d:line+` L ${x(NW.length-1)} ${m.t+ih} L ${m.l} ${m.t+ih} Z`,fill:"url(#nwg)"},svg);
+  el("path",{d:line,fill:"none",stroke:css("--s2"),"stroke-width":2,
+    "stroke-linejoin":"round","stroke-linecap":"round"},svg);
+
+  NW.forEach((d,i)=>{
+    const last = i===NW.length-1;
+    el("circle",{cx:x(i),cy:y(d[1]),r:last?5:3.5,fill:last?css("--s2"):css("--surf"),
+      stroke:css("--s2"),"stroke-width":2},svg);
+    const t = el("text",{x:x(i),y:H-10,"text-anchor":"middle",fill:css("--faint"),
+      "font-size":11,"font-family":"IBM Plex Mono, monospace"},svg);
+    t.textContent = d[0];
+    const g = el("g",{},svg);
+    el("rect",{x:x(i)-22,y:m.t,width:44,height:ih,fill:"transparent"},g);
+    const tip = el("title",{},g);
+    tip.textContent = d[0]+" 2026 — " + eur(d[1]);
+  });
+
+  const lastV = el("text",{x:x(NW.length-1),y:y(NW[NW.length-1][1])-14,"text-anchor":"end",
+    fill:css("--ink"),"font-size":12.5,"font-weight":600,
+    "font-family":"IBM Plex Mono, monospace"},svg);
+  lastV.textContent = eur(27684);
+}
+
+/* ---------- 2. TCO stacked bars ---------- */
+const TCO = [
+  {name:"2017 M4 Comp (F82)",  buy:46000,  dep:8400,  run:30582},
+  {name:"2018 C63 S (W205)",   buy:57000,  dep:9657,  run:31170},
+  {name:"2021 M4 Comp (G82)",  buy:66000,  dep:15440, run:28944},
+  {name:"New M4 Comp xDrive",  buy:118000, dep:46733, run:24084}
+];
+
+function drawTCO(){
+  const box = document.getElementById("tco-chart");
+  box.innerHTML = "";
+  const W = Math.max(box.clientWidth || 640, 520);
+  const rowH = 54, m = {t:8, r:78, b:34, l:Math.min(178, W*0.3)};
+  const H = m.t + TCO.length*rowH + m.b;
+  const iw = W-m.l-m.r;
+  const svg = el("svg",{viewBox:`0 0 ${W} ${H}`,width:W,height:H,
+    role:"img","aria-label":"Three-year cost by car: 2017 M4 38,982; 2018 C63 S 40,827; 2021 M4 44,384; new M4 70,817 euros, split into depreciation and running costs."},box);
+
+  const maxV = 75000;
+  const sx = v => (v/maxV)*iw;
+
+  for (let v=0; v<=75000; v+=25000){
+    el("line",{x1:m.l+sx(v),x2:m.l+sx(v),y1:m.t,y2:m.t+TCO.length*rowH,
+      stroke:css("--line"),"stroke-width":1},svg);
+    const t = el("text",{x:m.l+sx(v),y:H-12,"text-anchor":"middle",fill:css("--faint"),
+      "font-size":11,"font-family":"IBM Plex Mono, monospace"},svg);
+    t.textContent = v===0 ? "0" : "€"+(v/1000)+"k";
+  }
+
+  TCO.forEach((d,i)=>{
+    const yTop = m.t + i*rowH + 11, bh = 26;
+    const lbl = el("text",{x:m.l-14,y:yTop+bh/2+4.5,"text-anchor":"end",fill:css("--ink"),
+      "font-size":12.5,"font-family":"Source Sans 3, sans-serif"},svg);
+    lbl.textContent = d.name;
+
+    const wDep = sx(d.dep), wRun = sx(d.run);
+    const g1 = el("g",{},svg);
+    el("rect",{x:m.l,y:yTop,width:Math.max(wDep,3),height:bh,fill:css("--s1"),rx:2},g1);
+    el("title",{},g1).textContent = d.name+" — depreciation "+eur(d.dep);
+
+    const g2 = el("g",{},svg);
+    el("rect",{x:m.l+wDep+2,y:yTop,width:Math.max(wRun-2,3),height:bh,fill:css("--s2"),rx:2},g2);
+    el("title",{},g2).textContent = d.name+" — running costs "+eur(d.run)+" over 3 years";
+
+    const tot = el("text",{x:m.l+wDep+wRun+11,y:yTop+bh/2+4.5,fill:css("--ink"),
+      "font-size":12.5,"font-weight":600,"font-family":"IBM Plex Mono, monospace"},svg);
+    tot.textContent = eur(d.dep+d.run);
+  });
+}
+
+/* ---------- 3. Calculator ---------- */
+const SEED_BASE = 27684 - 1800 - 7000;   // net worth less parents less move
+const RATE = 0.05/12;                     // return while accumulating
+const LOAN_APR = 0.065, LOAN_N = 48;
+const RUNNING = {46000:850, 57000:866, 66000:804, 118000:669};
+
+const CARS = [
+  [30000,"Golf R or M240i territory"],
+  [38000,"M2 Competition (F87), 2019"],
+  [46000,"F82 M4 Competition, 2017"],
+  [57000,"W205 C63 S, 2018 — the V8"],
+  [66000,"G82 M4 Competition, 2021"],
+  [90000,"W206 C63 S E Performance"],
+  [118000,"New M4 Competition xDrive"]
+];
+function carLabel(p){
+  let best = CARS[0];
+  for (const c of CARS) if (Math.abs(c[0]-p) < Math.abs(best[0]-p)) best = c;
+  return Math.abs(best[0]-p) <= 6000 ? best[1] : "—";
+}
+function runningFor(p){
+  const keys = Object.keys(RUNNING).map(Number);
+  let best = keys[0];
+  for (const k of keys) if (Math.abs(k-p) < Math.abs(best-p)) best = k;
+  return RUNNING[best] * (0.75 + 0.25*(p/best));
+}
+function pmt(P,apr,n){ const i=apr/12; return P*i/(1-Math.pow(1+i,-n)); }
+
+const MONTHS = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+function dateAfter(m){
+  const d = new Date(2026, 10, 1);        // Nov 2026 = month 0
+  d.setMonth(d.getMonth() + m);
+  return MONTHS[d.getMonth()] + " " + d.getFullYear();
+}
+
+let lastSeries = [], lastTarget = 0, lastMonths = 0;
+
+function recalc(){
+  const net   = +document.getElementById("i-net").value;
+  const spend = +document.getElementById("i-spend").value;
+  const price = +document.getElementById("i-price").value;
+  const depPc = +document.getElementById("i-dep").value/100;
+  const efM   = +document.getElementById("i-ef").value;
+
+  document.getElementById("o-net").textContent   = eur0(net);
+  document.getElementById("o-spend").textContent = eur0(spend);
+  document.getElementById("o-price").textContent = eur0(price);
+  document.getElementById("o-dep").textContent   = Math.round(depPc*100);
+  document.getElementById("o-ef").textContent    = efM;
+  document.getElementById("h-price").textContent = carLabel(price);
+
+  const save   = net - spend;
+  const ef     = efM * spend;
+  const seed   = SEED_BASE - ef;
+  const need   = price * depPc;
+  const loanP  = price - need;
+  const loanM  = loanP > 0 ? pmt(loanP, LOAN_APR, LOAN_N) : 0;
+  const run    = runningFor(price);
+  const left   = save - run - loanM;
+
+  document.getElementById("h-dep").textContent = loanP > 0
+    ? "Rest — " + eur(loanP) + " — on a bank loan at 6.5% over 48 months"
+    : "Paid outright, no loan";
+
+  // accumulate
+  const series = [seed];
+  let v = seed, m = 0;
+  if (save > 0){
+    while (v < need && m < 180){ v = v*(1+RATE) + save; m++; series.push(v); }
+  }
+  const reached = v >= need && save > 0;
+
+  document.getElementById("a-seed").textContent = eur(seed);
+  document.getElementById("a-save").textContent = eur(save) + "/mo";
+  document.getElementById("a-need").textContent = eur(need);
+  document.getElementById("a-date").textContent = reached ? dateAfter(m) : "—";
+  document.getElementById("a-loan").textContent = loanM > 0 ? eur(loanM) + "/mo" : "none";
+  document.getElementById("a-left").textContent = eur(left) + "/mo";
+
+  const head = document.getElementById("a-head");
+  const pill = document.getElementById("a-pill");
+  const note = document.getElementById("a-note");
+
+  if (save <= 0){
+    head.textContent = "At this spend you save nothing. The car is not the problem — the budget is.";
+    pill.innerHTML = '<span class="pill p-bad">NOT VIABLE</span>';
+    note.textContent = "Bring monthly spend below net income before modelling a car at all.";
+  } else if (seed < 0){
+    head.textContent = "Your emergency fund isn't full yet — that comes first, and it takes " +
+      Math.ceil(-seed/save) + " months before the car fund starts.";
+    pill.innerHTML = '<span class="pill p-warn">BUFFER FIRST</span>';
+    note.textContent = "Reduce the emergency-fund months, or accept the later start date. " +
+      "The timeline above already includes this delay.";
+  } else if (!reached){
+    head.textContent = "Not reachable within 15 years at this savings rate.";
+    pill.innerHTML = '<span class="pill p-bad">OUT OF REACH</span>';
+    note.textContent = "Lower the target price or raise the savings rate.";
+  } else {
+    const yrs = (m/12).toFixed(1);
+    head.textContent = "You can buy it in " + m + " months — " + dateAfter(m) +
+      " — about " + yrs + " years from the first Helsing payslip.";
+    if (left < 0){
+      pill.innerHTML = '<span class="pill p-bad">UNAFFORDABLE TO RUN</span>';
+      note.textContent = "You reach the purchase price, but running it costs " + eur(-left) +
+        "/month more than you save. You would be drawing down savings every month to keep it on the road.";
+    } else if (left < 300){
+      pill.innerHTML = '<span class="pill p-warn">TIGHT</span>';
+      note.textContent = "Affordable, but only " + eur(left) +
+        "/month keeps accumulating afterwards. One bad repair bill and you are into the emergency fund.";
+    } else if (m <= 36){
+      pill.innerHTML = '<span class="pill p-good">INSIDE YOUR WINDOW</span>';
+      note.textContent = "Within the 1–3 year target, and still saving " + eur(left) +
+        "/month with the car on the road. This works.";
+    } else {
+      pill.innerHTML = '<span class="pill p-warn">BEYOND 3 YEARS</span>';
+      note.textContent = "Comfortably affordable once you get there, but " + m +
+        " months is outside the window you asked about. A cheaper car or a higher salary closes the gap.";
+    }
+  }
+
+  lastSeries = series; lastTarget = need; lastMonths = m;
+  drawAccum();
+}
+
+function drawAccum(){
+  const box = document.getElementById("acc-chart");
+  box.innerHTML = "";
+  if (!lastSeries.length || lastSeries.length < 2){
+    box.innerHTML = '<p class="hint" style="margin:0">No accumulation to plot at this savings rate.</p>';
+    return;
+  }
+  const W = Math.max(box.clientWidth || 640, 460), H = 220;
+  const m = {t:16, r:16, b:32, l:56};
+  const iw = W-m.l-m.r, ih = H-m.t-m.b;
+  const svg = el("svg",{viewBox:`0 0 ${W} ${H}`,width:W,height:H,
+    role:"img","aria-label":"Car fund growing from the seed amount to the target over "+lastMonths+" months."},box);
+
+  const maxV = Math.max(lastTarget*1.12, lastSeries[lastSeries.length-1]*1.05, 1000);
+  const n = lastSeries.length-1;
+  const x = i => m.l + (n ? (i/n)*iw : 0);
+  const y = v => m.t + ih - (Math.max(v,0)/maxV)*ih;
+
+  const step = maxV > 60000 ? 20000 : maxV > 30000 ? 10000 : 5000;
+  for (let v=0; v<=maxV; v+=step){
+    el("line",{x1:m.l,x2:m.l+iw,y1:y(v),y2:y(v),stroke:css("--line"),"stroke-width":1},svg);
+    const t = el("text",{x:m.l-10,y:y(v)+4,"text-anchor":"end",fill:css("--faint"),
+      "font-size":11,"font-family":"IBM Plex Mono, monospace"},svg);
+    t.textContent = v===0 ? "0" : (v/1000)+"k";
+  }
+
+  // target line
+  el("line",{x1:m.l,x2:m.l+iw,y1:y(lastTarget),y2:y(lastTarget),stroke:css("--s1"),
+    "stroke-width":2,"stroke-dasharray":"5 4"},svg);
+  const tl = el("text",{x:m.l+iw,y:y(lastTarget)-8,"text-anchor":"end",fill:css("--s1"),
+    "font-size":11.5,"font-weight":600,"font-family":"IBM Plex Mono, monospace"},svg);
+  tl.textContent = "target " + eur(lastTarget);
+
+  const pts = lastSeries.map((v,i)=>[x(i),y(v)]);
+  const d = pts.map((p,i)=>(i?"L":"M")+p[0].toFixed(1)+" "+p[1].toFixed(1)).join(" ");
+  el("path",{d:d,fill:"none",stroke:css("--s2"),"stroke-width":2,
+    "stroke-linejoin":"round","stroke-linecap":"round"},svg);
+  el("circle",{cx:pts[pts.length-1][0],cy:pts[pts.length-1][1],r:5,fill:css("--s2"),
+    stroke:css("--surf"),"stroke-width":2},svg);
+
+  const ticks = [0, Math.round(n/2), n];
+  ticks.forEach(i=>{
+    if (i<0 || i>n) return;
+    const t = el("text",{x:x(i),y:H-10,"text-anchor":i===0?"start":i===n?"end":"middle",
+      fill:css("--faint"),"font-size":11,"font-family":"IBM Plex Mono, monospace"},svg);
+    t.textContent = dateAfter(i);
+  });
+}
+
+/* ---------- wire up ---------- */
+["i-net","i-spend","i-price","i-dep","i-ef"].forEach(id=>{
+  document.getElementById(id).addEventListener("input", recalc);
+});
+
+function drawAll(){ drawNetWorth(); drawTCO(); drawAccum(); }
+recalc();
+drawAll();
+
+let rt;
+window.addEventListener("resize", ()=>{ clearTimeout(rt); rt = setTimeout(drawAll, 140); });
+if (window.matchMedia){
+  const mq = window.matchMedia("(prefers-color-scheme: dark)");
+  (mq.addEventListener ? mq.addEventListener.bind(mq,"change") : mq.addListener.bind(mq))(drawAll);
+}
+</script>
