@@ -13,8 +13,9 @@ e dinheiro.
 
 ## Quem ele é (não te enganes nisto)
 
-**Engenheiro mecânico**, não de software. Mestrado pela FEUP em estruturas aeronáuticas e de veículos.
-Português, a viver na Alemanha, a mudar de Berlim para Munique.
+**Engenheiro mecânico**, não de software. 25 anos. Mestrado pela FEUP em estruturas aeronáuticas e de
+veículos. Português, a viver na Alemanha, a mudar de Berlim para Munique — e continua em engenharia
+mecânica na empresa nova.
 
 Percurso: estágios na Tekever (Porto, drones) e na Continental (Braga) → estágio na **Apple** em Cork
 (qualidade e análise de falhas de iPhone) → tese de mestrado na **Volvo Cars** em Gotemburgo (simulação
