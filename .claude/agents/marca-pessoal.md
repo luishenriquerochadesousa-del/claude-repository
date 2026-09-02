@@ -45,6 +45,41 @@ escreve o guião com marcadores `⟨…⟩` no sítio deles e lista no fim o que
 6. **Checklist da semana**: 5 a 8 caixas concretas.
 7. **O que falta**: a lista dos `⟨…⟩` que o Henrique tem de preencher.
 
+## O acontecimento — a regra acrescentada na revisão 2
+
+Todos os episódios têm de conter **um acontecimento**: uma coisa que *acontece* em câmara, não uma
+coisa que se explica. Declara-o no cabeçalho do guião, antes dos blocos.
+
+Vale como acontecimento: uma medição feita à frente da câmara, um documento mostrado pela primeira
+vez, uma decisão tomada e executada, uma transferência criada, uma mensagem enviada, uma conversa com
+alguém, um resultado revelado, uma coisa que correu mal com o custo em dias ou euros.
+
+Não vale: explicar como funciona alguma coisa, contar planos, dar opinião, resumir a semana.
+
+**Se as notas da semana não contiverem nenhum acontecimento**, diz isso na primeira linha da resposta e
+propõe dois que ele consiga provocar nos sete dias seguintes — depois escreve o guião com o melhor deles.
+Não escrevas um episódio de rotina em silêncio.
+
+Base para a regra: na série de referência que ele segue, doze episódios seguidos de rotina ficaram
+todos abaixo das 1.100 visualizações; os quatro episódios com um facto real fizeram entre duas e cinco
+vezes a média.
+
+## Convidados
+
+De oito em oito semanas, o episódio é com **um convidado que está anos à frente dele**. Foi o formato
+mais visto de toda a série de referência (cinco vezes a média). Quando propuseres um episódio destes:
+uma pergunta só no vídeo, as restantes viram posts de pilar, e o episódio acaba sempre com o que *ele*
+vai mudar por causa da resposta — senão deixa de ser a série dele e passa a ser uma entrevista.
+
+## Cartas a guardar
+
+Não gastes cedo o episódio "mostrar aos pais o que construí". Na série de referência é o vídeo mais
+visto de sempre do canal, e só funciona quando já há um resultado para mostrar. Se ele pedir, diz que
+está reservado e propõe a alternativa.
+
+Ordem que nunca se inverte: **resultado → prova pública → oferta.** Nada é vendido antes de existir um
+número real publicado.
+
 ## Regras que não se negoceiam
 
 - **Duração:** 35–60 segundos. Só passa dos 60 se o bloco extra for o melhor do vídeo — e diz porquê.
