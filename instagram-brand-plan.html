@@ -1,0 +1,904 @@
+<title>The Munich Episodes</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600&family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;1,8..60,400&display=swap">
+<style>
+:root{
+  --ground:#E7ECEA; --surface:#FFFFFF; --surface-2:#F1F6F4; --surface-3:#E1E9E7;
+  --line:#C9D6D2; --line-soft:#DEE7E4;
+  --ink:#0E1918; --ink-2:#3A4A47; --ink-3:#6A7A77;
+  --accent:#0A5D59; --accent-2:#0E8681; --accent-soft:#D5E8E6;
+  --amber:#8F580A; --amber-soft:#F4E7D0;
+  --good:#25664A; --good-soft:#DAEBE2;
+  --warn:#8A5709; --warn-soft:#F6E9CE;
+  --crit:#93291E; --crit-soft:#F5DDD9;
+  --shadow:0 1px 2px rgba(14,25,24,.05),0 8px 24px -16px rgba(14,25,24,.35);
+  --display:"Archivo","Helvetica Neue",Helvetica,Arial,sans-serif;
+  --body:"Archivo","Helvetica Neue",Helvetica,Arial,sans-serif;
+  --serif:"Source Serif 4",Georgia,"Times New Roman",serif;
+  --mono:"JetBrains Mono",ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --ground:#08110F; --surface:#0F1B19; --surface-2:#14211F; --surface-3:#1B2A27;
+    --line:#243733; --line-soft:#1C2B28;
+    --ink:#E2ECE9; --ink-2:#A8BAB6; --ink-3:#788B87;
+    --accent:#48BDB3; --accent-2:#6FD3C9; --accent-soft:#0F2E2C;
+    --amber:#D6A055; --amber-soft:#2A2114;
+    --good:#5CBE93; --good-soft:#0F2620;
+    --warn:#DBAC5C; --warn-soft:#2A2114;
+    --crit:#EC8A7D; --crit-soft:#2D1714;
+    --shadow:0 1px 2px rgba(0,0,0,.45),0 10px 28px -18px rgba(0,0,0,.9);
+  }
+}
+:root[data-theme="dark"]{
+  --ground:#08110F; --surface:#0F1B19; --surface-2:#14211F; --surface-3:#1B2A27;
+  --line:#243733; --line-soft:#1C2B28;
+  --ink:#E2ECE9; --ink-2:#A8BAB6; --ink-3:#788B87;
+  --accent:#48BDB3; --accent-2:#6FD3C9; --accent-soft:#0F2E2C;
+  --amber:#D6A055; --amber-soft:#2A2114;
+  --good:#5CBE93; --good-soft:#0F2620;
+  --warn:#DBAC5C; --warn-soft:#2A2114;
+  --crit:#EC8A7D; --crit-soft:#2D1714;
+  --shadow:0 1px 2px rgba(0,0,0,.45),0 10px 28px -18px rgba(0,0,0,.9);
+}
+*{box-sizing:border-box}
+body{
+  margin:0; background:var(--ground); color:var(--ink);
+  font-family:var(--body); font-size:15.5px; line-height:1.55;
+  -webkit-font-smoothing:antialiased;
+}
+.wrap{max-width:1120px; margin:0 auto; padding:0 22px 96px}
+a{color:var(--accent); text-underline-offset:3px}
+a:focus-visible,button:focus-visible,input:focus-visible{outline:2px solid var(--accent-2); outline-offset:2px; border-radius:3px}
+h1,h2,h3,h4{font-family:var(--display); text-wrap:balance; margin:0}
+p{margin:0}
+
+/* ── masthead ───────────────────────────────────────── */
+.mast{padding:52px 0 30px; border-bottom:1px solid var(--line)}
+.slate{
+  display:inline-flex; align-items:center; gap:9px; font-family:var(--mono);
+  font-size:11.5px; letter-spacing:.1em; text-transform:uppercase; color:var(--ink-3);
+}
+.dot{width:8px; height:8px; border-radius:50%; background:var(--crit); flex:none}
+.mast h1{font-size:clamp(34px,6vw,58px); font-weight:700; letter-spacing:-.028em; line-height:1.02; margin:16px 0 0}
+.mast .lede{font-family:var(--serif); font-size:clamp(17px,2.2vw,20px); line-height:1.5; color:var(--ink-2); max-width:60ch; margin-top:18px}
+
+/* ── contract strip ─────────────────────────────────── */
+.contract{display:grid; grid-template-columns:repeat(auto-fit,minmax(180px,1fr)); gap:1px; background:var(--line); border:1px solid var(--line); margin-top:30px}
+.contract div{background:var(--surface); padding:15px 16px}
+.contract dt{font-family:var(--mono); font-size:10.5px; letter-spacing:.11em; text-transform:uppercase; color:var(--ink-3)}
+.contract dd{margin:6px 0 0; font-family:var(--display); font-size:19px; font-weight:600; letter-spacing:-.015em}
+.contract dd span{font-size:13px; font-weight:400; color:var(--ink-2); display:block; letter-spacing:0; margin-top:2px}
+
+/* ── nav ────────────────────────────────────────────── */
+nav{position:sticky; top:0; z-index:20; background:color-mix(in srgb,var(--ground) 88%,transparent); backdrop-filter:blur(10px); border-bottom:1px solid var(--line-soft); margin-top:0}
+.navin{max-width:1120px; margin:0 auto; padding:9px 22px; display:flex; gap:16px; overflow-x:auto; scrollbar-width:none}
+.navin::-webkit-scrollbar{display:none}
+.navin a{font-family:var(--mono); font-size:11px; letter-spacing:.07em; text-transform:uppercase; color:var(--ink-2); text-decoration:none; white-space:nowrap; padding:4px 0; border-bottom:1.5px solid transparent}
+.navin a:hover{color:var(--accent); border-bottom-color:var(--accent)}
+
+/* ── sections ───────────────────────────────────────── */
+section{padding-top:56px}
+.eyebrow{font-family:var(--mono); font-size:11px; letter-spacing:.14em; text-transform:uppercase; color:var(--accent); margin-bottom:9px}
+section>h2{font-size:clamp(24px,3.4vw,32px); font-weight:700; letter-spacing:-.022em}
+.sub{color:var(--ink-2); max-width:68ch; margin-top:10px}
+.grid{display:grid; gap:14px; margin-top:22px}
+.g2{grid-template-columns:repeat(auto-fit,minmax(300px,1fr))}
+.g3{grid-template-columns:repeat(auto-fit,minmax(240px,1fr))}
+.g4{grid-template-columns:repeat(auto-fit,minmax(200px,1fr))}
+
+.card{background:var(--surface); border:1px solid var(--line); padding:18px 19px}
+.card h3{font-size:16.5px; font-weight:600; letter-spacing:-.01em}
+.card p{color:var(--ink-2); font-size:14.5px; margin-top:8px}
+.card ul{margin:10px 0 0; padding-left:17px; color:var(--ink-2); font-size:14.5px}
+.card li{margin-top:5px}
+.card li::marker{color:var(--ink-3)}
+
+.tag{display:inline-block; font-family:var(--mono); font-size:10px; letter-spacing:.1em; text-transform:uppercase; padding:3px 7px; border:1px solid var(--line); color:var(--ink-2); background:var(--surface-2)}
+.tag.a{color:var(--accent); border-color:var(--accent); background:var(--accent-soft)}
+.tag.w{color:var(--warn); border-color:var(--warn); background:var(--warn-soft)}
+.tag.g{color:var(--good); border-color:var(--good); background:var(--good-soft)}
+.tag.c{color:var(--crit); border-color:var(--crit); background:var(--crit-soft)}
+
+.ph{font-family:var(--mono); font-size:.9em; color:var(--amber); background:var(--amber-soft); padding:0 4px; border-bottom:1px dotted var(--amber)}
+
+table{width:100%; border-collapse:collapse; font-size:14.5px}
+.scroll{overflow-x:auto; border:1px solid var(--line); background:var(--surface); margin-top:20px}
+th{text-align:left; font-family:var(--mono); font-size:10.5px; letter-spacing:.1em; text-transform:uppercase; color:var(--ink-3); font-weight:400; padding:11px 14px; border-bottom:1px solid var(--line); white-space:nowrap}
+td{padding:11px 14px; border-bottom:1px solid var(--line-soft); vertical-align:top; color:var(--ink-2)}
+tbody tr:last-child td{border-bottom:none}
+td strong{color:var(--ink); font-weight:600}
+td.num{font-family:var(--mono); font-variant-numeric:tabular-nums; white-space:nowrap; color:var(--ink)}
+</style>
+<style>
+/* ── phase timeline ─────────────────────────────────── */
+.phase{display:grid; grid-template-columns:64px 1fr; border:1px solid var(--line); background:var(--surface)}
+.phase+.phase{border-top:none}
+.phase .n{background:var(--surface-3); display:flex; align-items:flex-start; justify-content:center; padding:18px 0; font-family:var(--mono); font-size:13px; font-weight:600; color:var(--accent); border-right:1px solid var(--line)}
+.phase .b{padding:17px 19px}
+.phase h3{font-size:17px; font-weight:600; letter-spacing:-.01em}
+.phase .when{font-family:var(--mono); font-size:11px; letter-spacing:.08em; text-transform:uppercase; color:var(--ink-3); margin-top:3px}
+.phase p{color:var(--ink-2); font-size:14.5px; margin-top:9px; max-width:70ch}
+.phase .out{margin-top:11px; display:flex; flex-wrap:wrap; gap:6px}
+
+/* ── script sheets ──────────────────────────────────── */
+.sheet{background:var(--surface); border:1px solid var(--line); margin-top:22px; box-shadow:var(--shadow)}
+.sheet>header{padding:17px 20px; border-bottom:1px solid var(--line); display:flex; flex-wrap:wrap; gap:12px 22px; align-items:baseline; background:var(--surface-2)}
+.sheet>header h3{font-size:19px; font-weight:700; letter-spacing:-.018em; flex:1 1 240px}
+.spec{display:flex; gap:18px; flex-wrap:wrap; font-family:var(--mono); font-size:11px; letter-spacing:.06em; text-transform:uppercase; color:var(--ink-3)}
+.spec b{color:var(--ink); font-weight:600}
+.beat{display:grid; grid-template-columns:78px 1fr; border-bottom:1px solid var(--line-soft)}
+.beat:last-of-type{border-bottom:none}
+.tc{font-family:var(--mono); font-size:11.5px; font-variant-numeric:tabular-nums; color:var(--accent); padding:16px 0 16px 20px; letter-spacing:-.01em}
+.beatbody{padding:16px 20px 16px 6px}
+.role{font-family:var(--mono); font-size:10px; letter-spacing:.13em; text-transform:uppercase; color:var(--ink-3)}
+.say{font-family:var(--serif); font-size:17.5px; line-height:1.48; color:var(--ink); margin-top:6px; max-width:58ch}
+.say em{font-style:italic; color:var(--ink-2)}
+.meta{margin-top:11px; display:grid; gap:6px; font-size:13.5px; color:var(--ink-2)}
+.meta .k{font-family:var(--mono); font-size:10px; letter-spacing:.12em; text-transform:uppercase; color:var(--ink-3); margin-right:8px}
+.ost{font-family:var(--display); font-weight:600; color:var(--ink); text-transform:uppercase; letter-spacing:.02em; font-size:13px}
+.sheetfoot{padding:16px 20px; background:var(--surface-2); border-top:1px solid var(--line); display:grid; gap:12px}
+.foothead{font-family:var(--mono); font-size:10px; letter-spacing:.13em; text-transform:uppercase; color:var(--ink-3)}
+.caption{font-family:var(--serif); font-size:15px; line-height:1.5; color:var(--ink-2); white-space:pre-line; max-width:62ch}
+
+/* ── rule list ──────────────────────────────────────── */
+.rules{counter-reset:r; margin-top:20px; border:1px solid var(--line); background:var(--surface)}
+.rules li{counter-increment:r; list-style:none; display:grid; grid-template-columns:38px 1fr; padding:13px 18px 13px 0; border-bottom:1px solid var(--line-soft); color:var(--ink-2); font-size:14.5px}
+.rules li:last-child{border-bottom:none}
+.rules li::before{content:counter(r); font-family:var(--mono); font-size:11px; color:var(--accent); padding-left:18px; padding-top:3px}
+.rules strong{color:var(--ink); font-weight:600}
+.rules ol,.rules ul{margin:0; padding:0}
+
+/* ── checklist ──────────────────────────────────────── */
+.check{border:1px solid var(--line); background:var(--surface); margin-top:20px}
+.check label{display:flex; gap:12px; align-items:flex-start; padding:11px 18px; border-bottom:1px solid var(--line-soft); cursor:pointer; font-size:14.5px; color:var(--ink-2)}
+.check label:last-child{border-bottom:none}
+.check input{margin-top:3px; accent-color:var(--accent); width:15px; height:15px; flex:none}
+.check input:checked+span{color:var(--ink-3); text-decoration:line-through}
+.check .day{font-family:var(--mono); font-size:10.5px; color:var(--accent); margin-right:10px; letter-spacing:.06em}
+
+/* ── callout ────────────────────────────────────────── */
+.note{border-left:3px solid var(--amber); background:var(--amber-soft); padding:14px 17px; margin-top:20px; font-size:14.5px; color:var(--ink-2)}
+.note strong{color:var(--ink)}
+.note.crit{border-left-color:var(--crit); background:var(--crit-soft)}
+.note.acc{border-left-color:var(--accent); background:var(--accent-soft)}
+
+footer{margin-top:64px; padding-top:22px; border-top:1px solid var(--line); font-size:13px; color:var(--ink-3); display:flex; flex-wrap:wrap; gap:10px 26px; justify-content:space-between}
+@media (prefers-reduced-motion:reduce){*{animation:none!important; transition:none!important}}
+@media (max-width:560px){
+  .beat{grid-template-columns:1fr}
+  .tc{padding:14px 20px 0}
+  .beatbody{padding:8px 20px 16px}
+  .phase{grid-template-columns:48px 1fr}
+}
+</style>
+<nav>
+  <div class="navin">
+    <a href="#lock">Decisions</a>
+    <a href="#pillars">Pillars</a>
+    <a href="#system">Weekly system</a>
+    <a href="#spine">Episode spine</a>
+    <a href="#scripts">Scripts 1–3</a>
+    <a href="#body">Body track</a>
+    <a href="#money">Money track</a>
+    <a href="#metrics">Metrics &amp; gates</a>
+    <a href="#legal">Germany rules</a>
+    <a href="#kit">Kit</a>
+    <a href="#fail">Failure modes</a>
+    <a href="#start">First 14 days</a>
+  </div>
+</nav>
+
+<div class="wrap">
+
+<header class="mast">
+  <div class="slate"><span class="dot"></span>Series bible · v1 · Sept 2026</div>
+  <h1>The Munich Episodes</h1>
+  <p class="lede">A twelve-month build-in-public series: one engineer, one relocation, one body, and a
+  business that does not exist yet. The plan below optimises for one thing only — that episode 40
+  gets posted. Everything else is downstream of not stopping.</p>
+
+  <dl class="contract">
+    <div><dt>Cadence</dt><dd>3 posts / week<span>1 episode + 2 pillar posts</span></dd></div>
+    <div><dt>Episode drop</dt><dd>Sunday 19:00<span>Same hour, every week</span></dd></div>
+    <div><dt>Edit budget</dt><dd>60 minutes<span>Timer. Export on the bell.</span></dd></div>
+    <div><dt>Episode length</dt><dd>35–60 s<span>Under 60 unless it earns it</span></dd></div>
+    <div><dt>First checkpoint</dt><dd>Day 90<span>12 episodes, no misses</span></dd></div>
+  </dl>
+</header>
+
+<section id="lock">
+  <div class="eyebrow">01 · Lock before you record</div>
+  <h2>Five decisions, made once, never reopened</h2>
+  <p class="sub">Each of these is a thing you will otherwise re-litigate every Saturday at 22:00 instead
+  of filming. Decide now, write them down, stop thinking about them.</p>
+
+  <div class="grid g2">
+    <div class="card">
+      <span class="tag a">Language</span>
+      <h3>Portuguese spoken, English burned-in captions</h3>
+      <p>Your differentiation is <em>Portuguese engineer who got out</em>. That story is worth far more
+      to a PT/BR audience than a generic "dev abroad" story is to an English one, and PT/BR is where
+      the questions — and later the paid product — actually come from. Cost: lower ad RPM. Accept it;
+      your revenue lines are brand deals and your own product, not Instagram's payout.</p>
+      <ul><li>Every video ships with burned-in captions. Silent-autoplay is the default viewing mode.</li>
+      <li>Caption text in the post: Portuguese first, one English line at the end.</li></ul>
+    </div>
+    <div class="card">
+      <span class="tag a">Account</span>
+      <h3>One account. Not a UGC account and a personal account.</h3>
+      <p>You were going to make this UGC-only. Don't split it. UGC clients buy the person and the proof;
+      a separate faceless UGC page has no proof and starts at zero. The series <em>is</em> the portfolio —
+      brands can watch you shoot, light and edit for 40 weeks before they hire you.</p>
+      <ul><li>Handle: your real name, or name + a one-word anchor. Not a niche word you'll outgrow.</li>
+      <li>Bio states the three tracks and the promise: episodes weekly.</li></ul>
+    </div>
+    <div class="card">
+      <span class="tag a">Format</span>
+      <h3>Episodes are numbered and dated on-screen</h3>
+      <p>The number is the format. It creates a back-catalogue people binge, a reason to follow (they
+      want the next one), and a public counter you can't quietly abandon. Every episode opens with
+      <span class="ost">EP. 07 · MUNICH · WEEK 7</span> in the same corner, same font, forever.</p>
+    </div>
+    <div class="card">
+      <span class="tag a">Scope</span>
+      <h3>Three tracks, one at a time on the business side</h3>
+      <p>Body, engineering career, and money experiments. The first two run continuously from week 1.
+      The money track opens <strong>one experiment at a time</strong> — UGC first, then a digital product,
+      then ecommerce. Running three at once is the most common way this ends.</p>
+    </div>
+  </div>
+
+  <div class="note crit"><strong>The one rule that matters:</strong> a missed Sunday ends the series;
+  a bad episode does not. In eighteen months nobody will remember which episode was badly lit. Everybody
+  will notice the gap between episode 9 and episode 23.</div>
+</section>
+
+<section id="pillars">
+  <div class="eyebrow">02 · Content</div>
+  <h2>Four pillars, unequal weight</h2>
+  <p class="sub">The episodes are the spine, but the spine is not what recruits an audience. Discovery
+  comes from the career pillar — that is the content strangers search for and send to friends. The
+  episodes convert those strangers into people who come back.</p>
+
+  <div class="scroll">
+    <table>
+      <thead><tr><th>Pillar</th><th>What it is</th><th>Job</th><th>Weekly</th></tr></thead>
+      <tbody>
+        <tr><td><strong>A · The Episodes</strong></td>
+          <td>Numbered documentary. What actually happened this week across all three tracks, with numbers on screen.</td>
+          <td>Retention and loyalty. Turns viewers into a following.</td><td class="num">1×</td></tr>
+        <tr><td><strong>B · Engineer abroad</strong></td>
+          <td>How you got in from Portugal, interview loops, relocation, visas, German bureaucracy, salary reality, what big-tech work is actually like.</td>
+          <td>Discovery. This is the growth engine and the future product.</td><td class="num">1× (weeks 1–12)</td></tr>
+        <tr><td><strong>C · The body</strong></td>
+          <td>Garage calisthenics. Same frame, same bar, numbers going up.</td>
+          <td>Visual proof of the thesis. Highest watch-through of anything you'll post.</td><td class="num">1×</td></tr>
+        <tr><td><strong>D · Experiments</strong></td>
+          <td>UGC, then the product, then ecommerce. Real numbers, including the failures.</td>
+          <td>Credibility and monetisation. Replaces pillar B slot from month 4.</td><td class="num">0× → 1×</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="note acc"><strong>Ratio, not inspiration.</strong> Weeks 1–12: A + B + C. Month 4 onward:
+  A + C + D, with B whenever a career question shows up repeatedly in your DMs. Never post two of the
+  same pillar back-to-back.</div>
+</section>
+
+<section id="system">
+  <div class="eyebrow">03 · Production</div>
+  <h2>The weekly loop — four hours, fixed slots</h2>
+  <p class="sub">You have a full-time engineering job and a relocation. The system has to survive a bad
+  week, a sprint, and a hangover. Four hours, in the same two blocks, every week.</p>
+
+  <div class="scroll">
+    <table>
+      <thead><tr><th>Slot</th><th>Block</th><th>Output</th><th>Time</th></tr></thead>
+      <tbody>
+        <tr><td class="num">Thu 20:00</td><td><strong>Write</strong> — three hooks and three beat-lists on your phone notes. Nothing else.</td><td>3 scripts, bullet form</td><td class="num">20 min</td></tr>
+        <tr><td class="num">Sat 10:00</td><td><strong>Batch shoot</strong> — one location, one outfit, tripod up once. Episode first while you have energy, then the two pillar posts, then 5 minutes of loose B-roll.</td><td>3 videos raw + b-roll</td><td class="num">90 min</td></tr>
+        <tr><td class="num">Sun 17:00</td><td><strong>Edit</strong> — timer set to 60 minutes. Episode gets 35 min, the other two get 12 each.</td><td>3 finished cuts</td><td class="num">60 min</td></tr>
+        <tr><td class="num">Sun 19:00</td><td><strong>Post the episode.</strong> Schedule the other two for Tuesday and Thursday.</td><td>Published</td><td class="num">10 min</td></tr>
+        <tr><td class="num">Sun 19:15</td><td><strong>Reply</strong> — every comment and DM for 20 minutes, then close the app. Log every question asked; those questions are next month's pillar B posts.</td><td>Content input log</td><td class="num">20 min</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h3 style="margin-top:34px; font-size:19px; font-weight:600; letter-spacing:-.015em">The editing rules that fix your actual problem</h3>
+  <p class="sub" style="margin-top:8px">You said it yourself: you don't post because you think it has to
+  be edited beautifully. That is not a taste problem, it is an absence of constraints. Constraints below.</p>
+  <ol class="rules">
+    <li><span><strong>60-minute timer, started before the first clip is imported.</strong> When it rings, you export what exists. Not "almost done" — export.</span></li>
+    <li><span><strong>Two takes per line, maximum.</strong> A third take means you keep take two. Perfect delivery reads as an ad; a stumble reads as a person.</span></li>
+    <li><span><strong>One template, forever.</strong> One caption style, one font, one transition (a hard cut), one colour preset. Choose them in week 1 and never open the font menu again.</span></li>
+    <li><span><strong>Three minutes maximum choosing music</strong>, or no music. Spoken-word reels do fine dry.</span></li>
+    <li><span><strong>Nothing gets deleted before it's posted.</strong> You are not allowed to judge a video you have not published. Your taste is calibrated for consuming, not for making — it will be wrong for the first six months.</span></li>
+    <li><span><strong>Escape hatch:</strong> if 19:00 arrives and the edit is broken, post the single best raw take with a title card. The audience has never once punished this. Missing the week is the only real failure.</span></li>
+    <li><span><strong>Weeks 1–8: never look at the numbers.</strong> Turn off the notification. Check reach once, on the Sunday of week 8. Before that the data is noise and it will only make you quit.</span></li>
+  </ol>
+</section>
+<section id="spine">
+  <div class="eyebrow">04 · Structure</div>
+  <h2>Episodes 1–12 — the first quarter, pre-written</h2>
+  <p class="sub">Every episode must contain proof of work done that week. An episode about a plan is a
+  vlog; an episode about a thing you did is a series. If a week produced nothing, the episode is about
+  the week that produced nothing — that is also proof.</p>
+
+  <div class="scroll">
+    <table>
+      <thead><tr><th>Ep</th><th>Premise</th><th>Proof on screen</th></tr></thead>
+      <tbody>
+        <tr><td class="num">01</td><td><strong>Who is talking and why.</strong> The stake, not the CV.</td><td>The commitment, said out loud, with a date.</td></tr>
+        <tr><td class="num">02</td><td><strong>The garage.</strong> Start line for the body: bodyweight, reps, the bar.</td><td>Weight on the scale, max pull-ups counted on camera.</td></tr>
+        <tr><td class="num">03</td><td><strong>Berlin is over.</strong> Packing, the reason for Munich, what it costs.</td><td>Empty flat, boxes, the rent delta.</td></tr>
+        <tr><td class="num">04</td><td><strong>Week one in Munich.</strong> New flat, new company, new training corner.</td><td>The new setup built, first session filmed in it.</td></tr>
+        <tr><td class="num">05</td><td><strong>How I got into tech, part 1.</strong> The years nobody posts about.</td><td>Old CV, rejection emails, dates.</td></tr>
+        <tr><td class="num">06</td><td><strong>Part 2: the loop that worked.</strong> Interview structure, prep time, what actually mattered.</td><td>The prep schedule, the offer timeline.</td></tr>
+        <tr><td class="num">07</td><td><strong>Month 1 body checkpoint.</strong> Same frame, same shorts, same light.</td><td>Side-by-side photo, four numbers.</td></tr>
+        <tr><td class="num">08</td><td><strong>Experiment 1 opens: UGC.</strong> What it is, what you'll charge, the pitch you're sending.</td><td>The portfolio videos, the pitch text on screen.</td></tr>
+        <tr><td class="num">09</td><td><strong>Did anyone reply?</strong> Pitches sent vs. answers, unedited.</td><td>Inbox screenshots. Zeros included.</td></tr>
+        <tr><td class="num">10</td><td><strong>What an engineer in Munich actually keeps.</strong> Gross, net, rent, savings rate.</td><td>Real percentages. No employer name, no exact salary if you'd rather — ratios work.</td></tr>
+        <tr><td class="num">11</td><td><strong>Experiment 2 opens.</strong> The product or the store, the capital cap, the kill date.</td><td>Budget written on screen with the date it dies.</td></tr>
+        <tr><td class="num">12</td><td><strong>Ninety days.</strong> Every number across all three tracks. What continues, what gets killed.</td><td>The full table. Especially the parts that failed.</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="note"><strong>Hold your background back.</strong> The full "Portugal to big tech" story is
+  episodes 5 and 6 — not episode 1. It is your single most valuable asset: it is what the audience comes
+  for, what the DMs will ask about, and what people will eventually pay for. Spend it deliberately, in
+  order, not as an info-dump in the first sixty seconds.</div>
+</section>
+
+<section id="scripts">
+  <div class="eyebrow">05 · The part you actually needed</div>
+  <h2>Scripts for the first three reels</h2>
+  <p class="sub">Shoot-ready. Timecodes are targets, not law — if a take runs 4 seconds long and sounds
+  human, keep it. Words in <span class="ph">amber</span> are facts only you have; fill them in before
+  you shoot and don't soften them. Numbers are the whole point.</p>
+
+  <!-- ── SCRIPT 1 ─────────────────────────────────── -->
+  <article class="sheet">
+    <header>
+      <h3>EP. 01 — “Nothing here is mine yet”</h3>
+      <div class="spec">
+        <span>Length <b>55 s</b></span><span>Setup <b>1 static shot + 4 inserts</b></span>
+        <span>Location <b>Berlin flat, by the window</b></span><span>Shoot <b>25 min</b></span>
+      </div>
+    </header>
+
+    <div class="beat">
+      <div class="tc">0:00–0:05</div>
+      <div class="beatbody">
+        <div class="role">Hook · start mid-thought, no greeting</div>
+        <p class="say">“<span class="ph">Four</span> years ago I was in Portugal with no way into tech.
+        Today I write software for one of the biggest companies in the world — and none of it is mine.”</p>
+        <div class="meta">
+          <div><span class="k">PT</span>“Há <span class="ph">quatro</span> anos eu estava em Portugal sem forma nenhuma de entrar em tech. Hoje escrevo software para uma das maiores empresas do mundo — e nada disto é meu.”</div>
+          <div><span class="k">Shot</span>Static, chest-up, window light on your face, phone at eye level. Start recording <em>before</em> you start talking and cut in on the first word.</div>
+          <div><span class="k">On screen</span><span class="ost">EP. 01</span> top-left, small, from frame one.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="beat">
+      <div class="tc">0:05–0:14</div>
+      <div class="beatbody">
+        <div class="role">Who — high level only, four facts, no CV</div>
+        <p class="say">“I'm <span class="ph">Henrique</span>. Portuguese, <span class="ph">28</span>,
+        software engineer, <span class="ph">five</span> years abroad. Berlin for the last
+        <span class="ph">three</span> — and in <span class="ph">three weeks</span> I move to Munich for a
+        new company.”</p>
+        <div class="meta">
+          <div><span class="k">Insert</span>Two seconds of Berlin street B-roll under “Berlin”. One second of your desk under “engineer”. Cut back to face.</div>
+          <div><span class="k">Rule</span>Do not explain how you got the job here. That is episodes 5 and 6. Four facts, then move.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="beat">
+      <div class="tc">0:14–0:28</div>
+      <div class="beatbody">
+        <div class="role">The gap — this is the actual hook of the whole series</div>
+        <p class="say">“The salary is good. But it's rented — I stop, it stops. I'm
+        <span class="ph">skinny</span>, I've said I'd fix that for <span class="ph">six</span> years,
+        and I own nothing that pays me while I sleep. I want a house and a car before I'm
+        <span class="ph">35</span>, and a job alone doesn't get me there.”</p>
+        <div class="meta">
+          <div><span class="k">Delivery</span>Slow down here. This is the sentence people screenshot. Say it flat, not motivational.</div>
+          <div><span class="k">On screen</span><span class="ost">CASA + CARRO ANTES DOS 35</span> — hold 2 s.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="beat">
+      <div class="tc">0:28–0:44</div>
+      <div class="beatbody">
+        <div class="role">The promise — what the series is, concretely</div>
+        <p class="say">“So I'm filming all of it. One episode a week. Three things: build a body in my
+        garage, build income that isn't a salary, and show you exactly how someone from Portugal ends up
+        inside these companies. Real numbers. Including the ones that make me look bad.”</p>
+        <div class="meta">
+          <div><span class="k">Inserts</span>Pull-up bar (1 s) · laptop with a store/spreadsheet open (1 s) · moving boxes (1 s). Rapid, one beat each.</div>
+          <div><span class="k">On screen</span>Three stacked labels appearing on cue: <span class="ost">01 CORPO · 02 DINHEIRO · 03 CARREIRA</span></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="beat">
+      <div class="tc">0:44–0:55</div>
+      <div class="beatbody">
+        <div class="role">The terms + close</div>
+        <p class="say">“I don't know if any of it works. That's why it's worth filming. If it fails,
+        you'll watch it fail here. <em>Episódio dois, domingo.</em>”</p>
+        <div class="meta">
+          <div><span class="k">Shot</span>Back to the opening frame. Cut the instant the last word ends — no smile-and-wait, no “see you next time”.</div>
+          <div><span class="k">No CTA</span>Do not ask for a follow in episode 1. The number is the CTA.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="sheetfoot">
+      <div><div class="foothead">Cover frame</div><p class="caption">You, mid-sentence, unsmiling, looking at the lens. Text on cover: <span class="ost">EP. 01</span> only. Every episode cover is identical in layout — that grid becomes recognisable at a glance.</p></div>
+      <div><div class="foothead">Caption</div><p class="caption">Episódio 1. Engenheiro português, <span class="ph">28</span> anos, a mudar de Berlim para Munique — e a começar tudo o resto do zero: corpo, negócio, e a história de como se entra nestas empresas vindo de Portugal.
+Um episódio por semana, domingo. Sem exceções.
+—
+EN: Episode 1 of a weekly series — body, business, and how a Portuguese engineer got into big tech.</p></div>
+      <div><div class="foothead">Cut if over</div><p class="caption">60 s. Take it out of the “four facts” block first, never out of the gap block.</p></div>
+    </div>
+  </article>
+  <!-- ── SCRIPT 2 ─────────────────────────────────── -->
+  <article class="sheet">
+    <header>
+      <h3>EP. 02 — “The start line”</h3>
+      <div class="spec">
+        <span>Length <b>38 s</b></span><span>Setup <b>Garage, 6 shots</b></span>
+        <span>Talking <b>Voice-over, not to camera</b></span><span>Shoot <b>30 min</b></span>
+      </div>
+    </header>
+
+    <div class="beat">
+      <div class="tc">0:00–0:04</div>
+      <div class="beatbody">
+        <div class="role">Hook · over footage, no face, numbers first</div>
+        <p class="say">“<span class="ph">71</span> kilos. <span class="ph">8</span> pull-ups. That's
+        where this starts.”</p>
+        <div class="meta">
+          <div><span class="k">PT</span>“<span class="ph">71</span> quilos. <span class="ph">8</span> pull-ups. É daqui que se começa.”</div>
+          <div><span class="k">Shot</span>Mid-rep on the bar, low angle, phone on the floor leaning against something. The rep is the hook — do not open on you explaining.</div>
+          <div><span class="k">On screen</span><span class="ost">EP. 02 · SEMANA 2</span> + the two numbers, big, mono font, bottom third.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="beat">
+      <div class="tc">0:04–0:12</div>
+      <div class="beatbody">
+        <div class="role">The honest statement</div>
+        <p class="say">“I've been skinny my whole life. Healthy, but skinny — and I've been saying I'd
+        change it since I was <span class="ph">22</span>. This is a garage, a bar, some rings, and
+        <span class="ph">40 €</span> of equipment. No gym, no excuse left.”</p>
+        <div class="meta">
+          <div><span class="k">Shots</span>Slow pan of the garage · hands chalking · rings hanging · the scale reading, filmed straight down.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="beat">
+      <div class="tc">0:12–0:24</div>
+      <div class="beatbody">
+        <div class="role">The target — specific, dated, falsifiable</div>
+        <p class="say">“Twelve months: <span class="ph">+8</span> kilos, <span class="ph">15</span> strict
+        pull-ups, <span class="ph">20</span> dips, and one muscle-up. Four sessions a week, calisthenics
+        only, eating more than I want to.”</p>
+        <div class="meta">
+          <div><span class="k">On screen</span>Four-line target list, checkbox style, ticking in as you say each one.</div>
+          <div><span class="k">Shot</span>Cut to you writing the four targets on paper and taping it to the garage wall. That paper appears in every body post for a year — it is the series' recurring object.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="beat">
+      <div class="tc">0:24–0:38</div>
+      <div class="beatbody">
+        <div class="role">The mechanism + close</div>
+        <p class="say">“Same corner, same shorts, same light — first Sunday of every month, I stand here
+        and film the same frame. Twelve photos. Either the plan works and you'll see it, or it doesn't
+        and you'll see that too.”</p>
+        <div class="meta">
+          <div><span class="k">Shot</span>Walk into the marked spot, arms down, hold for 3 seconds, camera static. That is the template frame — tape two crosses on the floor for your feet, now, on camera.</div>
+          <div><span class="k">On screen</span><span class="ost">FOTO 1 / 12</span> stamped over the held frame.</div>
+          <div><span class="k">Close</span>Hard cut on the held frame. No outro.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="sheetfoot">
+      <div><div class="foothead">Why this one is short</div><p class="caption">Episode 2 has to be watched twice. Motion, numbers, and a countable promise — nothing to explain. It is also your most re-postable asset: in month 12 the first frame of this video is the “before” in every comparison you'll ever make.</p></div>
+      <div><div class="foothead">Caption</div><p class="caption">Ponto de partida: <span class="ph">71</span> kg, <span class="ph">8</span> pull-ups. Objetivo a 12 meses: <span class="ph">+8</span> kg, <span class="ph">15</span> pull-ups, <span class="ph">20</span> dips, um muscle-up.
+Mesma garagem, mesmo enquadramento, primeiro domingo de cada mês. Foto 1 de 12.</p></div>
+      <div><div class="foothead">Cut if over</div><p class="caption">45 s. Cut from the “honest statement” block. Never cut the target list.</p></div>
+    </div>
+  </article>
+
+  <!-- ── SCRIPT 3 ─────────────────────────────────── -->
+  <article class="sheet">
+    <header>
+      <h3>EP. 03 — “Six days left in Berlin”</h3>
+      <div class="spec">
+        <span>Length <b>58 s</b></span><span>Setup <b>Walk-and-talk + empty-flat shots</b></span>
+        <span>Location <b>Flat, then street</b></span><span>Shoot <b>35 min</b></span>
+      </div>
+    </header>
+
+    <div class="beat">
+      <div class="tc">0:00–0:05</div>
+      <div class="beatbody">
+        <div class="role">Hook · the countdown</div>
+        <p class="say">“I've lived in Berlin for <span class="ph">three</span> years. In six days I
+        don't live here any more.”</p>
+        <div class="meta">
+          <div><span class="k">PT</span>“Vivi em Berlim <span class="ph">três</span> anos. Daqui a seis dias já não vivo aqui.”</div>
+          <div><span class="k">Shot</span>Handheld, walking through the half-packed flat, phone slightly low. Movement in the first frame — a static talking head loses this hook.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="beat">
+      <div class="tc">0:05–0:18</div>
+      <div class="beatbody">
+        <div class="role">Why — the decision, with the trade-off named</div>
+        <p class="say">“New company, new city, and honestly a better offer. Munich costs more than Berlin —
+        rent's up about <span class="ph">30%</span> for the same flat — but the pay difference covers it
+        and the job is the one I wanted.”</p>
+        <div class="meta">
+          <div><span class="k">On screen</span>Two-column comparison, mono font: <span class="ost">BERLIM → MUNIQUE · RENDA +<span class="ph">30%</span> · SALÁRIO +<span class="ph">X%</span></span></div>
+          <div><span class="k">Rule</span>Percentages, not absolute salary. Never name the employer, never film a badge, screen, or office.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="beat">
+      <div class="tc">0:18–0:34</div>
+      <div class="beatbody">
+        <div class="role">The cost — say the uncomfortable part</div>
+        <p class="say">“What nobody films: I'm leaving the only friends I built here, I'm doing the whole
+        German-bureaucracy thing again — <em>Anmeldung</em>, new health insurance, new everything — and
+        I'm starting at zero socially at <span class="ph">28</span>. Third country, third time.”</p>
+        <div class="meta">
+          <div><span class="k">Shots</span>Empty bookshelf · the Anmeldung paperwork on the table · keys on the counter · one shot out of the window at night.</div>
+          <div><span class="k">Delivery</span>Do not resolve this into a lesson. Let it sit. This block is why people follow a documentary instead of a highlight reel.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="beat">
+      <div class="tc">0:34–0:50</div>
+      <div class="beatbody">
+        <div class="role">What it changes for the series</div>
+        <p class="say">“The garage stays until Friday, then I'm training in whatever the new place gives me.
+        The plan doesn't move: same four targets, same episode every Sunday. Week
+        <span class="ph">three</span> of <span class="ph">fifty-two</span>.”</p>
+        <div class="meta">
+          <div><span class="k">Insert</span>The taped target sheet from episode 2, being pulled off the wall and folded into a box. Same object, new context — that's continuity, and it's what makes a series feel like a series.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="beat">
+      <div class="tc">0:50–0:58</div>
+      <div class="beatbody">
+        <div class="role">Close · forward hook</div>
+        <p class="say">“Next episode is from the new flat, and I'll show you what an engineer's salary in
+        Munich actually leaves you at the end of the month. <em>Domingo.</em>”</p>
+        <div class="meta">
+          <div><span class="k">Shot</span>Door closing, or the loaded car. Cut on the sound.</div>
+          <div><span class="k">Note</span>You just promised episode 4's content on camera. Now you have to make it. Do this at the end of every episode — it is the only accountability mechanism that has ever worked.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="sheetfoot">
+      <div><div class="foothead">Caption</div><p class="caption">Episódio 3. Seis dias para deixar Berlim. Porquê Munique, quanto custa a mais, e o que ninguém filma nas mudanças: recomeçar do zero pela terceira vez.
+Próximo domingo: o que sobra ao fim do mês de um salário de engenheiro em Munique.</p></div>
+      <div><div class="foothead">Cut if over</div><p class="caption">65 s — this one may exceed 60. If it does, cut the bureaucracy list, keep the “starting at zero socially” line.</p></div>
+      <div><div class="foothead">Shoot order on the day</div><p class="caption">Inserts first while the flat is still half-packed (they're unrepeatable), walk-and-talk second, hook last — by then you'll have said the line four times and it will finally sound normal.</p></div>
+    </div>
+  </article>
+
+  <div class="note"><strong>Answering your two questions directly.</strong> Length: 35–60 seconds for all
+  three; watch-through matters more than depth and a 90-second episode 1 will be abandoned at second 20.
+  Depth of background: high level only — four facts. The detailed story is worth more later, spread across
+  episodes 5 and 6, and it is the exact thing you may eventually sell.</div>
+</section>
+<section id="body">
+  <div class="eyebrow">06 · Track A</div>
+  <h2>The body — twelve months, four numbers</h2>
+  <p class="sub">You are skinny and healthy and want mass. That is the easiest transformation to film and
+  the slowest to feel. The content protocol matters as much as the training: identical framing every
+  month is what makes the change visible, and visible change is what makes people stay.</p>
+
+  <div class="grid g2">
+    <div class="card">
+      <h3>Record the start line on day one</h3>
+      <ul>
+        <li>Bodyweight, first thing, empty stomach — and the weekly <em>average</em>, never a single day</li>
+        <li>Waist at the navel, and one relaxed upper-arm measurement</li>
+        <li>Max strict pull-ups, max dips, max push-ups — counted on camera</li>
+        <li>Photos: front, side, back. Same shorts, same spot, same light, marks taped on the floor</li>
+      </ul>
+      <p>Do all of it before episode 2 is shot. Without a start line there is no series, only footage.</p>
+    </div>
+    <div class="card">
+      <h3>Twelve-month targets</h3>
+      <ul>
+        <li><strong>+7 to 9 kg</strong> bodyweight, at no more than ~0.3 kg/week — faster is mostly fat and it films badly</li>
+        <li><strong>15 strict pull-ups</strong>, <strong>20 dips</strong></li>
+        <li><strong>One muscle-up</strong> — the single most watchable milestone available to you</li>
+        <li>Waist up no more than ~4 cm over the same period</li>
+      </ul>
+    </div>
+    <div class="card">
+      <h3>Training — four sessions, calisthenics</h3>
+      <ul>
+        <li><strong>Pull:</strong> weighted pull-ups, ring rows, curls with the rings or a band</li>
+        <li><strong>Push:</strong> weighted dips, ring push-ups, pike push-ups</li>
+        <li><strong>Legs:</strong> Bulgarian split squats, nordic curls, calf raises — do not skip these; skipped legs are visible in every wide shot</li>
+        <li><strong>Skill + core:</strong> muscle-up progression, front-lever work, hanging leg raises</li>
+      </ul>
+      <p>Progressive overload needs load: a dip belt and a weighted vest are the two purchases that make bodyweight training hypertrophic. Rings over a fixed bar wherever possible.</p>
+    </div>
+    <div class="card">
+      <h3>Eating — the part that will actually decide it</h3>
+      <ul>
+        <li>Roughly +300 kcal over maintenance, adjusted monthly from the weight trend, not the mirror</li>
+        <li>~1.8 g protein per kg of bodyweight — for you that is the whole problem, not training volume</li>
+        <li>Three fixed meals plus two calorie-dense snacks. Skinny people under-eat by accident, not by choice</li>
+        <li>Film the food occasionally. It is the most-asked question you will get, and it is pillar C content for free</li>
+      </ul>
+    </div>
+  </div>
+  <div class="note acc"><strong>Filming protocol:</strong> first Sunday of every month, same corner, same
+  shorts, same time of day, floor marks taped down. One training clip a week for pillar C. Numbers on
+  screen in every single one — the counter going up is the retention device, not the physique.</div>
+</section>
+
+<section id="money">
+  <div class="eyebrow">07 · Track B</div>
+  <h2>The money — one experiment at a time, in this order</h2>
+  <p class="sub">Sequenced by capital required and by how much audience each one needs. Running them in
+  parallel is the mistake that kills this; each one gets an open date, a budget cap and a kill date.</p>
+
+  <div class="phase">
+    <div class="n">01</div>
+    <div class="b">
+      <h3>UGC — paid content for brands</h3>
+      <div class="when">Opens week 9 · capital ≈ €0 · kill date: 60 days after first pitch</div>
+      <p>The fastest cash line and the one you were already planning. You are not selling reach, you are
+      selling production: a brand pays for the video, then runs it as their own ad. Build a three-video
+      portfolio using products you actually own, then pitch ten brands a week — small DTC brands, not
+      the ones with agencies. Price at €150–350 per video to start; raise it after five paid jobs.</p>
+      <div class="out"><span class="tag">3-video portfolio</span><span class="tag">10 pitches/week</span><span class="tag">Rate card</span><span class="tag">Episode 08–09 content</span></div>
+    </div>
+  </div>
+  <div class="phase">
+    <div class="n">02</div>
+    <div class="b">
+      <h3>The digital product — “Portugal to big tech”</h3>
+      <div class="when">Opens at ~5,000 followers or ~300 email subscribers · capital ≈ €0</div>
+      <p>Your highest-margin asset and the natural end of pillar B. Do not build it first. Presell it: a
+      landing page, a waitlist, then a cohort or a paid guide sold to the waitlist before a single page is
+      written. If fewer than <span class="ph">30</span> people pay, you learned that cheaply and on camera.
+      Start collecting emails from week 1 — a link in bio to a one-field page. Followers are rented from
+      Instagram; the list is yours.</p>
+      <div class="out"><span class="tag">Email list from week 1</span><span class="tag">Presell before building</span><span class="tag">Episode 11 content</span></div>
+    </div>
+  </div>
+  <div class="phase">
+    <div class="n">03</div>
+    <div class="b">
+      <h3>Ecommerce / dropshipping</h3>
+      <div class="when">Opens only after experiment 1 or 2 produces revenue · hard capital cap</div>
+      <p>Last, not first. It is the only one of the three that can lose money, it is the most operationally
+      heavy while you are settling into a new job, and in the EU it now carries real product-compliance
+      obligations (see below). Set a capital cap you can lose without flinching — <span class="ph">€800</span>
+      is a reasonable ceiling — and a written kill date. Whatever the ad account says on that date decides
+      it, not your feelings about it. The experiment is content either way.</p>
+      <div class="out"><span class="tag w">Capital cap</span><span class="tag w">Written kill date</span><span class="tag">Episode 11–12 content</span></div>
+    </div>
+  </div>
+
+  <div class="note crit"><strong>Do not plan around Instagram paying you.</strong> Creator bonus programmes
+  are invite-only, regional, and repeatedly withdrawn; a Portuguese-language audience in Europe is close to
+  the worst case for platform payouts. Treat any platform money as a surprise. Your revenue lines are UGC
+  contracts, your own product, and affiliate — all of which you control, and none of which need a huge
+  following. A 4,000-follower account with proof of work sells UGC fine.</div>
+</section>
+
+<section id="metrics">
+  <div class="eyebrow">08 · Instrumentation</div>
+  <h2>Five numbers weekly, and the gates they open</h2>
+  <div class="grid g3">
+    <div class="card"><h3>Track these</h3><ul>
+      <li><strong>% reach from non-followers</strong> — the only real growth signal</li>
+      <li><strong>3-second retention</strong> and average watch time — tells you if the hook works</li>
+      <li><strong>Saves + shares</strong> per post — the strongest distribution signal there is</li>
+      <li><strong>Follower delta</strong>, weekly, never daily</li>
+      <li><strong>Questions logged</strong> from comments and DMs — your content backlog</li>
+    </ul></div>
+    <div class="card"><h3>Ignore these</h3><ul>
+      <li>Likes</li><li>Total view count on any single post</li>
+      <li>Follower count between Sundays</li>
+      <li>Any comparison to an account older than yours</li>
+      <li>Everything, entirely, for the first eight weeks</li>
+    </ul></div>
+    <div class="card"><h3>Review rhythm</h3><ul>
+      <li><strong>Weekly:</strong> nothing. Post and close the app.</li>
+      <li><strong>Monthly:</strong> the five numbers into a sheet, 15 minutes.</li>
+      <li><strong>Quarterly:</strong> the on-camera review. Kill what failed. This is an episode.</li>
+    </ul></div>
+  </div>
+
+  <div class="scroll">
+    <table>
+      <thead><tr><th>Gate</th><th>Opens when</th><th>What you're allowed to do</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Gate 0 · Output</strong></td><td class="num">Weeks 1–8</td><td>Nothing but publish. No selling, no analytics, no strategy changes. The only pass condition is 24 posts shipped and zero missed Sundays.</td></tr>
+        <tr><td><strong>Gate 1 · Signal</strong></td><td class="num">≥40% reach from non-followers on any 3 posts</td><td>Double down on whichever pillar produced them. Rewrite the bio around it.</td></tr>
+        <tr><td><strong>Gate 2 · UGC</strong></td><td class="num">~2–3k followers, or a 3-video portfolio you'd pay for</td><td>Open experiment 1. Pitch. Publish the results either way.</td></tr>
+        <tr><td><strong>Gate 3 · Product</strong></td><td class="num">~5k followers + ~300 emails</td><td>Presell the career product. Build only after money lands.</td></tr>
+        <tr><td><strong>Gate 4 · Store</strong></td><td class="num">≥€1,000 earned outside the salary</td><td>Open the ecommerce experiment, with the cap and the kill date written on camera.</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="note"><strong>Realistic shape of the first year:</strong> weeks 1–8 look like nothing is
+  happening — a few hundred views, single-digit follows. That is not failure, it is the cost of entry.
+  Growth in this format is discontinuous: one pillar-B post about breaking into big tech from Portugal
+  will outperform your previous forty combined. You cannot predict which one. You can only make sure
+  there are forty.</div>
+</section>
+<section id="legal">
+  <div class="eyebrow">09 · Constraints</div>
+  <h2>What being an employed engineer in Germany actually restricts</h2>
+  <p class="sub">This is the section most creator plans skip and most creators get bitten by. Handle it in
+  the first month, while you are earning nothing — it is trivial then and expensive later.</p>
+
+  <div class="grid g2">
+    <div class="card">
+      <span class="tag c">Do first</span>
+      <h3>Your employment contract, before you earn a cent</h3>
+      <p>German employment contracts routinely require you to notify — or get written approval for —
+      any <em>Nebentätigkeit</em> (secondary activity). Read your new contract's clause, and if approval is
+      needed, ask for it in writing before the first invoice. Framed as content creation and a small
+      side business with no competitive overlap, this is almost always granted. Doing it after the fact is
+      what turns it into a problem.</p>
+    </div>
+    <div class="card">
+      <span class="tag c">Hard line</span>
+      <h3>Never film the job</h3>
+      <p>No office, no screens, no badge, no colleagues, no product detail, no roadmap, no internal
+      process, no interview questions you were asked as an interviewer. Consider not naming the employer
+      at all — “one of the biggest companies in the world” is a stronger line anyway and carries none of
+      the risk. Talk about <em>your</em> career, publicly known facts, and your own preparation. That is
+      where all of the value is, and none of the exposure.</p>
+    </div>
+    <div class="card">
+      <span class="tag w">Month 1</span>
+      <h3>Registration and tax</h3>
+      <ul>
+        <li>Monetised creator work is normally a trade: <em>Gewerbeanmeldung</em> at the local Gewerbeamt (small one-off fee), then the <em>Fragebogen zur steuerlichen Erfassung</em> with the Finanzamt</li>
+        <li>Small-business VAT relief (<em>Kleinunternehmerregelung</em>, §19 UStG) keeps you out of VAT below the turnover thresholds — confirm the current figures, they were raised recently</li>
+        <li>Income declared annually alongside your employment income</li>
+        <li>Keep every invoice and receipt from day one, including equipment</li>
+      </ul>
+    </div>
+    <div class="card">
+      <span class="tag w">Ongoing</span>
+      <h3>Disclosure and Impressum</h3>
+      <ul>
+        <li>Any paid <em>or gifted</em> collaboration must be labelled <em>Werbung</em> / <em>Anzeige</em>, clearly and up front — not buried in hashtags. German courts are strict and competitors send warning letters over this</li>
+        <li>A commercially operated account generally needs a reachable <em>Impressum</em> — a link in bio to a page with your legal details</li>
+        <li>Affiliate links get labelled too</li>
+      </ul>
+    </div>
+    <div class="card">
+      <span class="tag w">Before the store</span>
+      <h3>Ecommerce into the EU is not what YouTube says</h3>
+      <ul>
+        <li>Consumers get a 14-day right of withdrawal (<em>Widerrufsrecht</em>) with mandatory instructions</li>
+        <li>EU product-safety rules require an identifiable responsible person inside the EU for most goods — which breaks the classic ship-direct-from-Asia model</li>
+        <li>Imports carry customs and import VAT; delivery times from Asian suppliers are a returns problem, not a detail</li>
+      </ul>
+      <p>None of this makes it impossible. It makes the naive version impossible, which is exactly why it belongs last in the sequence and behind a capital cap.</p>
+    </div>
+    <div class="card">
+      <span class="tag">Reference</span>
+      <h3>Rules are described here, not given</h3>
+      <p>Thresholds, fees and product rules change, and your contract is specific to you. Spend one hour
+      with a <em>Steuerberater</em> before the first invoice — it costs less than one UGC job and it removes
+      the single largest reason people stall before monetising.</p>
+    </div>
+  </div>
+</section>
+
+<section id="kit">
+  <div class="eyebrow">10 · Kit</div>
+  <h2>Buy this, then stop buying things</h2>
+  <div class="scroll">
+    <table>
+      <thead><tr><th>Item</th><th>Why</th><th>Rough cost</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Your phone</strong></td><td>Rear camera, 4K/30 or 1080p/30, exposure and focus locked before the take. It is not the limiting factor and never will be.</td><td class="num">€0</td></tr>
+        <tr><td><strong>Tripod + phone clamp</strong></td><td>The single highest-leverage purchase. Removes the “I need someone to film me” excuse permanently.</td><td class="num">€25–40</td></tr>
+        <tr><td><strong>Wireless or wired lav mic</strong></td><td>Audio is the only thing viewers actually punish. Bad picture reads as raw; bad audio reads as unwatchable.</td><td class="num">€30–70</td></tr>
+        <tr><td><strong>One LED panel</strong></td><td>Garage only. Everywhere else, face a window.</td><td class="num">€35–50</td></tr>
+        <tr><td><strong>Dip belt + weighted vest</strong></td><td>The difference between calisthenics as maintenance and calisthenics as mass.</td><td class="num">€60–90</td></tr>
+        <tr><td><strong>Floor tape</strong></td><td>Marks for the monthly progress frame. Costs nothing, makes the twelve-month comparison actually work.</td><td class="num">€3</td></tr>
+        <tr><td><strong>CapCut, one template</strong></td><td>One caption style, one font, one transition. Set up in week 1, never touched again.</td><td class="num">€0</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<section id="fail">
+  <div class="eyebrow">11 · Risk</div>
+  <h2>The seven ways this ends early</h2>
+  <div class="grid g2">
+    <div class="card"><h3>1 · Editing perfectionism</h3><p>Your stated problem. Solved only by the 60-minute timer and the raw-take escape hatch — never by getting better at editing.</p></div>
+    <div class="card"><h3>2 · Quitting in week 6</h3><p>The numbers will be flat and you will conclude it doesn't work. It doesn't work <em>yet</em>. That is why analytics stay off until week 8.</p></div>
+    <div class="card"><h3>3 · Three experiments at once</h3><p>UGC and a store and a product in the same month means three half-built things and no episodes. One at a time, gated.</p></div>
+    <div class="card"><h3>4 · Talking instead of doing</h3><p>Episodes about plans are not a series. Every episode carries proof of something done that week, even if the thing done was small or failed.</p></div>
+    <div class="card"><h3>5 · Only posting episodes</h3><p>The documentary spine does not recruit strangers. Pillar B does. Drop it and growth stops.</p></div>
+    <div class="card"><h3>6 · Employer or legal exposure</h3><p>One filmed screen, one unlabelled paid post. Handled in month one, this risk is zero.</p></div>
+    <div class="card"><h3>7 · The relocation eats month one</h3><p>Moving cities will destroy at least one week's shoot. Batch two extra episodes before you pack — pre-recorded pillar B content has no expiry date and is exactly what a buffer is for.</p></div>
+  </div>
+</section>
+
+<section id="start">
+  <div class="eyebrow">12 · Now</div>
+  <h2>The first fourteen days</h2>
+  <p class="sub">Everything above is only useful if episode 1 exists. Ticks are saved in this browser.</p>
+  <div class="check" id="cl">
+    <label><input type="checkbox" data-k="a1"><span><span class="day">D1</span>Create the account. Handle, photo, bio with the three tracks and “novo episódio todos os domingos”.</span></label>
+    <label><input type="checkbox" data-k="a2"><span><span class="day">D1</span>Read the Nebentätigkeit clause in the new contract. Note what it requires.</span></label>
+    <label><input type="checkbox" data-k="a3"><span><span class="day">D2</span>Buy the tripod and the mic. Nothing else.</span></label>
+    <label><input type="checkbox" data-k="a4"><span><span class="day">D2</span>Record the body start line: weight, waist, arm, max pull-ups, max dips, max push-ups, three photos. Tape the floor marks.</span></label>
+    <label><input type="checkbox" data-k="a5"><span><span class="day">D3</span>Write the four targets on paper. Tape it to the garage wall.</span></label>
+    <label><input type="checkbox" data-k="a6"><span><span class="day">D3</span>Build the CapCut template: one font, one caption style, the EP. number block. Save it.</span></label>
+    <label><input type="checkbox" data-k="a7"><span><span class="day">D4</span>Shoot episode 1. Two takes per block, maximum.</span></label>
+    <label><input type="checkbox" data-k="a8"><span><span class="day">D5</span>Edit episode 1 with the timer running. Export at 60 minutes regardless of state.</span></label>
+    <label><input type="checkbox" data-k="a9"><span><span class="day">D6</span><strong>Post episode 1.</strong> Sunday, 19:00. Then close the app.</span></label>
+    <label><input type="checkbox" data-k="b1"><span><span class="day">D7</span>Set up the email capture page. One field. Link in bio.</span></label>
+    <label><input type="checkbox" data-k="b2"><span><span class="day">D8</span>Shoot episode 2 in the garage, plus two pillar-B posts as buffer for moving week.</span></label>
+    <label><input type="checkbox" data-k="b3"><span><span class="day">D10</span>Shoot the empty-flat inserts for episode 3 before the flat stops looking like a move.</span></label>
+    <label><input type="checkbox" data-k="b4"><span><span class="day">D13</span>Post episode 2. Sunday, 19:00.</span></label>
+    <label><input type="checkbox" data-k="b5"><span><span class="day">D14</span>Put the Thursday/Saturday/Sunday blocks in the calendar as recurring events for 52 weeks. Treat them like meetings you can't move.</span></label>
+  </div>
+</section>
+
+<footer>
+  <span>The Munich Episodes · series bible v1 · drafted September 2026</span>
+  <span>Amber fields are yours to fill. German tax, trade and disclosure rules described, not advised — confirm with a Steuerberater.</span>
+</footer>
+</div>
+
+<script>
+(function(){
+  var box = document.getElementById('cl');
+  if(!box) return;
+  var store = null;
+  try{ store = window.localStorage; store.getItem('me-cl'); }catch(e){ store = null; }
+  var state = {};
+  if(store){ try{ state = JSON.parse(store.getItem('me-cl') || '{}') || {}; }catch(e){ state = {}; } }
+  var inputs = box.querySelectorAll('input[type=checkbox]');
+  for(var i=0;i<inputs.length;i++){
+    var el = inputs[i];
+    if(state[el.dataset.k]) el.checked = true;
+    el.addEventListener('change', function(ev){
+      state[ev.target.dataset.k] = ev.target.checked;
+      if(store){ try{ store.setItem('me-cl', JSON.stringify(state)); }catch(e){} }
+    });
+  }
+})();
+</script>
