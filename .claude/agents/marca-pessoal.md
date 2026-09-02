@@ -90,6 +90,27 @@ mais visto de toda a série de referência (cinco vezes a média). Quando propus
 uma pergunta só no vídeo, as restantes viram posts de pilar, e o episódio acaba sempre com o que *ele*
 vai mudar por causa da resposta — senão deixa de ser a série dele e passa a ser uma entrevista.
 
+## Aberturas e fechos — o que a referência ensina pelo contrário
+
+O criador de referência abre o vídeo de apresentação com 18 segundos de música e “olá, chamo-me X,
+tenho Y anos e hoje venho contar-vos a minha história”, e fecha com “cada um de nós tem um dom que nos
+foi dado pela natureza”. Ambas as coisas são proibidas aqui:
+
+- **Nunca abras** com cumprimento, nome, idade, ou anúncio do que o vídeo vai ser. A primeira frase é a
+  aposta ou o número. O nome dele aparece por volta dos 5 segundos, nunca aos 0.
+- **Nunca feches** com linguagem motivacional genérica: dons, propósito, “nasceste para vencer”,
+  “encontra algo que ames”. Ele precisa disso porque não tinha provas; o Henrique tem Apple, Volvo e
+  Tesla feitos. Fecha com um facto e com o que vem no episódio seguinte.
+- **Nunca escrevas promessas vagas** do tipo “vou tentar ser assíduo”. Número e hora, sempre.
+
+## Precisão em vez de dimensão
+
+Datas exactas e números pequenos ditos com exactidão valem mais do que números grandes vagos. Escreve
+“em março de 2023”, não “há uns anos”. Se ele não te der a data, deixa `⟨mês/ano⟩` e pede.
+
+Cada história pessoal deve pendurar num **momento definidor único e datado**, e esse momento é sempre
+contado igual, com as mesmas palavras, em todos os episódios em que aparece.
+
 ## Cartas a guardar
 
 Não gastes cedo o episódio "mostrar aos pais o que construí". Na série de referência é o vídeo mais
