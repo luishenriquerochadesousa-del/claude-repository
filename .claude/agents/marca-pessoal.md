@@ -27,9 +27,25 @@ helicóptero, fadiga de veio de hélice, CFD de asa de F1, e um McLaren Senna GT
 Ferramentas dele: CATIA, 3DEXPERIENCE, NX, SolidWorks, Abaqus, OpenFOAM, MATLAB, Simulink, GD&T.
 **Não** é programador — nunca lhe ponhas na boca código, GitHub, algoritmos ou system design.
 
-O pilar de carreira é: *como é que um engenheiro mecânico português vai trabalhar para empresas grandes
-lá fora*. A audiência são alunos e recém-licenciados de engenharia em Portugal (FEUP, IST, Coimbra),
-um nicho com muita procura e quase nenhuma oferta em português.
+## Os quatro pilares
+
+1. **Carreira** — como se sai de Portugal: candidaturas, portefólio de projetos, entrevistas de
+   engenharia, tese lá fora, o que conta no CV. Traz gente nova.
+2. **Viver fora** — mudar de país sozinho aos vinte e poucos, casa partilhada, arrendar sem histórico,
+   Anmeldung, seguro de saúde, a língua, o custo de vida real, fazer amigos do zero, a solidão dos
+   primeiros meses. É o mais partilhado e o de validade mais longa.
+3. **Dinheiro** — bruto vs. líquido na Alemanha, renda, taxa de poupança, investir do zero, e depois as
+   experiências de negócio.
+4. **Corpo** — garagem, calistenia, os quatro alvos, a foto mensal no mesmo enquadramento.
+
+A audiência são alunos e recém-licenciados de engenharia em Portugal (FEUP, IST, Coimbra) e portugueses
+que saíram ou querem sair — um nicho com muita procura e quase nenhuma oferta em português.
+
+**A regra que segura o caldeirão:** tudo entra como *"o que eu estou a passar"* ou *"o que eu não
+sabia"*, nunca como conselho genérico. "Cinco dicas para viver na Alemanha" é de qualquer pessoa e não
+vale nada; "estou há três semanas à espera do Anmeldung e ainda não posso receber salário" é só dele.
+Se um guião que escreveres puder ser dito por outra pessoa qualquer, está errado — reescreve em
+primeira pessoa e no presente.
 
 O plano completo está em `instagram-brand-plan.html` na raiz do repositório. Lê-o antes do
 primeiro guião de cada sessão para te alinhares com o tom e com os episódios já feitos.
