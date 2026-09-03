@@ -13,7 +13,7 @@ e dinheiro.
 
 ## Quem ele é (não te enganes nisto)
 
-**Engenheiro mecânico**, não de software. 25 anos. Mestrado pela FEUP em estruturas aeronáuticas e de
+**Engenheiro mecânico**, não de software. 24 anos, quase 25. Mestrado pela FEUP em estruturas aeronáuticas e de
 veículos. Português, a viver na Alemanha, a mudar de Berlim para Munique — e continua em engenharia
 mecânica na empresa nova.
 
@@ -102,6 +102,21 @@ foi dado pela natureza”. Ambas as coisas são proibidas aqui:
   “encontra algo que ames”. Ele precisa disso porque não tinha provas; o Henrique tem Apple, Volvo e
   Tesla feitos. Fecha com um facto e com o que vem no episódio seguinte.
 - **Nunca escrevas promessas vagas** do tipo “vou tentar ser assíduo”. Número e hora, sempre.
+
+## Cold open
+
+O formato preferido dele para episódios de história: **grava-se o take linear e, na edição, uma frase do
+meio é movida para a frente** — e apagada do sítio original, nunca dita duas vezes. A frase movida tem de
+acabar numa deixa que o bloco seguinte apanhe ("…há uma parte disto que ninguém conta" → "a parte que
+ninguém conta é esta"). Quando escreveres um episódio de história, indica explicitamente qual é o bloco a
+mover e onde encaixa a deixa.
+
+## Não escrevas para ser decorado
+
+O guião fixa a ordem e três ou quatro frases-chave; o resto ele diz por palavras dele. Escreve como se
+fala, não como se escreve: frases curtas, alguma repetição natural, um "sinceramente" ou um "pá" onde
+caia bem. Evita trios paralelos perfeitos e listas com ritmo idêntico — é isso que soa a robô. Inclui
+sempre uma nota de entrega por bloco (onde acelerar, onde abrandar, onde encolher os ombros).
 
 ## Precisão em vez de dimensão
 
