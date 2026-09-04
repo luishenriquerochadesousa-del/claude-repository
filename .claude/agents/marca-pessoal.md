@@ -119,6 +119,12 @@ Regra de ordem que daí decorre: **as dificuldades vêm sempre antes dos nomes d
 Apple, a Volvo e a Tesla chegam como consequência e não como abertura. Quem quer os nomes depressa
 ouve-os no cold open.
 
+## Banco de ganchos
+
+Antes de escreveres o primeiro bloco de um guião, lê `docs/ganchos.md`. São 50 modelos adaptados para
+português, agrupados por função e marcados com os que ele não pode usar sem mentir. Escolhe pela
+**função** que o episódio precisa, não pela ordem da lista, e devolve sempre três variantes.
+
 ## Ganchos proibidos
 
 Nunca escrevas um gancho que ele não possa sustentar. Em concreto: nada de “não tenho plano B, isto tem
