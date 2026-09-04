@@ -1,0 +1,1597 @@
+<title>Os Episódios de Munique</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600&family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;1,8..60,400&display=swap">
+<style>
+:root{
+  --ground:#E7ECEA; --surface:#FFFFFF; --surface-2:#F1F6F4; --surface-3:#E1E9E7;
+  --line:#C9D6D2; --line-soft:#DEE7E4;
+  --ink:#0E1918; --ink-2:#3A4A47; --ink-3:#6A7A77;
+  --accent:#0A5D59; --accent-2:#0E8681; --accent-soft:#D5E8E6;
+  --amber:#8F580A; --amber-soft:#F4E7D0;
+  --good:#25664A; --good-soft:#DAEBE2;
+  --warn:#8A5709; --warn-soft:#F6E9CE;
+  --crit:#93291E; --crit-soft:#F5DDD9;
+  --shadow:0 1px 2px rgba(14,25,24,.05),0 8px 24px -16px rgba(14,25,24,.35);
+  --display:"Archivo","Helvetica Neue",Helvetica,Arial,sans-serif;
+  --body:"Archivo","Helvetica Neue",Helvetica,Arial,sans-serif;
+  --serif:"Source Serif 4",Georgia,"Times New Roman",serif;
+  --mono:"JetBrains Mono",ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --ground:#08110F; --surface:#0F1B19; --surface-2:#14211F; --surface-3:#1B2A27;
+    --line:#243733; --line-soft:#1C2B28;
+    --ink:#E2ECE9; --ink-2:#A8BAB6; --ink-3:#788B87;
+    --accent:#48BDB3; --accent-2:#6FD3C9; --accent-soft:#0F2E2C;
+    --amber:#D6A055; --amber-soft:#2A2114;
+    --good:#5CBE93; --good-soft:#0F2620;
+    --warn:#DBAC5C; --warn-soft:#2A2114;
+    --crit:#EC8A7D; --crit-soft:#2D1714;
+    --shadow:0 1px 2px rgba(0,0,0,.45),0 10px 28px -18px rgba(0,0,0,.9);
+  }
+}
+:root[data-theme="dark"]{
+  --ground:#08110F; --surface:#0F1B19; --surface-2:#14211F; --surface-3:#1B2A27;
+  --line:#243733; --line-soft:#1C2B28;
+  --ink:#E2ECE9; --ink-2:#A8BAB6; --ink-3:#788B87;
+  --accent:#48BDB3; --accent-2:#6FD3C9; --accent-soft:#0F2E2C;
+  --amber:#D6A055; --amber-soft:#2A2114;
+  --good:#5CBE93; --good-soft:#0F2620;
+  --warn:#DBAC5C; --warn-soft:#2A2114;
+  --crit:#EC8A7D; --crit-soft:#2D1714;
+  --shadow:0 1px 2px rgba(0,0,0,.45),0 10px 28px -18px rgba(0,0,0,.9);
+}
+*{box-sizing:border-box}
+body{
+  margin:0; background:var(--ground); color:var(--ink);
+  font-family:var(--body); font-size:15.5px; line-height:1.55;
+  -webkit-font-smoothing:antialiased;
+}
+.wrap{max-width:1120px; margin:0 auto; padding:0 22px 96px}
+a{color:var(--accent); text-underline-offset:3px}
+a:focus-visible,button:focus-visible,input:focus-visible{outline:2px solid var(--accent-2); outline-offset:2px; border-radius:3px}
+h1,h2,h3,h4{font-family:var(--display); text-wrap:balance; margin:0}
+p{margin:0}
+
+/* ── masthead ───────────────────────────────────────── */
+.mast{padding:52px 0 30px; border-bottom:1px solid var(--line)}
+.slate{
+  display:inline-flex; align-items:center; gap:9px; font-family:var(--mono);
+  font-size:11.5px; letter-spacing:.1em; text-transform:uppercase; color:var(--ink-3);
+}
+.dot{width:8px; height:8px; border-radius:50%; background:var(--crit); flex:none}
+.mast h1{font-size:clamp(34px,6vw,58px); font-weight:700; letter-spacing:-.028em; line-height:1.02; margin:16px 0 0}
+.mast .lede{font-family:var(--serif); font-size:clamp(17px,2.2vw,20px); line-height:1.5; color:var(--ink-2); max-width:60ch; margin-top:18px}
+
+/* ── contract strip ─────────────────────────────────── */
+.contract{display:grid; grid-template-columns:repeat(auto-fit,minmax(180px,1fr)); gap:1px; background:var(--line); border:1px solid var(--line); margin-top:30px}
+.contract div{background:var(--surface); padding:15px 16px}
+.contract dt{font-family:var(--mono); font-size:10.5px; letter-spacing:.11em; text-transform:uppercase; color:var(--ink-3)}
+.contract dd{margin:6px 0 0; font-family:var(--display); font-size:19px; font-weight:600; letter-spacing:-.015em}
+.contract dd span{font-size:13px; font-weight:400; color:var(--ink-2); display:block; letter-spacing:0; margin-top:2px}
+
+/* ── nav ────────────────────────────────────────────── */
+nav{position:sticky; top:0; z-index:20; background:color-mix(in srgb,var(--ground) 88%,transparent); backdrop-filter:blur(10px); border-bottom:1px solid var(--line-soft); margin-top:0}
+.navin{max-width:1120px; margin:0 auto; padding:9px 22px; display:flex; gap:16px; overflow-x:auto; scrollbar-width:none}
+.navin::-webkit-scrollbar{display:none}
+.navin a{font-family:var(--mono); font-size:11px; letter-spacing:.07em; text-transform:uppercase; color:var(--ink-2); text-decoration:none; white-space:nowrap; padding:4px 0; border-bottom:1.5px solid transparent}
+.navin a:hover{color:var(--accent); border-bottom-color:var(--accent)}
+
+/* ── sections ───────────────────────────────────────── */
+section{padding-top:56px}
+.eyebrow{font-family:var(--mono); font-size:11px; letter-spacing:.14em; text-transform:uppercase; color:var(--accent); margin-bottom:9px}
+section>h2{font-size:clamp(24px,3.4vw,32px); font-weight:700; letter-spacing:-.022em}
+.sub{color:var(--ink-2); max-width:68ch; margin-top:10px}
+.grid{display:grid; gap:14px; margin-top:22px}
+.g2{grid-template-columns:repeat(auto-fit,minmax(300px,1fr))}
+.g3{grid-template-columns:repeat(auto-fit,minmax(240px,1fr))}
+.g4{grid-template-columns:repeat(auto-fit,minmax(200px,1fr))}
+
+.card{background:var(--surface); border:1px solid var(--line); padding:18px 19px}
+.card h3{font-size:16.5px; font-weight:600; letter-spacing:-.01em}
+.card p{color:var(--ink-2); font-size:14.5px; margin-top:8px}
+.card ul{margin:10px 0 0; padding-left:17px; color:var(--ink-2); font-size:14.5px}
+.card li{margin-top:5px}
+.card li::marker{color:var(--ink-3)}
+
+.tag{display:inline-block; font-family:var(--mono); font-size:10px; letter-spacing:.1em; text-transform:uppercase; padding:3px 7px; border:1px solid var(--line); color:var(--ink-2); background:var(--surface-2)}
+.tag.a{color:var(--accent); border-color:var(--accent); background:var(--accent-soft)}
+.tag.w{color:var(--warn); border-color:var(--warn); background:var(--warn-soft)}
+.tag.g{color:var(--good); border-color:var(--good); background:var(--good-soft)}
+.tag.c{color:var(--crit); border-color:var(--crit); background:var(--crit-soft)}
+
+.ph{font-family:var(--mono); font-size:.9em; color:var(--amber); background:var(--amber-soft); padding:0 4px; border-bottom:1px dotted var(--amber)}
+
+table{width:100%; border-collapse:collapse; font-size:14.5px}
+.scroll{overflow-x:auto; border:1px solid var(--line); background:var(--surface); margin-top:20px}
+th{text-align:left; font-family:var(--mono); font-size:10.5px; letter-spacing:.1em; text-transform:uppercase; color:var(--ink-3); font-weight:400; padding:11px 14px; border-bottom:1px solid var(--line); white-space:nowrap}
+td{padding:11px 14px; border-bottom:1px solid var(--line-soft); vertical-align:top; color:var(--ink-2)}
+tbody tr:last-child td{border-bottom:none}
+td strong{color:var(--ink); font-weight:600}
+td.num{font-family:var(--mono); font-variant-numeric:tabular-nums; white-space:nowrap; color:var(--ink)}
+</style>
+<style>
+/* ── phase timeline ─────────────────────────────────── */
+.phase{display:grid; grid-template-columns:64px 1fr; border:1px solid var(--line); background:var(--surface)}
+.phase+.phase{border-top:none}
+.phase .n{background:var(--surface-3); display:flex; align-items:flex-start; justify-content:center; padding:18px 0; font-family:var(--mono); font-size:13px; font-weight:600; color:var(--accent); border-right:1px solid var(--line)}
+.phase .b{padding:17px 19px}
+.phase h3{font-size:17px; font-weight:600; letter-spacing:-.01em}
+.phase .when{font-family:var(--mono); font-size:11px; letter-spacing:.08em; text-transform:uppercase; color:var(--ink-3); margin-top:3px}
+.phase p{color:var(--ink-2); font-size:14.5px; margin-top:9px; max-width:70ch}
+.phase .out{margin-top:11px; display:flex; flex-wrap:wrap; gap:6px}
+
+/* ── script sheets ──────────────────────────────────── */
+.sheet{background:var(--surface); border:1px solid var(--line); margin-top:22px; box-shadow:var(--shadow)}
+.sheet>header{padding:17px 20px; border-bottom:1px solid var(--line); display:flex; flex-wrap:wrap; gap:12px 22px; align-items:baseline; background:var(--surface-2)}
+.sheet>header h3{font-size:19px; font-weight:700; letter-spacing:-.018em; flex:1 1 240px}
+.spec{display:flex; gap:18px; flex-wrap:wrap; font-family:var(--mono); font-size:11px; letter-spacing:.06em; text-transform:uppercase; color:var(--ink-3)}
+.spec b{color:var(--ink); font-weight:600}
+.beat{display:grid; grid-template-columns:78px 1fr; border-bottom:1px solid var(--line-soft)}
+.beat:last-of-type{border-bottom:none}
+.tc{font-family:var(--mono); font-size:11.5px; font-variant-numeric:tabular-nums; color:var(--accent); padding:16px 0 16px 20px; letter-spacing:-.01em}
+.beatbody{padding:16px 20px 16px 6px}
+.role{font-family:var(--mono); font-size:10px; letter-spacing:.13em; text-transform:uppercase; color:var(--ink-3)}
+.say{font-family:var(--serif); font-size:17.5px; line-height:1.48; color:var(--ink); margin-top:6px; max-width:58ch}
+.say em{font-style:italic; color:var(--ink-2)}
+.meta{margin-top:11px; display:grid; gap:6px; font-size:13.5px; color:var(--ink-2)}
+.meta .k{font-family:var(--mono); font-size:10px; letter-spacing:.12em; text-transform:uppercase; color:var(--ink-3); margin-right:8px}
+.ost{font-family:var(--display); font-weight:600; color:var(--ink); text-transform:uppercase; letter-spacing:.02em; font-size:13px}
+.sheetfoot{padding:16px 20px; background:var(--surface-2); border-top:1px solid var(--line); display:grid; gap:12px}
+.foothead{font-family:var(--mono); font-size:10px; letter-spacing:.13em; text-transform:uppercase; color:var(--ink-3)}
+.caption{font-family:var(--serif); font-size:15px; line-height:1.5; color:var(--ink-2); white-space:pre-line; max-width:62ch}
+
+/* ── rule list ──────────────────────────────────────── */
+.rules{counter-reset:r; margin-top:20px; border:1px solid var(--line); background:var(--surface)}
+.rules li{counter-increment:r; list-style:none; display:grid; grid-template-columns:38px 1fr; padding:13px 18px 13px 0; border-bottom:1px solid var(--line-soft); color:var(--ink-2); font-size:14.5px}
+.rules li:last-child{border-bottom:none}
+.rules li::before{content:counter(r); font-family:var(--mono); font-size:11px; color:var(--accent); padding-left:18px; padding-top:3px}
+.rules strong{color:var(--ink); font-weight:600}
+.rules ol,.rules ul{margin:0; padding:0}
+
+/* ── checklist ──────────────────────────────────────── */
+.check{border:1px solid var(--line); background:var(--surface); margin-top:20px}
+.check label{display:flex; gap:12px; align-items:flex-start; padding:11px 18px; border-bottom:1px solid var(--line-soft); cursor:pointer; font-size:14.5px; color:var(--ink-2)}
+.check label:last-child{border-bottom:none}
+.check input{margin-top:3px; accent-color:var(--accent); width:15px; height:15px; flex:none}
+.check input:checked+span{color:var(--ink-3); text-decoration:line-through}
+.check .day{font-family:var(--mono); font-size:10.5px; color:var(--accent); margin-right:10px; letter-spacing:.06em}
+
+/* ── callout ────────────────────────────────────────── */
+.note{border-left:3px solid var(--amber); background:var(--amber-soft); padding:14px 17px; margin-top:20px; font-size:14.5px; color:var(--ink-2)}
+.note strong{color:var(--ink)}
+.note.crit{border-left-color:var(--crit); background:var(--crit-soft)}
+.note.acc{border-left-color:var(--accent); background:var(--accent-soft)}
+
+footer{margin-top:64px; padding-top:22px; border-top:1px solid var(--line); font-size:13px; color:var(--ink-3); display:flex; flex-wrap:wrap; gap:10px 26px; justify-content:space-between}
+@media (prefers-reduced-motion:reduce){*{animation:none!important; transition:none!important}}
+@media (max-width:560px){
+  .beat{grid-template-columns:1fr}
+  .tc{padding:14px 20px 0}
+  .beatbody{padding:8px 20px 16px}
+  .phase{grid-template-columns:48px 1fr}
+}
+</style>
+<style>
+.bench{display:grid; gap:14px; grid-template-columns:repeat(auto-fit,minmax(320px,1fr)); margin-top:22px}
+.bench article{background:var(--surface); border:1px solid var(--line); padding:19px 20px}
+.bench h3{font-size:18px; font-weight:700; letter-spacing:-.018em}
+.bench .who{font-family:var(--mono); font-size:11px; letter-spacing:.09em; text-transform:uppercase; color:var(--ink-3); margin-top:4px}
+.bench h4{font-family:var(--mono); font-size:10.5px; letter-spacing:.13em; text-transform:uppercase; color:var(--accent); margin:16px 0 7px; font-weight:400}
+.bench ul{margin:0; padding-left:17px; color:var(--ink-2); font-size:14.5px}
+.bench li{margin-top:5px}
+.bench li::marker{color:var(--ink-3)}
+.pipe{display:grid; gap:1px; background:var(--line); border:1px solid var(--line); margin-top:22px; grid-template-columns:repeat(auto-fit,minmax(210px,1fr))}
+.pipe div{background:var(--surface); padding:16px 17px}
+.pipe .st{font-family:var(--mono); font-size:10.5px; letter-spacing:.11em; text-transform:uppercase; color:var(--accent)}
+.pipe h3{font-size:16px; font-weight:600; margin-top:7px; letter-spacing:-.01em}
+.pipe p{font-size:14px; color:var(--ink-2); margin-top:7px}
+.pipe .dod{margin-top:10px; font-size:13px; color:var(--ink); border-top:1px dashed var(--line); padding-top:9px}
+.pipe .dod b{font-family:var(--mono); font-size:10px; letter-spacing:.1em; text-transform:uppercase; color:var(--ink-3); display:block; margin-bottom:3px; font-weight:400}
+pre.agent{background:var(--surface-3); border:1px solid var(--line); padding:15px 17px; overflow-x:auto; font-family:var(--mono); font-size:12.5px; line-height:1.6; color:var(--ink); margin-top:16px; white-space:pre}
+</style>
+
+<nav>
+  <div class="navin">
+    <a href="#benchmark">Benchmark</a>
+    <a href="#posicao">Posicionamento</a>
+    <a href="#sistema">Sistema semanal</a>
+    <a href="#pipeline">Pipeline</a>
+    <a href="#lista">Os 10 vídeos</a>
+    <a href="#guioes">Guiões 1–10</a>
+    <a href="#corpo">Corpo</a>
+    <a href="#dinheiro">Dinheiro</a>
+    <a href="#metricas">Métricas</a>
+    <a href="#alemanha">Alemanha</a>
+    <a href="#kit">Kit</a>
+    <a href="#agente">Agente</a>
+    <a href="#arranque">Arranque</a>
+  </div>
+</nav>
+
+<div class="wrap">
+
+<header class="mast">
+  <div class="slate"><span class="dot"></span>Bíblia da série · v2 · setembro 2026</div>
+  <h1>Os Episódios de Munique</h1>
+  <p class="lede">Um engenheiro mecânico português, uma mudança de cidade, um corpo por construir e um negócio que
+  ainda não existe — filmado desde o episódio 1. Este plano optimiza uma coisa só: que o episódio 40 seja
+  publicado. Tudo o resto vem depois disso.</p>
+
+  <dl class="contract">
+    <div><dt>Cadência</dt><dd>3 posts / semana<span>1 episódio + 2 posts de pilar</span></dd></div>
+    <div><dt>Episódio</dt><dd>Domingo, 19:00<span>Sempre à mesma hora</span></dd></div>
+    <div><dt>Orçamento de edição</dt><dd>60 minutos<span>Temporizador. Exporta ao toque.</span></dd></div>
+    <div><dt>Duração</dt><dd>35–60 s<span>Só passa de 60 se merecer</span></dd></div>
+    <div><dt>Primeiro checkpoint</dt><dd>Dia 90<span>12 episódios, zero falhas</span></dd></div>
+  </dl>
+</header>
+
+<section id="benchmark">
+  <div class="eyebrow">01 · Referências</div>
+  <h2>O que roubar a cada um deles</h2>
+  <p class="sub">Duas marcas pessoais portuguesas com modelos diferentes. Uma constrói um <em>ecossistema</em>
+  à volta de um nicho estreito; a outra constrói uma <em>série documental</em> onde o negócio é o enredo.
+  Tu precisas das duas coisas — a série para atrair, o ecossistema para monetizar.</p>
+
+  <div class="bench">
+    <article>
+      <h3>Afonso Santos</h3>
+      <div class="who">@oafonsosantos · finanças e investimento · verificado</div>
+      <h4>O que ele faz bem</h4>
+      <ul>
+        <li><strong>Nicho estreito e nomeável:</strong> <em>value / dividend investing</em>. Não é “finanças”, é uma escola de investimento específica. Tudo o resto pendura nisso.</li>
+        <li><strong>Uma missão repetida até à exaustão:</strong> “desmistificar o investimento, mostrar que qualquer pessoa consegue começar”. A mesma frase na bio, no site, nas entrevistas.</li>
+        <li><strong>Escada de produtos, não posts avulsos:</strong> conteúdo gratuito → comunidade paga (AS CLUB, milhares de membros) → software e ferramentas → empresa. O conteúdo é o topo do funil, nunca o produto final.</li>
+        <li><strong>A idade é o gancho, não a desculpa:</strong> começou aos ~20. “Tenho 20 anos e faço isto” é a razão pela qual as pessoas clicam.</li>
+        <li><strong>Mesmo handle em todo o lado</strong> — YouTube, Instagram, Discord. Zero fricção para atravessar plataformas.</li>
+        <li><strong>Comunidade &gt; audiência:</strong> milhares de membros ativos valem mais do que centenas de milhares de seguidores passivos.</li>
+      </ul>
+      <h4>O que copiar</h4>
+      <ul>
+        <li>A frase-missão única, escrita e repetida.</li>
+        <li>A escada: nunca vendas o conteúdo, vende o degrau seguinte.</li>
+        <li>O mesmo nome em todas as plataformas, desde o dia 1.</li>
+      </ul>
+      <h4>O que não copiar</h4>
+      <ul>
+        <li>Vender comunidade/curso cedo. Ele tinha resultados e tese antes de cobrar. Tu ainda não tens — o teu primeiro dinheiro é um <em>serviço</em> (UGC), não um produto.</li>
+        <li>Nicho puro de finanças: já está ocupado por ele e por mais dez. A tua vantagem é a interseção — engenheiro mecânico português que passou pela Apple, Volvo e Tesla, agora na Alemanha, a aprender dinheiro em direto.</li>
+      </ul>
+    </article>
+
+    <article>
+      <h3>Gonçalo Ferreira</h3>
+      <div class="who">@goncaloferreira23 · “My Journey”, Ep.1 → Ep.23 · análise das transcrições</div>
+      <h4>A trajetória, pelas palavras dele</h4>
+      <ul>
+        <li><strong>Futebol até aos 17.</strong> Contratado pelo Braga por volta dos 11, depois de o diretor
+        da escola parar um jogo de recreio para o convidar — <em>“se tivesse que definir cronologicamente o
+        momento da minha vida, diria que era aí”</em>. Desistiu aos 17: <em>“foi uma das decisões mais
+        difíceis da minha vida”</em>.</li>
+        <li><strong>10 de abril de 2020</strong>, 17 anos, confinamento, <strong>pouco mais de 200 €</strong>
+        de poupanças, todos investidos em formação de uma empresa americana de educação financeira. Ano e
+        meio a ligar a amigos e família a apresentar “uma oportunidade”, a palestrar em eventos de norte a
+        sul. Resultado, nas palavras dele: <em>“não em termos financeiros, porque não ganhei muita coisa a
+        nível monetário, mas em termos pessoais houve realmente uma transformação”</em>.</li>
+        <li><strong>8 de julho de 2022:</strong> abre a Anima com três sócios — um deles o <strong>Celso</strong>,
+        que reaparece como convidado no Ep.3, o vídeo mais visto de toda a série.</li>
+        <li><strong>“My Journey” é lançado aos 21</strong>, ainda sem o negócio que o sustenta hoje.
+        Só no Ep.20 é que <em>“o dropshipping está finalmente a funcionar”</em>. O corpo esteve lá desde o
+        princípio: o primeiro dia gravado do Ep.1 abre com ele a correr 5 km com um sócio, às 8h de sábado.</li>
+      </ul>
+      <h4>As três frases que sustentam tudo</h4>
+      <ul>
+        <li><em>“Apesar de eu não ter a vida que eu quero, sei onde estou e sei exatamente para onde é que
+        eu quero ir.”</em> Dito aos 19, sem resultados nenhuns. <strong>É esta frase que lhe permite começar
+        antes de ter provas</strong>, e é a coluna vertebral emocional da série toda.</li>
+        <li><em>“Gonçalo, mete os pés no chão, estás a sonhar demasiado alto”</em> — a frase dos pais,
+        repetida ao longo dos anos. Um antagonista fixo, humano, sem ser vilão.</li>
+        <li><em>“Quero-vos mostrar não só o lado bonito, mas também o lado mais complicado, as noites mal
+        dormidas.”</em> O contrato com a audiência, declarado no Ep.1.</li>
+      </ul>
+      <h4>O que copiar — quatro coisas concretas</h4>
+      <ul>
+        <li><strong>Datas exactas e números pequenos.</strong> “10 de abril de 2020”, “200 euros”, “6 meses
+        sem resultados nenhuns”, “ano e meio”. A precisão é o que dá credibilidade, não a dimensão. Números
+        pequenos ditos com exactidão valem mais do que números grandes vagos.</li>
+        <li><strong>Um momento definidor, datado.</strong> Toda a história dele pendura num jogo de recreio
+        interrompido aos 8 anos. Identifica o teu e usa-o sempre no mesmo sítio.</li>
+        <li><strong>Admitir os anos sem retorno, em números.</strong> Ele diz em câmara que passou ano e meio
+        sem ganhar dinheiro. É o que o torna credível apesar de vender formação.</li>
+        <li><strong>Declarar o contrato no primeiro episódio</strong>, incluindo a promessa de mostrar o lado
+        mau — e depois cumprir.</li>
+      </ul>
+      <h4>O que nunca copiar</h4>
+      <ul>
+        <li><strong>A abertura.</strong> O vídeo de história dele tem <strong>18 segundos de música antes da
+        primeira palavra</strong> e arranca com “Olá, chamo-me Gonçalo, tenho 19 anos e hoje estou aqui para
+        vos contar a minha história”. Em YouTube em 2022 passava. No Instagram em 2026 perdes metade da
+        audiência antes de dizeres o teu nome. <strong>Tens cinco segundos e a primeira frase tem de ser a
+        aposta, não a apresentação.</strong></li>
+        <li><strong>O fecho motivacional.</strong> “Cada um de nós tem um dom que nos foi dado pela natureza”,
+        “nasceram para vencer”, “encontra algo que ames”. É vazio, e tu tens factos — não precisas disto e
+        fica-te mal.</li>
+        <li><strong>“Prometo que vou tentar ser o mais assíduo possível.”</strong> Promessa fraca, sem número
+        nem data. O teu contrato é o oposto: 52 episódios, domingo, 19:00.</li>
+        <li><strong>A origem do dinheiro.</strong> Vale a pena saberes: a primeira fase dele foi vender
+        formação financeira por indicação — ligar a amigos e família a apresentar “uma oportunidade de ouro”,
+        palestrar em eventos, recrutar. Sem juízo de valor, mas é um modelo que <em>tu</em> não podes usar:
+        queimaria exactamente a credibilidade que o teu percurso te dá de graça.</li>
+      </ul>
+      <div class="note" style="margin-top:16px"><strong>A diferença estrutural entre ti e ele.</strong> Ele
+      lançou a série <em>antes</em> de ter provas e teve de compensar com convicção e linguagem motivacional.
+      Tu lanças com Apple, Volvo e Tesla já feitos. Não precisas de convencer ninguém de que vais conseguir
+      alguma coisa — só de mostrar o que já é verdade e o que estás a tentar a seguir. Isso permite-te um tom
+      muito mais seco, que é também o mais difícil de imitar.</div>
+    </article>
+  </div>
+
+  <figure class="fig">
+    <figcaption>
+      <h3>A série dele, episódio a episódio</h3>
+      <p>Visualizações por episódio da série “My Journey”. Doze episódios seguidos abaixo das 1.100
+      visualizações antes de alguma coisa acontecer.</p>
+    </figcaption>
+    <div class="legend">
+      <span><i class="sw sw1"></i>Episódio de rotina</span>
+      <span><i class="sw sw2"></i>Episódio com um acontecimento real</span>
+    </div>
+    <div class="chartbox"><svg id="epchart" viewBox="0 0 780 300" role="img"
+      aria-label="Gráfico de barras: visualizações por episódio da série My Journey, do episódio 1 ao 23."></svg>
+      <div id="eptip" class="tip" hidden></div></div>
+    <p class="src">Fonte: página pública do canal e pesquisa do YouTube, setembro de 2026. Faltam os
+    episódios 4, 6, 7, 9 e 14 — não estão acessíveis sem sessão iniciada.</p>
+    <details class="tbl"><summary>Ver os dados em tabela</summary>
+      <div class="scroll"><table><thead><tr><th>Ep</th><th>Título</th><th>Visualizações</th></tr></thead>
+      <tbody id="eprows"></tbody></table></div>
+    </details>
+  </figure>
+
+  <h3 style="margin-top:34px; font-size:19px; font-weight:600; letter-spacing:-.015em">O que absorver — sete coisas concretas</h3>
+  <ol class="rules" style="margin-top:14px">
+    <li><span><strong>O vale é obrigatório e ele atravessou-o.</strong> Do Ep.5 ao Ep.16 esteve entre 574 e
+    1.100 visualizações. Doze episódios. Se tivesse parado ao sexto — que é onde toda a gente pára — não
+    havia Ferrari nenhum. A tua regra de não olhar para os números até à semana 8 é isto, em prática.</span></li>
+    <li><span><strong>O que quebra o vale é um acontecimento, não mais consistência.</strong> Os picos dele
+    são todos factos: conheceu alguém com resultado (Ep.3), decidiu mudar de país (Ep.17), o negócio começou
+    a funcionar (Ep.20), revelou a loja (Ep.23). Consistência mantém-te vivo; acontecimentos é que crescem.
+    <strong>Planeia acontecimentos</strong> — não esperes por eles.</span></li>
+    <li><span><strong>O maior vídeo da série foi uma colaboração</strong> (Ep.3, com alguém que já tinha
+    resultado: 5.536 visualizações, cinco vezes a média). Isto está disponível para ti já na semana 4:
+    outro engenheiro português numa empresa grande lá fora, alguém que fez a mudança que estás a fazer, um recrutador técnico.
+    Não precisas de audiência para isso, precisas de mandar a mensagem.</span></li>
+    <li><span><strong>O corpo veio antes do negócio.</strong> Ginásio no Ep.2, “A Transformação” no Ep.10 —
+    quando o negócio ainda não dava nada para mostrar. O pilar corpo é o que enche o vale com conteúdo
+    filmável. Estavas certo em querer começar por aí.</span></li>
+    <li><span><strong>O Ep.1 teve mais visualizações do que os doze seguintes.</strong> Curiosidade inicial
+    não é sinal. Não leias o teu episódio 1 como validação nem o teu episódio 6 como falhanço.</span></li>
+    <li><span><strong>A série é um andaime, não uma prisão.</strong> Ele largou a numeração por volta do
+    Ep.23, quando já tinha resultado para mostrar, e passou a vídeos avulsos. Planeia 52 episódios, mas dá-te
+    o direito de reavaliar o formato ao 25.º.</span></li>
+    <li><span><strong>Mentoria não é o truque; é a consequência.</strong> Ele só começou a vender formação
+    depois de ter uma loja a faturar e alunos com números. A ordem importa: resultado → prova pública →
+    oferta. Inverter isto é o que faz as pessoas deixarem de acreditar em ti.</span></li>
+  </ol>
+
+  <div class="note acc"><strong>A síntese para ti:</strong> a série documental do formato “episódios”
+  (atrai e retém) + a disciplina de nicho e a escada de produtos do Afonso (monetiza). O erro seria
+  escolher só um: uma série sem escada é um diário; uma escada sem série é mais um curso sem provas.</div>
+</section>
+
+<section id="posicao">
+  <div class="eyebrow">02 · Posicionamento</div>
+  <h2>Uma frase, três pilares, cinco decisões fechadas</h2>
+
+  <div class="note" style="border-left-color:var(--accent); background:var(--accent-soft); font-size:16px">
+    <strong>A frase (a posição, para ti):</strong><br>
+    “Engenheiro mecânico português, 24 anos. Saí de Portugal e passei pela Apple, pela Volvo e pela Tesla.
+    Mostro como se lá chega, como é viver fora sozinho de verdade, e o que estou a construir a seguir —
+    corpo, dinheiro e um negócio. Incluindo o que corre mal.”
+    <br><br>
+    <strong>A bio (o que fica no perfil, 135 caracteres):</strong><br>
+    <span class="ost" style="text-transform:none; font-weight:400; font-family:var(--mono); font-size:13px; line-height:1.7">Engenheiro mecânico na Alemanha · Apple → Volvo → Tesla → Munique<br>Como se sai de Portugal e como é viver fora<br>Episódio novo aos domingos</span>
+  </div>
+
+  <div class="grid g2">
+    <div class="card">
+      <span class="tag a">Língua</span>
+      <h3>Português falado, legendas queimadas em inglês</h3>
+      <p>A tua diferenciação é <em>engenheiro mecânico português que foi trabalhar para a Apple, a Volvo e
+      a Tesla</em>. Em português há dezenas de contas sobre programação lá fora e praticamente nenhuma sobre
+      engenharia mecânica, automóvel ou aeronáutica — e há milhares de alunos do IST, FEUP e Coimbra a
+      quererem exactamente esse caminho, sem ninguém a explicá-lo. Essa história vale muito mais para uma
+      audiência PT/BR do que qualquer versão em inglês. Custo: RPM publicitário mais baixo. Aceita — a tua receita são contratos e produto próprio,
+      não o pagamento da plataforma.</p>
+    </div>
+    <div class="card">
+      <span class="tag a">Conta</span>
+      <h3>Uma conta só. Não uma de UGC e outra pessoal.</h3>
+      <p>Ias fazer uma conta só de UGC. Não dividas. As marcas compram a pessoa e a prova; uma conta de UGC
+      sem cara começa do zero e não tem portefólio. <strong>A série é o portefólio</strong> — as marcas
+      veem-te a filmar, iluminar e editar durante 40 semanas antes de te contratarem.</p>
+    </div>
+    <div class="card">
+      <span class="tag a">Formato</span>
+      <h3>Episódios numerados, sempre no mesmo canto</h3>
+      <p>O número é o formato. Cria catálogo, cria razão para seguir e cria um contador público que não
+      podes abandonar em silêncio. Todos os episódios abrem com
+      <span class="ost">EP. 07 · MUNIQUE · SEMANA 7</span>.</p>
+    </div>
+    <div class="card">
+      <span class="tag a">Âmbito</span>
+      <h3>Quatro pilares, uma experiência de negócio de cada vez</h3>
+      <p><strong>Carreira</strong> · <strong>Viver fora</strong> · <strong>Dinheiro</strong> ·
+      <strong>Corpo</strong>. É um caldeirão de propósito — o constante és tu, não o tema. A regra que
+      impede isso de virar uma página sobre nada está na caixa a seguir. No lado do dinheiro abre-se
+      <em>uma</em> experiência de cada vez: UGC → produto → loja.</p>
+    </div>
+  </div>
+
+  <div class="note acc"><strong>A regra que impede o caldeirão de virar uma página sobre nada.</strong>
+  Tudo entra sempre como <em>“o que eu estou a passar”</em> ou <em>“o que eu não sabia”</em>, nunca como
+  conselho genérico. “Cinco dicas para viver na Alemanha” é conteúdo de qualquer pessoa e não vale nada.
+  “Estou há três semanas à espera do Anmeldung e ainda não posso receber salário” é só teu, e é isso que
+  as pessoas guardam e mandam a um amigo. O tema pode ser tudo; o ângulo é sempre primeira pessoa,
+  no presente.</div>
+
+  <div class="scroll">
+    <table>
+      <thead><tr><th>Pilar</th><th>O que lá vive</th><th>Para quem</th><th>Papel</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Carreira</strong></td>
+          <td>Como se sai de Portugal: candidaturas, portefólio de projetos, entrevistas de engenharia, tese lá fora, primeiro estágio, o que conta e o que não conta no CV</td>
+          <td>Alunos e recém-licenciados de engenharia em Portugal</td>
+          <td>Traz gente nova. É o motor de descoberta</td></tr>
+        <tr><td><strong>Viver fora</strong></td>
+          <td>Mudar de país sozinho aos vinte e poucos, casa partilhada, arrendar sem histórico, Anmeldung, seguro de saúde, número fiscal, a língua, o custo de vida real, fazer amigos do zero, a solidão dos primeiros meses</td>
+          <td>Quem está a pensar sair, e quem já saiu e se sente sozinho</td>
+          <td>O mais partilhado e o de validade mais longa</td></tr>
+        <tr><td><strong>Dinheiro</strong></td>
+          <td>Bruto vs. líquido na Alemanha, renda, taxa de poupança, investir do zero, e depois as experiências de negócio</td>
+          <td>A mesma pessoa, dois anos mais tarde</td>
+          <td>Onde a série acaba por monetizar</td></tr>
+        <tr><td><strong>Corpo</strong></td>
+          <td>Garagem, calistenia, os quatro alvos, a foto mensal no mesmo enquadramento</td>
+          <td>Toda a gente</td>
+          <td>Prova visual de que o sistema funciona. Maior retenção</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="note"><strong>Ordem de peso nos primeiros três meses:</strong> carreira e viver fora primeiro
+  — são os que trazem estranhos e os que tu podes escrever hoje sem esperar por resultado nenhum. Dinheiro
+  e corpo constroem-se ao longo do tempo e são o que faz as pessoas ficarem. Depois do mês 4, inverte:
+  as experiências de negócio passam a ser o que traz gente nova, porque aí já tens números para mostrar.</div>
+
+  <div class="note crit"><strong>A única regra que importa:</strong> falhar um domingo mata a série; um
+  episódio mau não mata nada. Daqui a 18 meses ninguém se lembra de qual episódio estava mal iluminado.
+  Toda a gente repara no buraco entre o episódio 9 e o 23.</div>
+</section>
+
+<section id="pipeline">
+  <div class="eyebrow">03 · Processo</div>
+  <h2>O pipeline: escrever → gravar → editar → publicar → responder → medir</h2>
+  <p class="sub">Seis fases, cada uma com um tempo fixo e uma definição de “pronto”. Se uma fase estoura o
+  tempo, passa à seguinte na mesma. O sistema é desenhado para sobreviver a uma semana má, a um sprint e
+  a uma mudança de cidade.</p>
+
+  <div class="pipe">
+    <div>
+      <div class="st">Fase 1 · Quinta, 20:00</div>
+      <h3>Escrever</h3>
+      <p>Três ganchos e três listas de beats no telemóvel. Sem prosa, sem guião palavra a palavra — o guião
+      completo é para os episódios 1 a 3, depois passas a beats. Usa o agente (secção 11).</p>
+      <div class="dod"><b>Pronto quando</b>20 min · 3 ganchos escritos + planos de filmagem</div>
+    </div>
+    <div>
+      <div class="st">Fase 2 · Sábado, 10:00</div>
+      <h3>Gravar</h3>
+      <p>Um local, uma muda de roupa, tripé montado uma vez. Episódio primeiro (tens mais energia), depois
+      os dois posts de pilar, depois 5 minutos de B-roll solto. Máximo duas takes por linha.</p>
+      <div class="dod"><b>Pronto quando</b>90 min · 3 vídeos em bruto + B-roll</div>
+    </div>
+    <div>
+      <div class="st">Fase 3 · Domingo, 17:00</div>
+      <h3>Editar</h3>
+      <p>Temporizador a 60 minutos antes de importares o primeiro clip. Episódio 35 min, os outros dois 12
+      min cada. Um template, uma fonte, um estilo de legenda, corte seco.</p>
+      <div class="dod"><b>Pronto quando</b>60 min · exportado, seja qual for o estado</div>
+    </div>
+    <div>
+      <div class="st">Fase 4 · Domingo, 19:00</div>
+      <h3>Publicar</h3>
+      <p>Episódio agora; os outros dois agendados para terça e quinta. Legenda escrita na fase 1, não
+      inventada aqui. Capa sempre com o mesmo layout.</p>
+      <div class="dod"><b>Pronto quando</b>10 min · publicado + 2 agendados</div>
+    </div>
+    <div>
+      <div class="st">Fase 5 · Domingo, 19:15</div>
+      <h3>Responder</h3>
+      <p>Todos os comentários e DMs durante 20 minutos, depois fechas a app. <strong>Regista todas as
+      perguntas</strong> — são o conteúdo do pilar carreira do mês seguinte.</p>
+      <div class="dod"><b>Pronto quando</b>20 min · perguntas registadas na base</div>
+    </div>
+    <div>
+      <div class="st">Fase 6 · 1× por mês</div>
+      <h3>Medir</h3>
+      <p>Cinco números para uma folha, 15 minutos. Nas semanas 1 a 8 não olhas para nada — desliga a
+      notificação. Rever números todas as semanas é a forma mais rápida de desistir.</p>
+      <div class="dod"><b>Pronto quando</b>15 min · 5 números registados</div>
+    </div>
+  </div>
+
+  <div class="note acc"><strong>O teste de valor — antes de publicar, um post tem de fazer pelo menos uma
+  destas três coisas:</strong> <strong>ensinar</strong> alguma coisa prática (como se pede o Anmeldung, o
+  que perguntam numa entrevista de engenharia), <strong>mudar a forma de ver</strong> (“não sou mais
+  inteligente do que ninguém do meu curso, só fiz mais candidaturas”), ou <strong>mostrar o que é
+  possível</strong> (a foto mensal, os números a subir). Se não faz nenhuma das três, não é conteúdo — é
+  diário. O diário serve para os episódios, onde a série é o contexto; os posts de pilar têm de passar
+  neste teste. <span style="color:var(--ink-3)">Complementa a regra do acontecimento: o acontecimento
+  garante que <em>houve</em> alguma coisa; o teste de valor garante que serve a quem está a ver.</span></div>
+
+  <h3 style="margin-top:34px; font-size:19px; font-weight:600; letter-spacing:-.015em">As regras de edição que resolvem o teu problema real</h3>
+  <p class="sub" style="margin-top:8px">Disseste-o tu: não publicas porque achas que tem de estar
+  lindamente editado. Isso não é um problema de gosto, é falta de restrições. Restrições:</p>
+  <ol class="rules">
+    <li><span><strong>Temporizador de 60 minutos</strong>, iniciado antes de importares o primeiro clip. Ao toque, exportas o que existe. Não “está quase” — exportas.</span></li>
+    <li><span><strong>Duas takes por linha, no máximo.</strong> Uma terceira significa que ficas com a segunda. A entrega perfeita parece um anúncio; um tropeção parece uma pessoa.</span></li>
+    <li><span><strong>Um template, para sempre.</strong> Um estilo de legenda, uma fonte, uma transição (corte seco), um preset de cor. Escolhes na semana 1 e nunca mais abres o menu de fontes.</span></li>
+    <li><span><strong>Três minutos no máximo a escolher música</strong>, ou sem música. Reels falados funcionam secos.</span></li>
+    <li><span><strong>Nada é apagado antes de ser publicado.</strong> Não tens autorização para julgar um vídeo que não publicaste. O teu gosto está calibrado para consumir, não para produzir — vai estar errado durante seis meses.</span></li>
+    <li><span><strong>Saída de emergência:</strong> se chegam as 19:00 e a edição está partida, publicas a melhor take em bruto com um cartão de título. A audiência nunca castigou isto. Falhar a semana é que é falhar.</span></li>
+    <li><span><strong>Semanas 1 a 8: não olhas para os números.</strong> Uma vez, no domingo da semana 8. Antes disso os dados são ruído e só servem para te fazer desistir.</span></li>
+  </ol>
+</section>
+<section id="lista">
+  <div class="eyebrow">04 · Estrutura</div>
+  <h2>Os 10 primeiros vídeos</h2>
+  <p class="sub">Dez semanas. Cada episódio tem de conter prova de trabalho feito nessa semana — um
+  episódio sobre um plano é um vlog; um episódio sobre uma coisa que fizeste é uma série. Se a semana não
+  produziu nada, o episódio é sobre a semana que não produziu nada. Isso também é prova.</p>
+
+  <div class="scroll">
+    <table>
+      <thead><tr><th>Ep</th><th>Tema</th><th>Pilar</th><th>Duração</th><th>Onde se filma</th></tr></thead>
+      <tbody>
+        <tr><td class="num">01</td><td><strong>Quem fala e porquê</strong> — a aposta, não o currículo</td><td>Série</td><td class="num">55 s</td><td>Casa, à janela</td></tr>
+        <tr><td class="num">02</td><td><strong>A garagem</strong> — ponto de partida do corpo, com números</td><td>Corpo</td><td class="num">38 s</td><td>Garagem</td></tr>
+        <tr><td class="num">03</td><td><strong>Berlim acabou</strong> — a mudança para Munique</td><td>Série</td><td class="num">58 s</td><td>Casa vazia + rua</td></tr>
+        <tr><td class="num">04</td><td><strong>Como cheguei aqui, parte 1</strong> — a pasta de projetos que ninguém me pediu</td><td>Engenharia</td><td class="num">60 s</td><td>Sentado + ecrã dos projetos</td></tr>
+        <tr><td class="num">05</td><td><strong>Parte 2</strong> — como é uma entrevista de engenharia mecânica lá fora</td><td>Engenharia</td><td class="num">60 s</td><td>Secretária</td></tr>
+        <tr><td class="num">06</td><td><strong>Primeira semana em Munique</strong> — casa nova, empresa nova, treino novo</td><td>Série</td><td class="num">50 s</td><td>Casa nova</td></tr>
+        <tr><td class="num">07</td><td><strong>O que sobra ao fim do mês</strong> — bruto, líquido, renda, taxa de poupança</td><td>Dinheiro</td><td class="num">55 s</td><td>Mesa, papel e caneta</td></tr>
+        <tr><td class="num">08</td><td><strong>Onde ponho o dinheiro</strong> — a carteira, em percentagens</td><td>Dinheiro</td><td class="num">50 s</td><td>Secretária, ecrã tapado</td></tr>
+        <tr><td class="num">09</td><td><strong>O primeiro convidado</strong> — alguém que está anos à tua frente</td><td>Dinheiro / Engenharia</td><td class="num">60 s</td><td>Dois planos, mesa ou rua</td></tr>
+        <tr><td class="num">10</td><td><strong>Viver na Alemanha</strong> — a burocracia real, sem filtro</td><td>Engenharia</td><td class="num">60 s</td><td>Rua + papelada</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="note"><strong>Nota sobre a ordem.</strong> Os episódios 4 e 5 (FEUP → Tekever → Continental →
+  Apple → Volvo → Tesla) são o teu ativo mais valioso: é o que as pessoas vão perguntar nas DMs e é o que
+  eventualmente vendes. Por isso não estão no episódio 1 — gastá-los na apresentação é queimar a melhor
+  carta antes de alguém estar a ver. Mas também não os empurres para o episódio 20: na semana 4 já tens
+  gente suficiente para valer a pena.</div>
+
+  <div class="note acc"><strong>A vantagem que quase mais ninguém em português tem.</strong> O teu trabalho
+  é <em>visual</em>. Simulações com campos de tensão, malhas, deformações, renders de CAD, cortes, ensaios.
+  Uma análise de elementos finitos a correr em ecrã inteiro para uma pessoa que não percebe nada de
+  engenharia continua a ser hipnótica — e isso é exactamente o que o Instagram premeia. Contas de carreira
+  em programação têm de filmar um editor de texto; tu tens cores, movimento e peças. Usa projetos
+  <strong>pessoais e académicos</strong> sempre, nunca de nenhum empregador, e tens conteúdo de pilar para
+  um ano sem repetir.</div>
+</section>
+
+<section id="guioes">
+  <div class="eyebrow">05 · A parte que precisavas mesmo</div>
+  <h2>Guiões completos, episódios 1 a 10</h2>
+  <p class="sub">Prontos a filmar. Os tempos são alvos, não lei — se uma take fica 4 segundos mais longa e
+  soa humana, fica. As palavras a <span class="ph">âmbar</span> são factos que só tu tens: preenche antes
+  de filmar e não os suavizes. Os números são o ponto todo.</p>
+
+  <div class="note acc"><strong>Revisão 2 — o que mudou depois de ver a série de referência.</strong>
+  Cada episódio passou a ter um <strong>acontecimento</strong> declarado no cabeçalho: uma coisa que
+  <em>acontece</em> em câmara, não uma coisa que explicas. Foi isso que separou os picos do vale na série
+  dele — quatro episódios com um facto real fizeram 2 a 5 vezes a média; doze episódios de rotina ficaram
+  todos abaixo das 1.100 visualizações. O episódio 8 deixou de explicar a carteira e passa a
+  <em>criar a transferência automática</em> em câmara. E o episódio 9 foi substituído: passa a ser o
+  <strong>episódio de convidado</strong> — o formato único mais rentável de toda a série de referência,
+  com cinco vezes a média do canal.</div>
+
+  <!-- EP 1 -->
+  <article class="sheet">
+    <header>
+      <h3>EP. 01 — “Mas nem sempre foi fácil”</h3>
+      <div class="spec"><span>Duração <b>2:30</b></span><span>Texto <b>387 palavras</b></span><span>Fonte <b>A tua gravação + a tua leitura</b></span><span>Gancho <b>Gravado à parte</b></span></div>
+    </header>
+
+    <div class="note acc" style="margin:0; border-left:none; border-bottom:1px solid var(--line)">
+      <strong>Três correções, a partir da tua leitura.</strong>
+      <br><br>
+      <strong>1 · O gancho passa a ser gravado à parte.</strong> Na leitura disseste a lista das empresas
+      duas vezes — uma no gancho e outra no bloco 1 — e soou a repetição. A culpa é do mecanismo que eu te
+      dei: “grava linear e corta do meio” obriga-te a apagar uma frase na edição, e é fácil esquecer.
+      Agora é mais simples: <strong>gravas o gancho isolado, duas takes, e depois gravas o corpo</strong>.
+      O corpo nunca repete a frase do gancho.
+      <br><br>
+      <strong>2 · “Não é o que estás a pensar” passa a nomear o que a pessoa está a pensar.</strong> A frase
+      sozinha deixa a pergunta no ar — pensar o quê? Agora diz-se a suposição em voz alta antes de a
+      desfazeres. É a diferença entre uma frase gira e uma frase que funciona.
+      <br><br>
+      <strong>3 · A ideia da página passa a ser uma frase só, seguida de três coisas concretas.</strong> Na
+      leitura repetiste “decidi criar esta página… criar esta página para…” e perdeu-se. Agora anuncias uma
+      vez e a seguir dizes o que lá vais pôr.
+      <br><br>
+      <span style="color:var(--ink-3)">Muitas frases abaixo são tuas, tiradas da leitura — ficaram melhores
+      do que as minhas: “candidaturas que ficam sem resposta”, “algo que tenho negligenciado”, “sem grandes
+      responsabilidades”, “mais uma fonte de rendimento”.</span>
+    </div>
+
+    <div class="beat"><div class="tc">0:00–0:08<br><span style="font-size:10px">GANCHO</span></div><div class="beatbody">
+      <div class="role">Gravado à parte · duas takes, e escolhes na edição</div>
+      <p class="say">“Nos últimos três anos trabalhei em três das maiores empresas do mundo e vivi em quatro países. Mas nem sempre foi fácil.”</p>
+      <div class="meta"><div><span class="k">Regra</span>Esta frase <strong>não</strong> volta a aparecer no corpo. É a única coisa que gravas separada de tudo o resto.</div>
+      <div><span class="k">Ecrã</span><span class="ost">EP. 01</span> canto superior esquerdo, desde o frame 1.</div></div>
+    </div></div>
+
+    <div class="beat"><div class="tc">0:08–0:22<br><span style="font-size:10px">36 pal.</span></div><div class="beatbody">
+      <div class="role">1 · Apresentação e percurso — aqui começa o corpo</div>
+      <p class="say">“Olá, o meu nome é Henrique, tenho 24 anos e sou engenheiro mecânico. Estudei no Porto, e nos últimos anos trabalhei na Apple, na Volvo e na Tesla. Vivi em Itália, na Irlanda, na Suécia, e agora na Alemanha.”</p>
+      <div class="meta"><div><span class="k">Correção importante</span>Na leitura disseste “nos últimos quatro anos numa das melhores faculdades da Europa, Politécnico de Milão”. Isso omite o Porto, que é onde te formaste — Milão foi um Erasmus de seis meses. Pediste para nunca fugir à verdade, e essa formulação fugia. <strong>Estudei no Porto</strong>, e o Milão entra a seguir, no sítio certo e com mais força.</div>
+      <div><span class="k">Ecrã</span><span class="ost">ITÁLIA · IRLANDA · SUÉCIA · ALEMANHA</span></div></div>
+    </div></div>
+
+    <div class="beat"><div class="tc">0:22–0:33<br><span style="font-size:10px">24 pal.</span></div><div class="beatbody">
+      <div class="role">2 · O ponto baixo — não mexer</div>
+      <p class="say">“Mas nem sempre foi fácil. Em 2022 estava a acabar a licenciatura, não tinha nenhum estágio, e sentia que estava a ficar para trás.”</p>
+      <div class="meta"><div><span class="k">Entrega</span>Devagar. É a frase mais forte de tudo o que gravaste até agora.</div></div>
+    </div></div>
+
+    <div class="beat"><div class="tc">0:33–0:44<br><span style="font-size:10px">26 pal.</span></div><div class="beatbody">
+      <div class="role">3 · O primeiro passo — o Erasmus</div>
+      <p class="say">“O primeiro passo foi um Erasmus. Setembro de 2022, seis meses no Politécnico de Milão, uma das melhores escolas de engenharia da Europa. Foi a primeira vez que saí de casa.”</p>
+      <div class="meta"><div><span class="k">Porquê está aqui e não no bloco 1</span>Cronologicamente vem depois do ponto baixo — e é aí que faz trabalho. Entrar na Apple não é replicável para quem está a ver; <strong>candidatar-se a Erasmus é</strong>. É o único passo do vídeo que alguém pode dar já esta semana, e é o que torna o resto do teu percurso credível em vez de mágico.</div>
+      <div><span class="k">Nomear a escola</span>Dizes “uma das melhores escolas de engenharia da Europa” a propósito do Politécnico — que é verdade e é verificável. É diferente de dizer que <em>te formaste</em> lá.</div></div>
+    </div></div>
+
+    <div class="beat"><div class="tc">0:44–0:53<br><span style="font-size:10px">18 pal.</span></div><div class="beatbody">
+      <div class="role">4 · As candidaturas</div>
+      <p class="say">“Depois disso decidi mandar candidaturas para todo o lado. Centenas delas. E levei com imensa rejeição.”</p>
+      <div class="meta"><div><span class="k">Insert</span>1 s da caixa de emails, nomes tapados.</div></div>
+    </div></div>
+
+    <div class="beat"><div class="tc">0:53–1:12<br><span style="font-size:10px">56 pal.</span></div><div class="beatbody">
+      <div class="role">5 · A suposição, nomeada — e depois desfeita</div>
+      <p class="say">“E se calhar estás a pensar que eu tive ajuda. Contactos, alguém lá dentro, dinheiro de família. Não tive nada disso. Venho de uma família normal, os meus pais têm trabalhos normais. Não sou rico e não sou mais inteligente do que ninguém. A única coisa que fiz foi não desistir — e obviamente ter um bocado de sorte.”</p>
+      <div class="meta"><div><span class="k">A correção</span>Antes dizias só “não é o que estão a pensar”, e ficava a pergunta no ar. Agora <strong>nomeias a suposição</strong> — ajuda, contactos, dinheiro — e só depois a desfazes. É a diferença entre uma frase gira e uma frase que funciona.</div>
+      <div><span class="k">Entrega</span>A primeira frase quase a sorrir, como quem apanha o outro a pensar. As três seguintes a sério.</div>
+      <div><span class="k">Corte reutilizável</span>Sozinho, é o melhor reel isolado do guião.</div></div>
+    </div></div>
+
+    <div class="beat"><div class="tc">1:12–1:26<br><span style="font-size:10px">33 pal.</span></div><div class="beatbody">
+      <div class="role">6 · O custo invisível — palavras tuas, da leitura</div>
+      <p class="say">“São muitas horas a fazer currículo e portefólio que ao início ninguém vê, imensas candidaturas que ficam sem resposta, e nunca saberes se vais chegar onde queres.”</p>
+      <div class="meta"><div><span class="k">Nota</span>“Candidaturas que ficam sem resposta” é teu e é melhor do que o que eu tinha — o silêncio dói mais do que o não.</div>
+      <div><span class="k">Insert</span>2 s de um projeto pessoal a rodar em CAD ou de uma simulação.</div></div>
+    </div></div>
+
+    <div class="beat"><div class="tc">1:26–1:42<br><span style="font-size:10px">41 pal.</span></div><div class="beatbody">
+      <div class="role">7 · A fase de que ninguém fala — o coração</div>
+      <p class="say">“E mesmo depois de chegares a uma destas empresas, há outra fase de que as pessoas não falam muito: mudares para um país que não conheces, onde não tens família nem amigos, e teres de começar a tua vida do zero.”</p>
+      <div class="meta"><div><span class="k">Entrega</span>Abranda. Sem drama.</div></div>
+    </div></div>
+
+    <div class="beat"><div class="tc">1:42–1:51<br><span style="font-size:10px">21 pal.</span></div><div class="beatbody">
+      <div class="role">8 · Quatro vezes, e a página — uma frase só</div>
+      <p class="say">“Já passei por isso quatro vezes, e vou passar outra vez nas próximas semanas. Por isso criei esta página.”</p>
+      <div class="meta"><div><span class="k">A correção</span>Na leitura repetiste “decidi criar esta página… criar esta página para…” e o anúncio perdeu-se. <strong>Anuncia-se uma vez</strong>, e a seguir dizes o que lá vais pôr.</div>
+      <div><span class="k">Encadeamento</span>“Quatro vezes” liga aos quatro países do bloco 1 e fecha esse arco.</div></div>
+    </div></div>
+
+    <div class="beat"><div class="tc">1:51–2:15<br><span style="font-size:10px">63 pal.</span></div><div class="beatbody">
+      <div class="role">9 · O que a página é — três coisas, concretas</div>
+      <p class="say">“Para mostrar a quem está em engenharia, ou noutra área qualquer, que é possível chegar a estas empresas. Para desmistificar como é viver noutro país, as dificuldades e também as vantagens. E para documentar duas coisas que tenho negligenciado: pôr o exercício físico em ordem, enquanto ainda estou nos meus vintes e sem grandes responsabilidades, e tentar criar algo meu que seja mais uma fonte de rendimento.”</p>
+      <div class="meta"><div><span class="k">Todas tuas</span>“Algo que tenho negligenciado”, “sem grandes responsabilidades”, “mais uma fonte de rendimento” — saíram-te na leitura e são melhores do que o que eu tinha escrito. Ficaram tal e qual.</div>
+      <div><span class="k">Inserts</span>1,5 s da barra na garagem · 1,5 s do portátil com uma folha de contas.</div></div>
+    </div></div>
+
+    <div class="beat"><div class="tc">2:15–2:28<br><span style="font-size:10px">40 pal.</span></div><div class="beatbody">
+      <div class="role">10 · Fecho — as três perguntas</div>
+      <p class="say">“Portanto, se quiseres saber como é viver no estrangeiro, como é que um estudante de engenharia chega a uma destas empresas, ou simplesmente como é a vida de alguém de 24 anos a tentar perceber a vida — junta-te aos próximos episódios.”</p>
+      <div class="meta"><div><span class="k">Ecrã</span><span class="ost">01 / 52 · DOMINGOS 19:00</span></div>
+      <div><span class="k">Corte</span>Na última palavra. Sem “obrigado” — na leitura acrescentaste um no fim e tira força ao fecho.</div></div>
+    </div></div>
+
+    <div class="sheetfoot">
+      <div><div class="foothead">Como gravar, agora que o gancho é à parte</div><p class="caption"><strong>1.</strong> Grava o gancho isolado, duas takes.
+<strong>2.</strong> Grava os dez blocos do corpo de seguida, com pausa entre eles. Bloco a bloco, não de uma vez.
+<strong>3.</strong> Na edição: gancho primeiro, corte seco com mudança de enquadramento, e depois o corpo.
+Nada tem de ser apagado. Foi por isso que mudei o mecanismo.</p></div>
+      <div><div class="foothead">O corte de 90 segundos</div><p class="caption">Tira o bloco <strong>6</strong> (o custo invisível), o bloco <strong>3</strong> (o Erasmus) e a terceira parte do bloco <strong>9</strong> — ficam ~295 palavras, cerca de 115 s. Para chegar aos 90, corta ainda o bloco <strong>1</strong> à lista dos países e o bloco <strong>10</strong> a uma só pergunta.
+Se tiveres de escolher entre cortar o Erasmus ou o custo invisível, <strong>corta o custo invisível</strong> — o Erasmus é o único passo do vídeo que quem vê pode dar amanhã.
+<strong>Grava tudo na mesma.</strong> O bloco 6 e o bloco 5 são dois reels independentes para as semanas seguintes.</p></div>
+      <div><div class="foothead">Três coisas a confirmar</div><p class="caption">A licenciatura acabou antes do Erasmus? Se o Erasmus já foi no mestrado, o bloco 2 diz “a acabar o curso” em vez de “a acabar a licenciatura”.
+Na gravação dizes 24 e depois 25 anos. Ficou 24 em todo o lado.
+Na leitura disseste “nos últimos quatro anos” a propósito da faculdade e “três anos” no gancho. Ficou três anos, que é o tempo desde a Apple.</p></div>
+      <div><div class="foothead">Legenda</div><p class="caption">Olá, sou o Henrique, tenho 24 anos e sou engenheiro mecânico.
+Estudei no Porto, fiz Erasmus no Politécnico de Milão, e nos últimos três anos trabalhei na Apple, na Volvo e na Tesla. Vivi em Itália, na Irlanda, na Suécia e agora na Alemanha.
+Mas nem sempre foi fácil. Em 2022 estava a acabar a licenciatura sem nenhum estágio e sentia que estava a ficar para trás. Mandei centenas de candidaturas e levei com imensa rejeição.
+E se calhar estás a pensar que tive ajuda, contactos ou dinheiro de família. Não tive nada disso. Venho de uma família normal, não sou rico e não sou mais inteligente do que ninguém. A única coisa que fiz foi não desistir — e ter um bocado de sorte.
+Criei esta página para mostrar que é possível, desmistificar como é viver noutro país, e documentar duas coisas que tenho negligenciado: pôr o exercício em ordem e tentar criar algo meu.
+Um episódio por semana, ao domingo. 1 de 52.</p></div>
+    </div>
+  </article>
+
+  <!-- POST FIXADO -->
+  <article class="sheet">
+    <header>
+      <h3>POST FIXADO — “O que vais encontrar aqui”</h3>
+      <div class="spec"><span>Duração <b>22 s</b></span><span>Formato <b>B-roll + texto, sem voz</b></span><span>Gravação <b>0 min</b></span><span>Destino <b>Fixado no perfil</b></span></div>
+    </header>
+
+    <div class="note acc" style="margin:0; border-left:none; border-bottom:1px solid var(--line)">
+      <strong>Porque existe além do episódio 1.</strong> O episódio 1 desaparece no feed. Este fica fixado
+      no topo do perfil e é o que a pessoa vê quando chega ali seis meses depois, vinda de outro vídeo
+      qualquer. São dois trabalhos diferentes.
+      <br><br>
+      <strong>Não tens de gravar nada.</strong> Texto por cima de imagens que já tens — Cork, Gotemburgo,
+      Berlim, a garagem, a secretária, um projeto em CAD. Fotos paradas com um zoom lento de 5% funcionam
+      igual. Sem voz, música instrumental baixa.
+      <br><br>
+      <span style="color:var(--ink-3)">Do template original tirei a moldura da “candidatura para ser o teu
+      criador favorito” — é fofa e bate de frente com o tom do resto da página. A função dela (enquadrar
+      para que serve a página) fica, dita a seco.</span>
+    </div>
+
+    <div class="beat"><div class="tc">01<br><span style="font-size:10px">0:00–0:04</span></div><div class="beatbody">
+      <div class="role">Quem — e para que serve a página</div>
+      <p class="say">“Olá, sou o Henrique. Esta página é o que eu não encontrei quando quis sair de Portugal.”</p>
+      <div class="meta"><div><span class="k">Imagem</span>Tu a olhar para a câmara, plano parado. O único em que apareces de frente.</div>
+      <div><span class="k">Porquê</span>É a versão seca do “candidatura para ser o teu criador favorito”: diz para que serve a página sem pedir nada.</div></div>
+    </div></div>
+
+    <div class="beat"><div class="tc">02<br><span style="font-size:10px">0:04–0:07</span></div><div class="beatbody">
+      <div class="role">Onde vives, e com quem — o beat do template</div>
+      <p class="say">“Engenheiro mecânico, 24 anos. Vivo na Alemanha, sozinho, longe de casa há <span class="ph">três</span> anos.”</p>
+      <div class="meta"><div><span class="k">Imagem</span>Janela do apartamento, ou rua da tua zona. Nada de arranha-céus genéricos.</div></div>
+    </div></div>
+
+    <div class="beat"><div class="tc">03<br><span style="font-size:10px">0:07–0:13</span></div><div class="beatbody">
+      <div class="role">Coisas de que gosto — três, e específicas</div>
+      <p class="say">“Coisas de que gosto: desenhar peças que depois existem · treinar numa garagem · fazer contas em papel”</p>
+      <div class="meta"><div><span class="k">Imagem</span>Um plano por linha, 2 s cada: CAD no ecrã · a barra · uma folha com contas à mão.</div>
+      <div><span class="k">Regra</span>Nenhuma pode ser uma coisa que meia humanidade também diria — “viajar”, “café”, “música”. Se não revela nada, não entra. Estas três dizem em seis segundos o que és e quais são os pilares.</div></div>
+    </div></div>
+
+    <div class="beat"><div class="tc">04<br><span style="font-size:10px">0:13–0:19</span></div><div class="beatbody">
+      <div class="role">O que esperar — três, e é o contrato</div>
+      <p class="say">“O que vais encontrar aqui: como se sai de Portugal para estas empresas · como é viver fora a sério · e a tentativa de construir algo que seja meu”</p>
+      <div class="meta"><div><span class="k">Imagem</span>Um plano por linha: a caixa de emails de rejeição · mala/papelada alemã · o portátil.</div></div>
+    </div></div>
+
+    <div class="beat"><div class="tc">05<br><span style="font-size:10px">0:19–0:22</span></div><div class="beatbody">
+      <div class="role">Fecho</div>
+      <p class="say">“Se isto te diz alguma coisa, fica. Episódio novo aos domingos.”</p>
+      <div class="meta"><div><span class="k">Imagem</span>Cartão preto com <span class="ost">01 / 52 · DOMINGOS 19:00</span> — o mesmo que fecha os episódios. É assim que a série ganha assinatura.</div></div>
+    </div></div>
+
+    <div class="sheetfoot">
+      <div><div class="foothead">Regras de execução</div><p class="caption">Uma fonte, uma posição, um tamanho, do primeiro ao último cartão. Máximo dez palavras por linha de texto.
+Sem voz. Música instrumental baixa, sem letra, sem drop.
+Nas listas de três, uma linha entra por cada plano — não metas as três de uma vez, senão ninguém lê nenhuma.</p></div>
+      <div><div class="foothead">Legenda</div><p class="caption">Sobre mim, e sobre o que vais encontrar aqui.
+Engenheiro mecânico, 24 anos, formado no Porto. Saí de Portugal aos 22 e desde então passei pela Apple, em Cork, pela Volvo, em Gotemburgo, e pela Tesla, em Berlim.
+Esta página é o que eu não encontrei quando quis sair: como se chega a estas empresas, como é viver fora a sério, e a tentativa de construir algo que seja meu.
+Episódio novo aos domingos.</p></div>
+      <div><div class="foothead">Quando publicar</div><p class="caption">No mesmo dia do episódio 1, algumas horas depois, e fixas logo. A partir daí não se toca nele durante meses — é o cartão de identidade do perfil, não conteúdo semanal.</p></div>
+    </div>
+  </article>
+
+  <!-- EP 1 LONGO -->
+  <article class="sheet">
+    <header>
+      <h3>EP. 01 — versão longa, 3 minutos</h3>
+      <div class="spec"><span>Duração <b>3:15</b></span><span>Texto <b>495 palavras</b></span><span>Destino <b>YouTube + fixado no perfil</b></span><span>Blocos <b>14</b></span><span>Gravação <b>40 min</b></span></div>
+    </header>
+
+    <div class="note acc" style="margin:0; border-left:none; border-bottom:1px solid var(--line)">
+      <strong>Onde é que esta versão vive.</strong> No Instagram, o episódio 1 público continua a ser o de
+      60 segundos. Esta versão é para o YouTube e para ficar fixada no perfil — é exactamente onde o Gonçalo
+      Ferreira pôs a dele, e por boa razão: um vídeo de três minutos a falar para a câmara, numa conta com
+      zero seguidores, tem uma taxa de abandono brutal no feed. Mas há um segundo motivo, mais forte:
+      <strong>esta gravação é a matéria-prima de quatro a seis cortes de 30–45 s</strong> para as semanas
+      seguintes — o bloco das rejeições, o do custo, o “não sou mais inteligente do que ninguém”. Gravas uma
+      vez, tens conteúdo para um mês.
+    </div>
+
+    <div class="beat"><div class="tc">0:00–0:08<br><span style="font-size:10px">26 pal.</span></div><div class="beatbody">
+      <div class="role">1 · Quem és</div>
+      <p class="say">“Olá, o meu nome é Henrique, tenho 24 anos, quase 25, sou engenheiro mecânico pela Universidade do Porto, e há <span class="ph">três</span> anos que trabalho fora de Portugal.”</p>
+    </div></div>
+
+    <div class="beat"><div class="tc">0:08–0:25<br><span style="font-size:10px">48 pal.</span></div><div class="beatbody">
+      <div class="role">2 · O momento zero, datado</div>
+      <p class="say">“Se eu tivesse de escolher o dia em que isto começou, era <span class="ph">mês/ano</span>. Estava no <span class="ph">terceiro</span> ano do curso e percebi uma coisa que me incomodou: eu queria trabalhar nas empresas que via nos vídeos, e não conhecia uma única pessoa que lá tivesse chegado.”</p>
+      <div class="meta"><div><span class="k">Referência</span>É o equivalente ao jogo de recreio interrompido dele. Escolhe um momento só, com data, e conta-o sempre com as mesmas palavras daqui para a frente.</div></div>
+    </div></div>
+
+    <div class="beat"><div class="tc">0:25–0:42<br><span style="font-size:10px">39 pal.</span></div><div class="beatbody">
+      <div class="role">3 · Quem não levou a sério — a tua versão é melhor que a dele</div>
+      <p class="say">“E quando dizia isso em voz alta, ninguém levava muito a sério. Não por mal. Em Portugal, ser engenheiro numa boa empresa cá já é considerado uma vitória — e é. Só que eu queria ver se conseguia mais.”</p>
+      <div class="meta"><div><span class="k">Porquê</span>Ele tem os pais a dizer “mete os pés no chão”. Tu tens o contrário: para toda a gente à tua volta, tu já ganhaste. Explicar porque é que não chega é mais interessante e ninguém em português está a filmar isso.</div></div>
+    </div></div>
+
+    <div class="beat"><div class="tc">0:42–1:02<br><span style="font-size:10px">48 pal.</span></div><div class="beatbody">
+      <div class="role">4 · O primeiro passo, sem glamour nenhum</div>
+      <p class="say">“O primeiro passo não teve nada de especial. Um estágio na <span class="ph">Tekever</span>, a desenhar peças para drones. Depois um verão na <span class="ph">Continental</span>, em Braga, a fazer folhas de cálculo. Nada disto dá para publicar. Mas foi o que fez o meu currículo deixar de estar vazio.”</p>
+      <div class="meta"><div><span class="k">Equivalente</span>Os 200 euros dele. O detalhe pequeno e pouco heroico é o que faz as pessoas acreditarem no resto.</div></div>
+    </div></div>
+
+    <div class="beat"><div class="tc">1:02–1:25<br><span style="font-size:10px">44 pal.</span></div><div class="beatbody">
+      <div class="role">5 · A crise concreta</div>
+      <p class="say">“Ao mesmo tempo candidatava-me a tudo o que era lá fora. E durante muito tempo não aconteceu nada. <span class="ph">X</span> candidaturas, <span class="ph">Y</span> respostas negativas, e muitas em que nem sequer responderam. Houve uma altura em que achei sinceramente que estava a perder tempo.”</p>
+      <div class="meta"><div><span class="k">Corte reutilizável</span>Este bloco sozinho é um reel de 30 s para a semana 3 ou 4.</div></div>
+    </div></div>
+
+    <div class="beat"><div class="tc">1:25–1:45<br><span style="font-size:10px">44 pal.</span></div><div class="beatbody">
+      <div class="role">6 · O que mudou a agulha</div>
+      <p class="say">“O que mudou não foi eu ficar mais inteligente. Foi começar a mostrar trabalho. Fiz uma pasta de projetos à noite, sozinho, que ninguém me tinha pedido: análises de estruturas, simulações, coisas acabadas com relatório. Foi disso que passaram a falar comigo nas entrevistas.”</p>
+      <div class="meta"><div><span class="k">Insert</span>Os projetos a rodar em ecrã inteiro. É o teu melhor B-roll e é aqui que ele entra.</div></div>
+    </div></div>
+
+    <div class="beat"><div class="tc">1:45–2:02<br><span style="font-size:10px">26 pal.</span></div><div class="beatbody">
+      <div class="role">7 · A viragem</div>
+      <p class="say">“E depois foi a Apple, em Cork. Um ano. Depois a tese na Volvo, em Gotemburgo. E depois Berlim, na Tesla, a desenhar hardware de teste.”</p>
+      <div class="meta"><div><span class="k">Entrega</span>Rápido e sem solenidade. Se abrandares aqui, soa a exibição; se acelerares, soa a consequência do bloco anterior — que é o que é.</div></div>
+    </div></div>
+
+    <div class="beat"><div class="tc">2:02–2:20<br><span style="font-size:10px">41 pal.</span></div><div class="beatbody">
+      <div class="role">8 · A admissão honesta — o equivalente ao “não ganhei dinheiro nenhum” dele</div>
+      <p class="say">“Agora a parte que não se publica: nada disto me tornou rico, nem resolveu nada. Continuo a desenhar coisas que não são minhas, mudei de casa e de país <span class="ph">três</span> vezes, e recomecei amizades do zero as mesmas <span class="ph">três</span> vezes.”</p>
+    </div></div>
+
+    <div class="beat"><div class="tc">2:20–2:35<br><span style="font-size:10px">33 pal.</span></div><div class="beatbody">
+      <div class="role">9 · O nivelamento — a frase mais importante do vídeo</div>
+      <p class="say">“E não sou mais inteligente do que ninguém do meu curso. Sou capaz de ter feito mais candidaturas do que a maioria, e de ter aceitado ouvir que não mais vezes. Foi isso.”</p>
+      <div class="meta"><div><span class="k">Referência</span>Ele diz “eles não têm mais capacidades do que eu, se eles conseguiram eu também consigo”. A tua versão é a mesma frase do outro lado — e é mais forte, porque tu já lá chegaste e podes dizê-la sem soar a promessa.</div>
+      <div><span class="k">Corte reutilizável</span>É o teu melhor reel isolado de todos os catorze blocos.</div></div>
+    </div></div>
+
+    <div class="beat"><div class="tc">2:35–2:55<br><span style="font-size:10px">23 pal.</span></div><div class="beatbody">
+      <div class="role">10 · Onde vais agora</div>
+      <p class="say">“Daqui a <span class="ph">três semanas</span> mudo-me para Munique, empresa nova, outra vez tudo do zero. E decidi que desta vez ia filmar.”</p>
+    </div></div>
+
+    <div class="beat"><div class="tc">2:55–3:28<br><span style="font-size:10px">82 pal.</span></div><div class="beatbody">
+      <div class="role">11 · O anúncio do projeto — e o que a página vai ser</div>
+      <p class="say">“Um episódio por semana, ao domingo. E vai ser um caldeirão, porque a minha vida é um caldeirão: como é que se entra nestas empresas vindo de Portugal, como é mudar de país sozinho aos vinte e poucos, viver em casa partilhada, aguentar a burocracia alemã. E ao mesmo tempo pôr o corpo em forma e tentar construir alguma coisa que seja minha, fora do salário. Se tens vinte e poucos anos e estás a pensar em sair, isto é para ti.”</p>
+    </div></div>
+
+    <div class="beat"><div class="tc">3:15–3:30<br><span style="font-size:10px">27 pal.</span></div><div class="beatbody">
+      <div class="role">12 · O contrato do lado feio</div>
+      <p class="say">“E vou mostrar as duas partes. Quando os números não crescerem, digo. Quando a ideia de negócio não der dinheiro, digo. Quando faltar aos treinos, também.”</p>
+      <div class="meta"><div><span class="k">Referência</span>É o bloco dele: “quero-vos mostrar não só o lado bonito, mas também o lado mais complicado, as noites mal dormidas”. Só que o dele é vago e o teu é específico — três falhas nomeadas. Específico é sempre mais credível.</div></div>
+    </div></div>
+
+    <div class="beat"><div class="tc">3:30–3:40<br><span style="font-size:10px">20 pal.</span></div><div class="beatbody">
+      <div class="role">13 · Pedido de comentários</div>
+      <p class="say">“Se estás em engenharia e queres sair, escreve-me nos comentários o que queres saber. As melhores perguntas viram episódio.”</p>
+    </div></div>
+
+    <div class="beat"><div class="tc">3:40–3:50<br><span style="font-size:10px">5 pal.</span></div><div class="beatbody">
+      <div class="role">14 · Fecho e corte para a primeira cena real</div>
+      <p class="say">“Episódio um. Domingos, às sete.”</p>
+      <div class="meta"><div><span class="k">Corte</span>E emenda directamente na primeira cena filmada: tu a entrar na garagem, ou a pôr as marcas de fita no chão. Ele faz exactamente isto — acaba o discurso e emenda no sábado de manhã a ir correr. É o que transforma um vídeo de apresentação no episódio 1 de uma série.</div></div>
+    </div></div>
+
+    <div class="sheetfoot">
+      <div><div class="foothead">As três durações, a partir da mesma gravação</div>
+        <div class="scroll" style="margin-top:8px"><table>
+          <thead><tr><th>Versão</th><th>Blocos</th><th>Palavras</th><th>Onde</th></tr></thead>
+          <tbody>
+            <tr><td><strong>1:45</strong></td><td class="num">1 · 5 · 6 · 7 · 9 · 11 · 14</td><td class="num">260</td><td>Reel longo no Instagram, se quiseres mais do que 60 s</td></tr>
+            <tr><td><strong>2:25</strong></td><td class="num">1 · 2 · 5 · 6 · 7 · 8 · 9 · 10 · 11 · 14</td><td class="num">372</td><td>Meio-termo. Tira o “ninguém levou a sério” e o primeiro estágio</td></tr>
+            <tr><td><strong>3:15</strong></td><td class="num">todos os 14</td><td class="num">495</td><td>YouTube e fixado no perfil</td></tr>
+          </tbody>
+        </table></div>
+        <p class="caption" style="margin-top:10px">Grava sempre os catorze. Cortar é trivial, voltar a gravar não é. E os blocos 5, 8 e 9 são reels independentes de 30 a 45 segundos — três semanas de conteúdo de uma só sessão.</p></div>
+      <div><div class="foothead">Recomendação</div><p class="caption">Publica os <strong>60 segundos</strong> no Instagram como episódio 1 e a versão de <strong>3 minutos</strong> no YouTube no mesmo dia, com o link na bio. Não são dois vídeos, é o mesmo vídeo em dois tamanhos — e é o que o Gonçalo fez, com a diferença de que ele só tinha a versão longa.</p></div>
+      <div><div class="foothead">O que não copiar dele nesta versão</div><p class="caption">Ele fecha com “cada um de nós tem um dom que nos foi dado pela natureza” e “nasceram para vencer”, e pede subscrição, like e comentário de seguida. Tira tudo isso. O teu bloco 9 já faz o trabalho de motivar, e faz melhor, porque é uma constatação e não um sermão.</p></div>
+    </div>
+  </article>
+
+  <!-- EP 2 -->
+  <article class="sheet">
+    <header>
+      <h3>EP. 02 — “A linha de partida”</h3>
+      <div class="spec"><span>Duração <b>38 s</b></span><span>Setup <b>Garagem, 6 planos</b></span><span>Acontecimento <b>Medição e alvos colados, em câmara</b></span><span>Voz <b>Off, não para a câmara</b></span><span>Gravação <b>30 min</b></span></div>
+    </header>
+    <div class="beat"><div class="tc">0:00–0:04</div><div class="beatbody">
+      <div class="role">Gancho · por cima de imagem, sem cara, números primeiro</div>
+      <p class="say">“<span class="ph">71</span> quilos. <span class="ph">8</span> pull-ups. É daqui que se começa.”</p>
+      <div class="meta"><div><span class="k">Plano</span>A meio de uma repetição na barra, contrapicado, telemóvel no chão encostado a alguma coisa. A repetição é o gancho — não abras contigo a explicar.</div>
+      <div><span class="k">Ecrã</span><span class="ost">EP. 02 · SEMANA 2</span> + os dois números, grandes, mono, terço inferior.</div></div>
+    </div></div>
+    <div class="beat"><div class="tc">0:04–0:12</div><div class="beatbody">
+      <div class="role">A afirmação honesta</div>
+      <p class="say">“Fui magro a vida toda. Saudável, mas magro — e digo que vou mudar isto desde os <span class="ph">22</span>. Isto é uma garagem, uma barra, umas argolas e <span class="ph">40 €</span> de material. Sem ginásio, sem desculpa nenhuma.”</p>
+      <div class="meta"><div><span class="k">Planos</span>Panorâmica lenta da garagem · mãos com magnésio · argolas penduradas · balança filmada a pique.</div></div>
+    </div></div>
+    <div class="beat"><div class="tc">0:12–0:24</div><div class="beatbody">
+      <div class="role">O alvo — específico, datado, falsificável</div>
+      <p class="say">“Doze meses: <span class="ph">+8</span> quilos, <span class="ph">15</span> pull-ups estritos, <span class="ph">20</span> dips e um muscle-up. Quatro treinos por semana, só calistenia, a comer mais do que me apetece.”</p>
+      <div class="meta"><div><span class="k">Ecrã</span>Lista de quatro alvos, estilo checkbox, a aparecer conforme dizes.</div>
+      <div><span class="k">Plano</span>Corta para ti a escrever os quatro alvos num papel e a colá-lo na parede da garagem. <strong>Esse papel aparece em todos os posts de corpo durante um ano</strong> — é o objeto recorrente da série.</div></div>
+    </div></div>
+    <div class="beat"><div class="tc">0:24–0:38</div><div class="beatbody">
+      <div class="role">O mecanismo + fecho</div>
+      <p class="say">“Mesmo canto, mesmos calções, mesma luz — primeiro domingo de cada mês, ponho-me aqui e filmo o mesmo enquadramento. Doze fotografias. Ou o plano funciona e vais ver, ou não funciona e também vais ver.”</p>
+      <div class="meta"><div><span class="k">Plano</span>Entras na marca, braços ao lado, aguentas 3 segundos, câmara fixa. É o enquadramento-template — <strong>cola duas cruzes de fita no chão, agora, em câmara</strong>.</div>
+      <div><span class="k">Ecrã</span><span class="ost">FOTO 1 / 12</span> por cima do plano aguentado.</div></div>
+    </div></div>
+    <div class="sheetfoot">
+      <div><div class="foothead">Porque é que este é curto</div><p class="caption">O episódio 2 tem de ser visto duas vezes. Movimento, números e uma promessa contável — nada para explicar. É também o teu ativo mais reutilizável: no mês 12, o primeiro frame deste vídeo é o “antes” de todas as comparações que fizeres.</p></div>
+      <div><div class="foothead">Legenda</div><p class="caption">Ponto de partida: <span class="ph">71</span> kg, <span class="ph">8</span> pull-ups. Objetivo a 12 meses: <span class="ph">+8</span> kg, <span class="ph">15</span> pull-ups, <span class="ph">20</span> dips, um muscle-up.
+Mesma garagem, mesmo enquadramento, primeiro domingo de cada mês. Foto 1 de 12.</p></div>
+      <div><div class="foothead">Corta se passar</div><p class="caption">45 s. Corta da afirmação honesta. Nunca cortes a lista de alvos.</p></div>
+    </div>
+  </article>
+
+  <!-- EP 3 -->
+  <article class="sheet">
+    <header>
+      <h3>EP. 03 — “Faltam seis dias em Berlim”</h3>
+      <div class="spec"><span>Duração <b>58 s</b></span><span>Setup <b>Walk-and-talk + casa vazia</b></span><span>Acontecimento <b>A própria mudança</b></span><span>Local <b>Casa, depois rua</b></span><span>Gravação <b>35 min</b></span></div>
+    </header>
+    <div class="beat"><div class="tc">0:00–0:05</div><div class="beatbody">
+      <div class="role">Gancho · a contagem decrescente</div>
+      <p class="say">“Vivi em Berlim <span class="ph">três</span> anos. Daqui a seis dias já não vivo aqui.”</p>
+      <div class="meta"><div><span class="k">Plano</span>À mão, a andar pela casa meio empacotada, telemóvel ligeiramente baixo. Movimento no primeiro frame — um plano fixo a falar perde este gancho.</div></div>
+    </div></div>
+    <div class="beat"><div class="tc">0:05–0:18</div><div class="beatbody">
+      <div class="role">Porquê — a decisão, com o custo dito</div>
+      <p class="say">“Continuo em engenharia mecânica, mas empresa nova, cidade nova e, honestamente, uma proposta melhor. Munique é mais cara que Berlim — a renda sobe uns <span class="ph">30%</span> para a mesma casa — mas a diferença de salário cobre isso e o trabalho é o que eu queria.”</p>
+      <div class="meta"><div><span class="k">Ecrã</span><span class="ost">BERLIM → MUNIQUE · RENDA +<span class="ph">30%</span> · SALÁRIO +<span class="ph">X%</span></span></div>
+      <div><span class="k">Regra</span>Percentagens, nunca o salário absoluto. Nunca nomeies a empresa, nunca filmes crachá, ecrã ou escritório.</div></div>
+    </div></div>
+    <div class="beat"><div class="tc">0:18–0:34</div><div class="beatbody">
+      <div class="role">O custo — diz a parte desconfortável</div>
+      <p class="say">“O que ninguém filma: deixo os únicos amigos que construí aqui, vou fazer a burocracia alemã toda outra vez — Anmeldung, seguro de saúde, tudo — e recomeço do zero socialmente aos 24. Terceiro país, terceira vez.”</p>
+      <div class="meta"><div><span class="k">Planos</span>Estante vazia · papelada do Anmeldung na mesa · chaves no balcão · um plano da janela à noite.</div>
+      <div><span class="k">Entrega</span>Não resolvas isto numa lição. Deixa ficar. É este bloco que faz as pessoas seguirem um documentário em vez de um resumo de vitórias.</div></div>
+    </div></div>
+    <div class="beat"><div class="tc">0:34–0:50</div><div class="beatbody">
+      <div class="role">O que muda na série</div>
+      <p class="say">“A garagem fica até sexta, depois treino no que a casa nova me der. O plano não muda: os mesmos quatro alvos, o mesmo episódio todos os domingos. Semana <span class="ph">três</span> de <span class="ph">cinquenta e duas</span>.”</p>
+      <div class="meta"><div><span class="k">Insert</span>A folha dos alvos do episódio 2 a ser descolada da parede e dobrada para dentro de uma caixa. Mesmo objeto, contexto novo — é isso que faz uma série parecer uma série.</div></div>
+    </div></div>
+    <div class="beat"><div class="tc">0:50–0:58</div><div class="beatbody">
+      <div class="role">Fecho · gancho para a frente</div>
+      <p class="say">“No próximo episódio conto-te como é que um puto de Portugal sem contactos nenhuns acabou aqui. É a pergunta que me fazem sempre. Domingo.”</p>
+      <div class="meta"><div><span class="k">Plano</span>Porta a fechar, ou o carro carregado. Corta no som.</div>
+      <div><span class="k">Nota</span>Acabaste de prometer o conteúdo do episódio 4 em câmara. Agora tens de o fazer. Faz isto no fim de <em>todos</em> os episódios — é o único mecanismo de responsabilização que alguma vez funcionou.</div></div>
+    </div></div>
+    <div class="sheetfoot">
+      <div><div class="foothead">Legenda</div><p class="caption">Episódio 3. Seis dias para deixar Berlim. Porquê Munique, quanto custa a mais, e o que ninguém filma nas mudanças: recomeçar do zero pela terceira vez.
+No próximo domingo: como é que se entra nestas empresas vindo de Portugal.</p></div>
+      <div><div class="foothead">Ordem de gravação</div><p class="caption">Inserts primeiro, enquanto a casa ainda está meio empacotada (são irrepetíveis), walk-and-talk depois, gancho no fim — a essa altura já disseste a frase quatro vezes e finalmente sai natural.</p></div>
+    </div>
+  </article>
+  <!-- EP 4 -->
+  <article class="sheet">
+    <header>
+      <h3>EP. 04 — “Como cheguei aqui, parte 1: a pasta que ninguém me pediu”</h3>
+      <div class="spec"><span>Duração <b>60 s</b></span><span>Setup <b>Plano fixo, sentado</b></span><span>Apoio <b>Portátil com os projetos abertos</b></span><span>Gravação <b>30 min</b></span><span>Acontecimento <b>Mostras os projetos e as rejeições</b></span></div>
+    </header>
+    <div class="beat"><div class="tc">0:00–0:07</div><div class="beatbody">
+      <div class="role">Gancho · destrói o mito e mostra a prova</div>
+      <p class="say">“Não entrei na Apple por ser génio nem por ter cunhas. Entrei com <span class="ph">X</span> candidaturas, <span class="ph">Y</span> rejeições, e esta pasta de projetos que fiz sozinho porque ninguém mos pediu.”</p>
+      <div class="meta"><div><span class="k">Plano</span>Cara e, a meio da frase, corte para o ecrã a passar os teus projetos pessoais — a análise da caixa de asa, a simulação do impacto do helicóptero, o CFD da asa de F1, o McLaren em LEGO com <span class="ph">800</span> peças.</div>
+      <div><span class="k">Porquê</span>Isto é a tua vantagem sobre qualquer conta de carreira em português: <strong>o teu trabalho é visualmente espetacular</strong>. Cores de tensões, malhas, deformações, renders. Ninguém precisa de perceber de engenharia para parar a ver.</div></div>
+    </div></div>
+    <div class="beat"><div class="tc">0:07–0:22</div><div class="beatbody">
+      <div class="role">O ponto de partida real</div>
+      <p class="say">“<span class="ph">FEUP</span>, engenharia mecânica. Zero contactos na indústria, zero família em empresas grandes, e a ideia de que a Apple e a Tesla contratavam outro tipo de pessoas. O que eu tinha era <span class="ph">tempo</span> e disposição para parecer estúpido durante muito tempo.”</p>
+      <div class="meta"><div><span class="k">Regra</span>Concreto, não nostálgico: nomes de cadeiras, anos, cidades.</div>
+      <div><span class="k">Insert opcional</span>Uma chamada com os teus pais, ou uma foto antiga em casa deles. <strong>Guarda o episódio inteiro sobre eles para quando houver um resultado</strong> — na série de referência, o vídeo em que ele mostra o carro aos pais é o mais visto do canal. Não gastes essa carta agora.</div></div>
+    </div></div>
+    <div class="beat"><div class="tc">0:22–0:30</div><div class="beatbody">
+      <div class="role">O momento definidor — um só, com data</div>
+      <p class="say">“Se eu tivesse de escolher o dia em que isto mudou, era <span class="ph">[data concreta]</span>: <span class="ph">[a cena — a aula, o email, o dia em que viste o primeiro projeto de simulação, a conversa com um professor]</span>.”</p>
+      <div class="meta"><div><span class="k">Porquê</span>Toda a história do Gonçalo Ferreira pendura num momento único e datado: um jogo de recreio interrompido aos 8 anos pelo diretor da escola. É o que torna uma história recontável por outra pessoa. <strong>Escolhe o teu, com data, e usa-o sempre igual daqui para a frente.</strong></div>
+      <div><span class="k">Os teus pais</span>Ele tem a frase dos pais como antagonista fixo: “mete os pés no chão, estás a sonhar demasiado alto”. Tu tens o inverso e é mais interessante — para os teus pais, engenheiro numa empresa grande <em>é</em> a vitória. Explicar-lhes que não chega é um conflito que ninguém em português está a filmar.</div></div>
+    </div></div>
+    <div class="beat"><div class="tc">0:30–0:44</div><div class="beatbody">
+      <div class="role">As três coisas que mudaram a agulha</div>
+      <p class="say">“Três coisas fizeram diferença, e nenhuma foi talento. Um: <strong>projetos acabados que se veem</strong> — não trabalhos de cadeira, projetos meus, com relatório e resultados. Dois: <strong>estagiar cedo, mesmo em coisas pequenas</strong> — <span class="ph">Tekever</span> e <span class="ph">Continental</span> em Portugal foi o que fez o meu CV deixar de estar vazio. Três: <strong>candidatar-me a coisas para as quais não estava pronto</strong>, cedo demais e muitas vezes.”</p>
+      <div class="meta"><div><span class="k">Ecrã</span>Três números a entrar em sequência: <span class="ost">01 · 02 · 03</span></div>
+      <div><span class="k">Inserts</span>Um projeto por número. Datas visíveis nos ficheiros — a data é a prova de que não é recente.</div></div>
+    </div></div>
+    <div class="beat"><div class="tc">0:44–0:54</div><div class="beatbody">
+      <div class="role">O que não resultou</div>
+      <p class="say">“O que não resultou: <span class="ph">certificações</span>, candidaturas em massa sem portefólio nenhum atrás, e meses a estudar coisas que nunca ninguém me perguntou. Perdi <span class="ph">um ano</span> assim.”</p>
+      <div class="meta"><div><span class="k">Precisão</span>Datas exactas e números pequenos ditos com exactidão — “10 de abril de 2020”, “200 euros”, “seis meses sem resultado nenhum” — é assim que a referência constrói credibilidade. Não é o tamanho do número, é a precisão. Diz o mês e o ano de cada coisa.</div></div>
+    </div></div>
+    <div class="beat"><div class="tc">0:54–1:00</div><div class="beatbody">
+      <div class="role">Fecho · promete a parte 2</div>
+      <p class="say">“No próximo episódio: o processo de entrevistas para uma vaga de engenharia mecânica lá fora, fase a fase, e a pergunta técnica onde quase me afundei.”</p>
+      <div class="meta"><div><span class="k">Comentário fixado</span>“Estudas engenharia e queres sair de Portugal? Pergunta aqui — respondo a todas e as melhores viram episódio.” Esta é a tua máquina de conteúdo e a lista de espera do teu produto futuro.</div></div>
+    </div></div>
+    <div class="sheetfoot">
+      <div><div class="foothead">Legenda</div><p class="caption">Episódio 4. Como é que um aluno de engenharia mecânica da <span class="ph">FEUP</span>, sem contactos nenhuns, acaba na Apple, na Volvo e na Tesla. Parte 1: o que resultou, o que foi perda de tempo, e a pasta de projetos que ninguém me pediu para fazer.
+Parte 2 no próximo domingo: as entrevistas.</p></div>
+      <div><div class="foothead">Limite</div><p class="caption">Só projetos <strong>pessoais e académicos</strong> no ecrã. Nada de trabalho de nenhuma das empresas: sem peças, sem desenhos, sem ecrãs, sem números internos de custo ou de impacto. Esses números são para o teu CV, não para o Instagram.</p></div>
+      <div><div class="foothead">Erro a evitar</div><p class="caption">Contar isto como história de superação. Conta como relatório: datas, números, o que falhou.</p></div>
+    </div>
+  </article>
+
+  <!-- EP 5 -->
+  <article class="sheet">
+    <header>
+      <h3>EP. 05 — “Parte 2: como é uma entrevista de engenharia lá fora”</h3>
+      <div class="spec"><span>Duração <b>60 s</b></span><span>Setup <b>Secretária, papel e caneta</b></span><span>Gravação <b>30 min</b></span><span>Acontecimento <b>Teste de mercado ao vivo</b></span></div>
+    </header>
+    <div class="beat"><div class="tc">0:00–0:06</div><div class="beatbody">
+      <div class="role">Gancho · desfaz a expectativa errada</div>
+      <p class="say">“Toda a gente fala de entrevistas para programadores. Para engenharia mecânica é completamente diferente — e ninguém explica. Foram <span class="ph">quatro</span> fases e uma delas apanhou-me completamente desprevenido.”</p>
+    </div></div>
+    <div class="beat"><div class="tc">0:06–0:28</div><div class="beatbody">
+      <div class="role">As fases reais</div>
+      <p class="say">“Primeiro o CV passa ou não passa — e passa por causa de projetos, não de notas. Depois <span class="ph">recrutador</span>: motivação, mobilidade, se podes trabalhar na UE. Depois a <span class="ph">técnica com o gestor</span>, que é quase toda sobre <em>um</em> projeto teu — porque escolheste esse material, que hipóteses assumiste na simulação, o que farias diferente. E no fim a <span class="ph">apresentação do portefólio</span> à equipa, que é onde se decide.”</p>
+      <div class="meta"><div><span class="k">Ecrã</span>Diagrama de quatro etapas desenhado à mão em papel, filmado a pique. Papel &gt; gráficos animados: parece real.</div>
+      <div><span class="k">Regra</span>Descreve o <em>formato</em>, que é público e comum a toda a indústria. Nunca perguntas concretas de uma empresa nem nomes de quem te entrevistou.</div></div>
+    </div></div>
+    <div class="beat"><div class="tc">0:28–0:44</div><div class="beatbody">
+      <div class="role">O que realmente contou</div>
+      <p class="say">“O que fez a diferença não foi saber mais teoria. Foi conseguir explicar <strong>um projeto do princípio ao fim, com números</strong>: o que falhou, quanto melhorou, o que assumi e onde é que a minha análise podia estar errada. Admitir os limites do teu próprio modelo é o que separa um estudante de um engenheiro — e eles reparam.”</p>
+      <div class="meta"><div><span class="k">Insert</span>O teu caderno de preparação, com as perguntas escritas à mão.</div></div>
+    </div></div>
+    <div class="beat"><div class="tc">0:44–0:54</div><div class="beatbody">
+      <div class="role">O momento mau</div>
+      <p class="say">“Quase me afundei numa pergunta sobre <span class="ph">[tolerâncias / escolha de material / uma hipótese da simulação]</span>. Fiquei em branco <span class="ph">quarenta segundos</span>. O que me salvou foi dizer em voz alta o que não sabia e começar pelo caso mais simples. Isso conta a favor — travar em silêncio é que não.”</p>
+    </div></div>
+    <div class="beat"><div class="tc">0:54–1:00</div><div class="beatbody">
+      <div class="role">Fecho · teste de mercado disfarçado de CTA</div>
+      <p class="say">“Se quiseres a estrutura que usei para preparar o portefólio, diz nos comentários. Se houver <span class="ph">50</span> pessoas a pedir, faço um episódio só sobre isso.”</p>
+      <div class="meta"><div><span class="k">Acontecimento</span>Isto é o teste. Se aparecerem <span class="ph">50</span> pedidos, tens a primeira validação real do produto “Engenharia lá fora” — e tens de o dizer no episódio seguinte, tenha corrido bem ou mal.</div></div>
+    </div></div>
+    <div class="sheetfoot">
+      <div><div class="foothead">Legenda</div><p class="caption">Episódio 5. Como é mesmo uma entrevista de engenharia mecânica numa empresa grande lá fora: as <span class="ph">4</span> fases, o que é que eles perguntam de verdade, e o momento em que fiquei em branco.
+Queres a estrutura de preparação do portefólio? Diz nos comentários.</p></div>
+      <div><div class="foothead">Limite</div><p class="caption">Zero perguntas reais de uma empresa identificável, zero processo interno, zero nomes de pessoas. Fala do formato — que é público — e da tua preparação. É aí que está todo o valor e nenhuma da exposição.</p></div>
+      <div><div class="foothead">Porque é que este pode ser o teu maior vídeo</div><p class="caption">Não existe praticamente nada em português sobre entrevistas de engenharia mecânica no estrangeiro, e há milhares de alunos do IST, da FEUP e de Coimbra a procurá-lo todos os anos. É o teu conteúdo com maior procura e menor concorrência.</p></div>
+    </div>
+  </article>
+
+  <!-- EP 6 -->
+  <article class="sheet">
+    <header>
+      <h3>EP. 06 — “Primeira semana em Munique”</h3>
+      <div class="spec"><span>Duração <b>50 s</b></span><span>Setup <b>Casa nova, muitos planos curtos</b></span><span>Acontecimento <b>Setup montado + falha com custo</b></span><span>Gravação <b>Ao longo da semana, 5 min/dia</b></span></div>
+    </header>
+    <div class="beat"><div class="tc">0:00–0:05</div><div class="beatbody">
+      <div class="role">Gancho · contraste direto com o episódio 3</div>
+      <p class="say">“Há sete dias eu estava a fechar uma casa vazia em Berlim. Isto é a primeira semana da outra ponta.”</p>
+      <div class="meta"><div><span class="k">Plano</span>Corte direto do último frame do episódio 3 (porta a fechar) para a porta nova a abrir. <strong>Continuidade visual entre episódios é o que faz isto parecer série e não posts.</strong></div></div>
+    </div></div>
+    <div class="beat"><div class="tc">0:05–0:20</div><div class="beatbody">
+      <div class="role">O estado real das coisas</div>
+      <p class="say">“Casa: <span class="ph">meio montada</span>. Empresa: <span class="ph">três dias</span> de onboarding e a sensação habitual de não perceber nada. Treino: perdi <span class="ph">duas</span> sessões na mudança e não vou fingir que não perdi.”</p>
+      <div class="meta"><div><span class="k">Planos</span>Caixas · a barra a ser montada no sítio novo · café de manhã · rua de Munique.</div></div>
+    </div></div>
+    <div class="beat"><div class="tc">0:20–0:38</div><div class="beatbody">
+      <div class="role">O que já correu mal — obrigatório</div>
+      <p class="say">“O que correu mal esta semana: <span class="ph">[uma coisa concreta — internet, Anmeldung, entrega de móveis]</span>. Custou-me <span class="ph">X</span> dias. É isto que ninguém mostra quando publica a mudança.”</p>
+      <div class="meta"><div><span class="k">Regra permanente</span>Todos os episódios têm um bloco “o que correu mal”. É o bloco de maior retenção da série e é o que te distingue.</div></div>
+    </div></div>
+    <div class="beat"><div class="tc">0:38–0:50</div><div class="beatbody">
+      <div class="role">Os números da semana + fecho</div>
+      <p class="say">“Números da semana: <span class="ph">2</span> treinos, <span class="ph">0</span> € ganhos fora do salário, <span class="ph">6</span> episódios feitos. Para a semana ponho a coisa mais desconfortável no ecrã: quanto é que sobra realmente do salário de um engenheiro em Munique.”</p>
+      <div class="meta"><div><span class="k">Ecrã</span>Painel fixo de 3 números — usa este mesmo painel em <em>todos</em> os episódios a partir daqui. É a assinatura visual da série.</div></div>
+    </div></div>
+    <div class="sheetfoot">
+      <div><div class="foothead">Legenda</div><p class="caption">Episódio 6. Primeira semana em Munique: casa a meio, empresa nova, dois treinos perdidos e uma coisa que correu mal.
+Domingo: as contas reais de um salário de engenheiro na Alemanha.</p></div>
+    </div>
+  </article>
+  <!-- EP 7 -->
+  <article class="sheet">
+    <header>
+      <h3>EP. 07 — “O que sobra ao fim do mês”</h3>
+      <div class="spec"><span>Duração <b>55 s</b></span><span>Setup <b>Mesa, papel e caneta, plano a pique</b></span><span>Acontecimento <b>Contas feitas ao vivo</b></span><span>Pilar <b>Dinheiro — o que mais cresce</b></span></div>
+    </header>
+    <div class="beat"><div class="tc">0:00–0:06</div><div class="beatbody">
+      <div class="role">Gancho · a percentagem que choca</div>
+      <p class="say">“Um engenheiro em Munique ganha bem. Do bruto ao que chega à conta desaparecem cerca de <span class="ph">40%</span>. Vou fazer as contas todas em percentagens, em frente à câmara.”</p>
+      <div class="meta"><div><span class="k">Plano</span>Mão a escrever no papel, a pique. Nunca a tua cara neste episódio — as pessoas veem a conta, não a ti.</div>
+      <div><span class="k">Regra</span>Só percentagens. Nada de valores absolutos, nada de nome da empresa. Protege-te e funciona melhor: percentagens servem a toda a gente.</div></div>
+    </div></div>
+    <div class="beat"><div class="tc">0:06–0:24</div><div class="beatbody">
+      <div class="role">Bruto → líquido</div>
+      <p class="say">“Sai imposto sobre o rendimento, segurança social, seguro de saúde obrigatório, pensão e desemprego. Classe de imposto <span class="ph">1</span>, solteiro, sem igreja: fico com cerca de <span class="ph">60%</span> do que está no contrato. Isso é a primeira coisa que ninguém te diz quando compara salários entre países.”</p>
+      <div class="meta"><div><span class="k">Ecrã</span>Barra a encolher de 100% para <span class="ph">60%</span>, desenhada à mão no papel.</div></div>
+    </div></div>
+    <div class="beat"><div class="tc">0:24–0:42</div><div class="beatbody">
+      <div class="role">Onde vai o líquido</div>
+      <p class="say">“Depois: renda <span class="ph">30%</span> do líquido, contas e transportes <span class="ph">10%</span>, comida <span class="ph">12%</span>, o resto da vida <span class="ph">13%</span>. Sobra-me à volta de <span class="ph">35%</span> — e é essa percentagem, não o salário, que decide se compro casa antes dos <span class="ph">32</span>.”</p>
+    </div></div>
+    <div class="beat"><div class="tc">0:42–0:55</div><div class="beatbody">
+      <div class="role">A meta + fecho</div>
+      <p class="say">“Meta: taxa de poupança de <span class="ph">40%</span> até ao fim do ano, com a renda de Munique já dentro da conta. Vou publicar este número todos os meses, mesmo quando for mau. Domingo: para onde vai esse dinheiro.”</p>
+      <div class="meta"><div><span class="k">Ecrã</span><span class="ost">TAXA DE POUPANÇA · <span class="ph">35%</span> → META <span class="ph">40%</span></span></div></div>
+    </div></div>
+    <div class="sheetfoot">
+      <div><div class="foothead">Legenda</div><p class="caption">Episódio 7. Do bruto ao que sobra: as contas reais de um engenheiro em Munique, tudo em percentagens.
+Isto não é conselho financeiro — são as minhas contas, publicadas todos os meses, incluindo nos meses maus.</p></div>
+      <div><div class="foothead">Porque é que este vai correr bem</div><p class="caption">Transparência salarial em percentagem é dos formatos com mais partilhas que existe em português, e quase ninguém em Portugal o faz com números da Alemanha. É provavelmente o teu primeiro vídeo a passar dos números normais.</p></div>
+    </div>
+  </article>
+
+  <!-- EP 8 -->
+  <article class="sheet">
+    <header>
+      <h3>EP. 08 — “Para onde vai o dinheiro”</h3>
+      <div class="spec"><span>Duração <b>50 s</b></span><span>Setup <b>Secretária, ecrã sempre tapado ou desfocado</b></span><span>Acontecimento <b>Transferência automática criada em câmara</b></span></div>
+    </header>
+    <div class="beat"><div class="tc">0:00–0:05</div><div class="beatbody">
+      <div class="role">Gancho · assume o nível, não finjas autoridade</div>
+      <p class="say">“Não sou investidor. Sou um engenheiro que decidiu parar de deixar o dinheiro a apodrecer numa conta à ordem. Isto é o que faço — não é conselho.”</p>
+      <div class="meta"><div><span class="k">Porquê</span>Esta linha protege-te legalmente <em>e</em> aumenta a confiança. Quem promete retornos perde credibilidade; quem admite o nível ganha-a.</div></div>
+    </div></div>
+    <div class="beat"><div class="tc">0:05–0:22</div><div class="beatbody">
+      <div class="role">A ordem das coisas</div>
+      <p class="say">“Primeiro, fundo de emergência: <span class="ph">seis</span> meses de despesas, numa conta separada, aborrecida, a que não toco. Só <em>depois</em> disso é que investir faz algum sentido. Levei <span class="ph">X</span> meses a chegar aqui.”</p>
+      <div class="meta"><div><span class="k">Ecrã</span>Duas caixas: <span class="ost">1 · COLCHÃO</span> · <span class="ost">2 · INVESTIR</span> — na ordem, com uma seta.</div></div>
+    </div></div>
+    <div class="beat"><div class="tc">0:22–0:40</div><div class="beatbody">
+      <div class="role">A carteira, em percentagens</div>
+      <p class="say">“Depois disso: <span class="ph">80%</span> num ETF global, por transferência automática no dia a seguir a receber, para não ter de decidir nada. <span class="ph">15%</span> em <span class="ph">[o que fizeres]</span>. E <span class="ph">5%</span> em coisas que provavelmente vou perder — e trato-o como custo de aprendizagem, não como plano.”</p>
+      <div class="meta"><div><span class="k">Regra</span>Automático &gt; disciplina. Diz isto em voz alta: é a frase mais útil do episódio.</div></div>
+    </div></div>
+    <div class="beat"><div class="tc">0:40–0:50</div><div class="beatbody">
+      <div class="role">O acontecimento — fá-lo em câmara, não expliques</div>
+      <p class="say">“O que não faço: escolher ações individuais achando que sei mais que o mercado, e mexer na carteira quando as notícias estão feias. E faço isto agora, à frente de vocês: transferência automática, <span class="ph">X</span>% do ordenado, dia <span class="ph">28</span>, todos os meses. Pronto — já não depende de eu ter disciplina.”</p>
+      <div class="meta"><div><span class="k">Plano</span>Telemóvel ou banco no ecrã, valores tapados, o dedo a confirmar. O gesto de confirmar é o frame do episódio.</div>
+      <div><span class="k">Porquê</span>Este episódio era uma explicação, e explicações ficam no vale. Uma ação irreversível feita em câmara é um acontecimento — e são os acontecimentos que saem do vale.</div>
+      <div><span class="k">Fecho</span>“Domingo trago cá alguém que faz isto há muito mais tempo do que eu.”</div></div>
+    </div></div>
+    <div class="sheetfoot">
+      <div><div class="foothead">Legenda</div><p class="caption">Episódio 8. Fundo de emergência primeiro, depois <span class="ph">80/15/5</span> e transferência automática para não ter de decidir nada.
+Não é conselho financeiro. É o que eu faço, publicado para me obrigar a ser consistente.</p></div>
+    </div>
+  </article>
+
+  <!-- EP 9 -->
+  <article class="sheet">
+    <header>
+      <h3>EP. 09 — “O primeiro convidado”</h3>
+      <div class="spec"><span>Duração <b>60 s</b></span><span>Setup <b>Dois planos, mesa ou passeio</b></span><span>Objetivo <b>Alcance — é o formato mais forte que tens</b></span><span>Acontecimento <b>A conversa</b></span></div>
+    </header>
+    <div class="beat"><div class="tc">0:00–0:06</div><div class="beatbody">
+      <div class="role">Gancho · a distância entre vocês é o gancho</div>
+      <p class="say">“Este é o <span class="ph">nome</span>. Está <span class="ph">cinco</span> anos à minha frente em <span class="ph">[sair de Portugal / investir / construir um negócio]</span>. Fiz-lhe a pergunta que eu não sei responder.”</p>
+      <div class="meta"><div><span class="k">Plano</span>Os dois no enquadramento, a andar ou sentados. Nada de setup de podcast — dois telemóveis chegam, um por pessoa, e junta-se na edição.</div>
+      <div><span class="k">Som</span>Se só tiveres um micro, dá-o a ele. A voz do convidado é a que não podes repetir.</div></div>
+    </div></div>
+    <div class="beat"><div class="tc">0:06–0:20</div><div class="beatbody">
+      <div class="role">Quem é ele — uma frase e um número, mais nada</div>
+      <p class="say">“<span class="ph">Saiu de Portugal em 2016</span>. Hoje <span class="ph">faz X</span>. Eu estou onde ele estava há <span class="ph">cinco</span> anos.”</p>
+      <div class="meta"><div><span class="k">Regra</span>Currículo do convidado em duas linhas. Quem interessa é ele a responder, não ele a ser apresentado.</div></div>
+    </div></div>
+    <div class="beat"><div class="tc">0:20–0:46</div><div class="beatbody">
+      <div class="role">Uma pergunta só. A resposta cortada ao osso.</div>
+      <p class="say">“<span class="ph">[A tua pergunta real — a que te tira o sono, não a genérica]</span>”<br><em>— e a resposta dele, cortada para os 20 segundos que interessam.</em></p>
+      <div class="meta"><div><span class="k">Regra</span>Uma pergunta por vídeo. As outras duas ou três ficam para posts de pilar durante a semana — gravaste uma vez, publicas quatro vezes.</div>
+      <div><span class="k">Edição</span>Corta as hesitações dele, não as tuas. As tuas fazem-te humano; as dele fazem-no parecer inseguro.</div></div>
+    </div></div>
+    <div class="beat"><div class="tc">0:46–0:56</div><div class="beatbody">
+      <div class="role">O que mudaste por causa da resposta — tu, a agir</div>
+      <p class="say">“Por causa disto vou mudar <span class="ph">[uma coisa concreta]</span> já esta semana. Mostro o resultado no episódio <span class="ph">12</span>.”</p>
+      <div class="meta"><div><span class="k">Porquê</span>Sem este bloco é uma entrevista. Com ele continua a ser a tua série — o convidado é matéria-prima da tua história, não o tema.</div></div>
+    </div></div>
+    <div class="beat"><div class="tc">0:56–1:00</div><div class="beatbody">
+      <div class="role">Fecho · abre a porta ao próximo convidado</div>
+      <p class="say">“Se conheces alguém que devia estar aqui, diz-me nos comentários. Eu mando a mensagem.”</p>
+    </div></div>
+    <div class="sheetfoot">
+      <div><div class="foothead">Porque é que este episódio existe</div><p class="caption">Na série de referência, o episódio com um convidado que já tinha resultado fez 5.536 visualizações — cerca de cinco vezes a média da série e o melhor vídeo dos vinte e três. É o formato com melhor retorno por hora de trabalho que tens disponível, e não precisa de audiência nenhuma para funcionar: precisa de uma mensagem enviada.</p></div>
+      <div><div class="foothead">Quem convidar (por ordem de facilidade)</div><p class="caption">1 · Um ex-colega português que também saiu.  2 · Alguém que conheceste no processo de mudança.  3 · Um criador pequeno da mesma área — contas com 2 a 20 mil seguidores respondem, as grandes não.  4 · Alguém que investe há mais de dez anos, para o pilar dinheiro.  Nunca alguém da empresa nova a falar de trabalho.</p></div>
+      <div><div class="foothead">Mensagem para enviar</div><p class="caption">“Olá <span class="ph">nome</span> — sou engenheiro mecânico português em Munique e estou a filmar uma série semanal sobre construir uma vida cá do zero. Estás anos à minha frente em <span class="ph">X</span>. Dava-me 20 minutos para uma pergunta só, em vídeo? Eu vou ter contigo, gravo com o telemóvel, e mando-te o corte antes de publicar.”</p></div>
+      <div><div class="foothead">Plano B, se não houver convidado esta semana</div><p class="caption">Grava o episódio antigo — “o que percebi este mês sobre investir, o que ainda não percebo, e o erro que já me custou dinheiro”, a acabar com “o que é que <em>tu</em> não percebes? escreve — a resposta vira episódio”. Serve, gera comentários, mas não substitui: remarca o convidado para o episódio 11.</p></div>
+      <div><div class="foothead">Legenda</div><p class="caption">Episódio 9. Trouxe cá o <span class="ph">nome</span>, que está <span class="ph">cinco</span> anos à minha frente, e fiz-lhe a pergunta que eu não sei responder.
+Conheces alguém que devia estar aqui? Diz nos comentários — eu mando a mensagem.</p></div>
+    </div>
+  </article>
+
+  <!-- EP 10 -->
+  <article class="sheet">
+    <header>
+      <h3>EP. 10 — “A Alemanha que ninguém filma”</h3>
+      <div class="spec"><span>Duração <b>60 s</b></span><span>Setup <b>Rua + papelada em cima da mesa</b></span><span>Acontecimento <b>Abertura da experiência UGC, com data</b></span><span>Pilar <b>Carreira — alto potencial de partilha</b></span></div>
+    </header>
+    <div class="beat"><div class="tc">0:00–0:06</div><div class="beatbody">
+      <div class="role">Gancho · o número absurdo</div>
+      <p class="say">“Mudar-me para a Alemanha levou <span class="ph">X</span> semanas de papelada antes de eu poder receber um único euro. Ninguém te avisa disto.”</p>
+      <div class="meta"><div><span class="k">Plano</span>Pilha de documentos a cair na mesa, som real. Depois cara.</div></div>
+    </div></div>
+    <div class="beat"><div class="tc">0:06–0:34</div><div class="beatbody">
+      <div class="role">A ordem real das coisas</div>
+      <p class="say">“A ordem é esta e não pode ser outra: arranjas casa, fazes o <em>Anmeldung</em> — o registo de morada — e só com esse papel é que consegues conta bancária e número fiscal. Sem morada não há conta; sem conta não há salário. E marcar o Anmeldung em <span class="ph">Munique</span> pode levar <span class="ph">semanas</span>.”</p>
+      <div class="meta"><div><span class="k">Ecrã</span>Cinco passos numerados a aparecer em sequência — este é o frame de que as pessoas fazem screenshot e é isso que faz o vídeo circular.</div></div>
+    </div></div>
+    <div class="beat"><div class="tc">0:34–0:50</div><div class="beatbody">
+      <div class="role">O que te custou mais</div>
+      <p class="say">“O mais difícil não foi a burocracia. Foi <span class="ph">[a língua / arranjar casa / a solidão dos primeiros meses]</span>. <span class="ph">[Uma frase honesta sobre isso]</span>.”</p>
+    </div></div>
+    <div class="beat"><div class="tc">0:50–1:00</div><div class="beatbody">
+      <div class="role">Fecho · abre o próximo capítulo da série</div>
+      <p class="say">“Dez episódios. Dez domingos seguidos, sem falhar um. A partir do próximo mês começo a tentar ganhar dinheiro fora do salário — e vais ver o número real, seja ele qual for.”</p>
+      <div class="meta"><div><span class="k">Ecrã</span><span class="ost">10 / 52 EPISÓDIOS</span> — o contador é a prova.</div></div>
+    </div></div>
+    <div class="sheetfoot">
+      <div><div class="foothead">Legenda</div><p class="caption">Episódio 10. Anmeldung, conta bancária, número fiscal, seguro de saúde — a ordem certa e quanto tempo demora cada coisa. Guarda para quando precisares.
+Dez episódios, dez domingos, zero falhas. O próximo capítulo: ganhar dinheiro fora do salário.</p></div>
+      <div><div class="foothead">Reutilização</div><p class="caption">Este episódio é também um carrossel e um post de texto. É o tipo de conteúdo que continua a ser encontrado meses depois — o único do conjunto com validade longa.</p></div>
+      <div><div class="foothead">Ponto de reavaliação</div><p class="caption">Na série de referência a numeração foi largada por volta do episódio 23, quando já havia resultado para mostrar. A série é um andaime, não uma prisão: planeia 52, mas marca no calendário uma decisão consciente sobre o formato no episódio 25.</p></div>
+    </div>
+  </article>
+
+  <div class="note acc"><strong>Depois do episódio 10.</strong> A partir do 11 abre a primeira experiência de
+  dinheiro (UGC): o que é, quanto vais cobrar, os primeiros dez contactos, e o resultado — incluindo se for
+  zero. A série muda de “estou a preparar-me” para “estou a tentar”, que é onde a audiência se transforma
+  em algo que paga.</div>
+</section>
+<section id="corpo">
+  <div class="eyebrow">06 · Pilar corpo</div>
+  <h2>Doze meses, quatro números</h2>
+  <div class="grid g2">
+    <div class="card"><h3>Regista a linha de partida no dia 1</h3><ul>
+      <li>Peso em jejum — e a <em>média semanal</em>, nunca um dia isolado</li>
+      <li>Cintura ao nível do umbigo e um braço relaxado</li>
+      <li>Máximo de pull-ups estritos, dips e flexões — contados em câmara</li>
+      <li>Fotos frente, lado, costas. Mesmos calções, mesmo sítio, mesma luz, marcas de fita no chão</li>
+    </ul><p>Tudo isto antes de gravares o episódio 2. Sem linha de partida não há série, só imagens.</p></div>
+    <div class="card"><h3>Alvos a 12 meses</h3><ul>
+      <li><strong>+7 a 9 kg</strong>, a no máximo ~0,3 kg/semana — mais rápido é sobretudo gordura e filma mal</li>
+      <li><strong>15 pull-ups estritos</strong>, <strong>20 dips</strong></li>
+      <li><strong>Um muscle-up</strong> — o marco mais “filmável” que existe para ti</li>
+      <li>Cintura a subir no máximo ~4 cm no mesmo período</li>
+    </ul></div>
+    <div class="card"><h3>Treino — quatro sessões, calistenia</h3><ul>
+      <li><strong>Puxar:</strong> pull-ups com peso, remadas em argolas, curls</li>
+      <li><strong>Empurrar:</strong> dips com peso, flexões em argolas, pike push-ups</li>
+      <li><strong>Pernas:</strong> agachamento búlgaro, nórdico, gémeos — não saltes; pernas saltadas veem-se em todos os planos abertos</li>
+      <li><strong>Skill + core:</strong> progressão de muscle-up, front lever, elevações de pernas</li>
+    </ul><p>Sobrecarga progressiva precisa de carga: cinto de dips e colete com peso são as duas compras que tornam a calistenia hipertrófica.</p></div>
+    <div class="card"><h3>Comer — é isto que decide</h3><ul>
+      <li>~+300 kcal acima da manutenção, ajustado mensalmente pela tendência do peso, não pelo espelho</li>
+      <li>~1,8 g de proteína por kg — para ti o problema é este, não o volume de treino</li>
+      <li>Três refeições fixas e dois snacks densos. Magros comem a menos por distração, não por escolha</li>
+      <li>Filma a comida de vez em quando: é a pergunta mais frequente que vais receber</li>
+    </ul></div>
+  </div>
+  <div class="note acc"><strong>Protocolo de filmagem:</strong> primeiro domingo de cada mês, mesmo canto,
+  mesmos calções, mesma hora, fita no chão. Um clip de treino por semana. Números no ecrã em todos —
+  o contador a subir é o mecanismo de retenção, não o físico.</div>
+</section>
+
+<section id="dinheiro">
+  <div class="eyebrow">07 · Pilar dinheiro</div>
+  <h2>Uma experiência de cada vez, por esta ordem</h2>
+  <div class="phase"><div class="n">01</div><div class="b">
+    <h3>UGC — conteúdo pago para marcas</h3>
+    <div class="when">Abre na semana 11 · capital ≈ 0 € · data de morte: 60 dias após o primeiro contacto</div>
+    <p>A linha de dinheiro mais rápida e a que já querias fazer. Não vendes alcance, vendes produção: a
+    marca paga o vídeo e depois passa-o como anúncio dela. Faz um portefólio de três vídeos com produtos
+    que já usas, e contacta dez marcas por semana — marcas pequenas, não as que já têm agência. Começa nos
+    150–350 € por vídeo e sobe depois de cinco trabalhos pagos.</p>
+    <div class="out"><span class="tag">Portefólio de 3</span><span class="tag">10 contactos/semana</span><span class="tag">Tabela de preços</span></div>
+  </div></div>
+  <div class="phase"><div class="n">02</div><div class="b">
+    <h3>Produto digital — “Engenharia lá fora”</h3>
+    <div class="when">Abre com ~5.000 seguidores ou ~300 emails · capital ≈ 0 €</div>
+    <p>A tua margem mais alta e o destino natural do pilar carreira. <strong>Não o construas primeiro.</strong>
+    Pré-vende: página simples, lista de espera, e depois vendes à lista antes de escreveres uma única página.
+    Se menos de <span class="ph">30</span> pessoas pagarem, aprendeste isso barato e em câmara. Começa a
+    recolher emails desde a semana 1 — seguidores são alugados ao Instagram, a lista é tua.</p>
+    <div class="out"><span class="tag">Emails desde a semana 1</span><span class="tag">Pré-venda antes de construir</span></div>
+  </div></div>
+  <div class="phase"><div class="n">03</div><div class="b">
+    <h3>E-commerce / dropshipping</h3>
+    <div class="when">Só abre depois de a experiência 1 ou 2 dar receita · limite de capital fixado</div>
+    <p>Última, não primeira. É a única das três que pode perder dinheiro, é a mais pesada operacionalmente
+    enquanto te instalas num emprego novo, e na UE tem hoje obrigações reais de conformidade de produto
+    (ver secção 9). Define um limite de capital que possas perder sem pestanejar — <span class="ph">800 €</span>
+    é um teto razoável — e uma data de morte escrita. O que a conta de anúncios disser nesse dia decide,
+    não o que tu sentires. De qualquer forma, é conteúdo.</p>
+    <div class="out"><span class="tag w">Limite de capital</span><span class="tag w">Data de morte escrita</span></div>
+  </div></div>
+  <div class="note crit"><strong>Não faças planos com o dinheiro do Instagram.</strong> Os programas de
+  bónus para criadores são por convite, regionais e repetidamente cancelados; uma audiência em português
+  na Europa é praticamente o pior caso para pagamentos de plataforma. Trata qualquer dinheiro da plataforma
+  como surpresa. As tuas linhas de receita são UGC, produto próprio e afiliados — todas controláveis por ti
+  e nenhuma precisa de uma audiência enorme. Uma conta com 4.000 seguidores e prova de trabalho vende UGC
+  sem problema.</div>
+</section>
+
+<section id="metricas">
+  <div class="eyebrow">08 · Instrumentação</div>
+  <h2>Cinco números por mês e os portões que abrem</h2>
+  <div class="grid g3">
+    <div class="card"><h3>Mede isto</h3><ul>
+      <li><strong>% de alcance de não-seguidores</strong> — o único sinal real de crescimento</li>
+      <li><strong>Retenção aos 3 segundos</strong> e tempo médio de visualização</li>
+      <li><strong>Guardados + partilhas</strong> por post — o sinal de distribuição mais forte</li>
+      <li><strong>Variação de seguidores</strong>, semanal, nunca diária</li>
+      <li><strong>Perguntas registadas</strong> em comentários e DMs</li>
+    </ul></div>
+    <div class="card"><h3>Ignora isto</h3><ul>
+      <li>Likes</li><li>Visualizações totais de um post isolado</li>
+      <li>Contagem de seguidores entre domingos</li>
+      <li>Comparações com contas mais antigas que a tua</li>
+      <li>Tudo, sem exceção, nas primeiras oito semanas</li>
+    </ul></div>
+    <div class="card"><h3>Portões</h3><ul>
+      <li><strong>0 · Produção</strong> (semanas 1–8): só publicar. 24 posts, zero domingos falhados.</li>
+      <li><strong>1 · Sinal:</strong> ≥40% de alcance de não-seguidores em 3 posts → dobra a aposta nesse pilar.</li>
+      <li><strong>2 · UGC:</strong> ~2–3 mil seguidores ou portefólio decente → abre a experiência 1.</li>
+      <li><strong>3 · Produto:</strong> ~5 mil seguidores + ~300 emails → pré-venda.</li>
+      <li><strong>4 · Loja:</strong> ≥1.000 € ganhos fora do salário → abre a loja, com teto e data de morte.</li>
+    </ul></div>
+  </div>
+  <div class="note"><strong>A forma real do primeiro ano:</strong> nas semanas 1 a 8 parece que não está a
+  acontecer nada — algumas centenas de visualizações, seguidores a um dígito. Isso não é falhar, é o preço
+  de entrada. O crescimento neste formato é descontínuo: <em>um</em> post do pilar carreira sobre entrar
+  numa empresa como a Apple ou a Tesla vindo de Portugal vai render mais que os quarenta anteriores juntos. Não consegues prever
+  qual. Só consegues garantir que existem quarenta.</div>
+</section>
+
+<section id="alemanha">
+  <div class="eyebrow">09 · Restrições</div>
+  <h2>O que ser engenheiro empregado na Alemanha te limita</h2>
+  <p class="sub">É a secção que os planos de criador ignoram e onde os criadores se queimam. Trata disto no
+  primeiro mês, enquanto não ganhas nada — nessa altura é trivial; depois é caro.</p>
+  <div class="grid g2">
+    <div class="card"><span class="tag c">Primeiro de tudo</span><h3>O teu contrato, antes de ganhares um cêntimo</h3>
+      <p>Contratos de trabalho alemães costumam exigir que comuniques — ou que peças autorização escrita
+      para — qualquer <em>Nebentätigkeit</em> (atividade secundária). Lê a cláusula do contrato novo e, se
+      for preciso autorização, pede-a por escrito antes da primeira fatura. Apresentado como criação de
+      conteúdo e pequeno negócio sem sobreposição concorrencial, é quase sempre aprovado. Fazê-lo depois
+      é que transforma isto num problema.</p></div>
+    <div class="card"><span class="tag c">Linha vermelha</span><h3>Nunca filmes o trabalho</h3>
+      <p>Sem escritório, sem ecrãs, sem crachá, sem colegas, sem detalhes de produto, sem processo interno,
+      sem perguntas reais de entrevistas. No teu caso, também: <strong>sem peças, sem desenhos técnicos, sem
+      CAD, sem resultados de simulação e sem números internos de custo ou de impacto</strong> — nem da Tesla,
+      nem da Apple, nem da Volvo. Os números que tens no CV (poupanças, percentagens de melhoria, unidades
+      afetadas) são para processos de recrutamento, não para publicar. As empresas anteriores podes nomear,
+      está tudo no teu LinkedIn; o trabalho delas não. Considera não nomear sequer a empresa — “uma das maiores empresas
+      do mundo” é uma frase mais forte e não tem risco nenhum. Fala da <em>tua</em> carreira e da tua
+      preparação. É aí que está todo o valor e nenhuma da exposição.</p></div>
+    <div class="card"><span class="tag w">Mês 1</span><h3>Registo e impostos</h3><ul>
+      <li>Trabalho de criador monetizado é normalmente atividade comercial: <em>Gewerbeanmeldung</em> na Gewerbeamt e depois o <em>Fragebogen zur steuerlichen Erfassung</em> no Finanzamt</li>
+      <li>O regime de pequeno negócio (<em>Kleinunternehmerregelung</em>, §19 UStG) mantém-te fora do IVA abaixo dos limites de faturação — confirma os valores atuais, foram atualizados recentemente</li>
+      <li>O rendimento é declarado anualmente junto com o do emprego</li>
+      <li>Guarda todas as faturas e recibos desde o dia 1, incluindo equipamento</li>
+    </ul></div>
+    <div class="card"><span class="tag w">Contínuo</span><h3>Publicidade e Impressum</h3><ul>
+      <li>Qualquer colaboração paga <em>ou oferecida</em> tem de ser identificada como <em>Werbung</em> / <em>Anzeige</em>, de forma clara e à cabeça — não escondida nas hashtags. Os tribunais alemães são rígidos nisto</li>
+      <li>Uma conta explorada comercialmente precisa geralmente de <em>Impressum</em> acessível — link na bio para uma página com os teus dados legais</li>
+      <li>Links de afiliado também são identificados</li>
+    </ul></div>
+    <div class="card"><span class="tag w">Antes da loja</span><h3>Vender para a UE não é o que os vídeos dizem</h3><ul>
+      <li>O consumidor tem 14 dias de direito de livre resolução (<em>Widerrufsrecht</em>), com instruções obrigatórias</li>
+      <li>As regras europeias de segurança dos produtos exigem um responsável identificável dentro da UE para a maioria dos bens — o que parte o modelo clássico de enviar diretamente da Ásia</li>
+      <li>Importações têm alfândega e IVA na importação; prazos de entrega longos são um problema de devoluções, não um detalhe</li>
+    </ul><p>Nada disto torna impossível. Torna impossível a versão ingénua — e é exatamente por isso que fica em último e atrás de um limite de capital.</p></div>
+    <div class="card"><span class="tag">Referência</span><h3>Isto é descrição, não aconselhamento</h3>
+      <p>Limites, taxas e regras mudam, e o teu contrato é específico. Gasta uma hora com um
+      <em>Steuerberater</em> antes da primeira fatura — custa menos do que um trabalho de UGC e elimina a
+      maior razão pela qual as pessoas travam antes de monetizar.</p></div>
+  </div>
+</section>
+
+<section id="kit">
+  <div class="eyebrow">10 · Material</div>
+  <h2>Compra isto e depois pára de comprar coisas</h2>
+  <div class="scroll"><table>
+    <thead><tr><th>Item</th><th>Porquê</th><th>Custo</th></tr></thead>
+    <tbody>
+      <tr><td><strong>O teu telemóvel</strong></td><td>Câmara traseira, 4K/30 ou 1080p/30, exposição e foco travados antes da take. Não é o fator limitante e nunca vai ser.</td><td class="num">0 €</td></tr>
+      <tr><td><strong>Tripé + suporte</strong></td><td>A compra com mais retorno. Elimina para sempre a desculpa “preciso de alguém para filmar”.</td><td class="num">25–40 €</td></tr>
+      <tr><td><strong>Micro de lapela</strong></td><td>O som é a única coisa que os espectadores castigam. Imagem má lê-se como cru; som mau lê-se como impossível de ver.</td><td class="num">30–70 €</td></tr>
+      <tr><td><strong>Um painel LED</strong></td><td>Só para a garagem. Em todo o resto, vira-te para a janela.</td><td class="num">35–50 €</td></tr>
+      <tr><td><strong>Cinto de dips + colete</strong></td><td>A diferença entre calistenia de manutenção e calistenia para ganhar massa.</td><td class="num">60–90 €</td></tr>
+      <tr><td><strong>Fita de chão</strong></td><td>Marcas para a foto mensal. Custa nada e é o que faz a comparação a 12 meses funcionar.</td><td class="num">3 €</td></tr>
+      <tr><td><strong>CapCut, um template</strong></td><td>Um estilo de legenda, uma fonte, uma transição. Montado na semana 1, nunca mais tocado.</td><td class="num">0 €</td></tr>
+    </tbody>
+  </table></div>
+</section>
+<section id="agente">
+  <div class="eyebrow">11 · Automação</div>
+  <h2>O agente que escreve os episódios contigo</h2>
+  <p class="sub">Está instalado neste repositório em <code>.claude/agents/marca-pessoal.md</code>. Abre o
+  Claude Code na pasta do projeto e pede-lhe o episódio da semana. Ele conhece as regras todas desta
+  página: duração, estrutura de gancho, limites do empregador, tom, e o formato de saída.</p>
+
+  <div class="grid g2">
+    <div class="card"><h3>O que ele faz</h3><ul>
+      <li>Escreve o guião completo do episódio a partir de três linhas de notas tuas</li>
+      <li>Devolve sempre a mesma estrutura: gancho, beats com tempos, texto no ecrã, plano de filmagem, legenda, capa</li>
+      <li>Dá-te três ganchos alternativos e diz qual escolheria</li>
+      <li>Recusa-se a escrever seja o que for que exponha o empregador ou que prometa retornos financeiros</li>
+      <li>Marca a <span class="ph">âmbar</span> tudo o que precisa de um número teu</li>
+      <li>Gera também os dois posts de pilar da semana a partir do mesmo material gravado</li>
+    </ul></div>
+    <div class="card"><h3>Como falar com ele</h3>
+      <pre class="agent">Episódio 11.
+Esta semana: fiz 3 treinos, montei a barra
+na casa nova, mandei os primeiros 4 emails
+a marcas, nenhuma respondeu ainda.
+Peso: 72,4 kg. Pull-ups: 9.</pre>
+      <p style="margin-top:12px">Três linhas de factos chegam. Ele devolve o guião pronto a filmar, os dois
+      posts de apoio e a checklist do sábado. O que ele não inventa são números — se não lhos deres,
+      ficam a âmbar.</p>
+    </div>
+  </div>
+  <div class="note"><strong>Regra de utilização:</strong> o agente escreve, tu decides. Se uma frase não
+  soa a ti, troca-a — o guião é uma estrutura, não um texto para decorar. Os únicos blocos que não se
+  mexem são o gancho nos primeiros 5 segundos e o bloco “o que correu mal”.</div>
+</section>
+
+<section id="arranque">
+  <div class="eyebrow">12 · Agora</div>
+  <h2>Os primeiros catorze dias</h2>
+  <p class="sub">Tudo o que está acima só serve se o episódio 1 existir. As marcas ficam guardadas neste browser.</p>
+  <div class="check" id="cl">
+    <label><input type="checkbox" data-k="a1"><span><span class="day">D1</span>Criar a conta. Handle, foto, bio com os três pilares e “novo episódio todos os domingos”.</span></label>
+    <label><input type="checkbox" data-k="a2"><span><span class="day">D1</span>Ler a cláusula de <em>Nebentätigkeit</em> no contrato novo e anotar o que exige.</span></label>
+    <label><input type="checkbox" data-k="a3"><span><span class="day">D2</span>Comprar o tripé e o micro. Mais nada.</span></label>
+    <label><input type="checkbox" data-k="a4"><span><span class="day">D2</span>Registar a linha de partida do corpo: peso, cintura, braço, máximos, três fotos. Colar as marcas no chão.</span></label>
+    <label><input type="checkbox" data-k="a5"><span><span class="day">D3</span>Escrever os quatro alvos num papel e colá-lo na parede da garagem.</span></label>
+    <label><input type="checkbox" data-k="a6"><span><span class="day">D3</span>Montar o template no CapCut: uma fonte, um estilo de legenda, o bloco do número do episódio.</span></label>
+    <label><input type="checkbox" data-k="a7"><span><span class="day">D4</span>Gravar o episódio 1. Duas takes por bloco, no máximo.</span></label>
+    <label><input type="checkbox" data-k="a8"><span><span class="day">D5</span>Editar o episódio 1 com o temporizador a contar. Exportar aos 60 minutos, esteja como estiver.</span></label>
+    <label><input type="checkbox" data-k="a9"><span><span class="day">D6</span><strong>Publicar o episódio 1.</strong> Domingo, 19:00. Depois fechar a app.</span></label>
+    <label><input type="checkbox" data-k="b1"><span><span class="day">D7</span>Montar a página de recolha de emails. Um campo. Link na bio.</span></label>
+    <label><input type="checkbox" data-k="b2"><span><span class="day">D8</span>Gravar o episódio 2 na garagem + dois posts de pilar como reserva para a semana da mudança.</span></label>
+    <label><input type="checkbox" data-k="b3"><span><span class="day">D10</span>Gravar os inserts da casa vazia para o episódio 3, antes de a casa deixar de parecer uma mudança.</span></label>
+    <label><input type="checkbox" data-k="b4"><span><span class="day">D13</span>Publicar o episódio 2. Domingo, 19:00.</span></label>
+    <label><input type="checkbox" data-k="b5"><span><span class="day">D14</span>Pôr os blocos de quinta, sábado e domingo no calendário como eventos recorrentes durante 52 semanas.</span></label>
+  </div>
+</section>
+
+<footer>
+  <span>Os Episódios de Munique · bíblia da série v2 · setembro 2026</span>
+  <span>Os campos a âmbar são teus. Regras fiscais, comerciais e de publicidade alemãs descritas, não aconselhadas — confirma com um Steuerberater.</span>
+</footer>
+</div>
+
+<script>
+(function(){
+  var box = document.getElementById('cl');
+  if(!box) return;
+  var store = null;
+  try{ store = window.localStorage; store.getItem('me-cl'); }catch(e){ store = null; }
+  var state = {};
+  if(store){ try{ state = JSON.parse(store.getItem('me-cl') || '{}') || {}; }catch(e){ state = {}; } }
+  var inputs = box.querySelectorAll('input[type=checkbox]');
+  for(var i=0;i<inputs.length;i++){
+    var el = inputs[i];
+    if(state[el.dataset.k]) el.checked = true;
+    el.addEventListener('change', function(ev){
+      state[ev.target.dataset.k] = ev.target.checked;
+      if(store){ try{ store.setItem('me-cl', JSON.stringify(state)); }catch(e){} }
+    });
+  }
+})();
+</script>
+<style>
+code{font-family:var(--mono); font-size:.88em; background:var(--surface-3); border:1px solid var(--line-soft); padding:1px 5px; color:var(--ink)}
+</style>
+<style>
+:root{--cat1:#00897B; --cat2:#A05F04; --grid:#DCE4E2; --tipbg:#0E1918; --tipink:#F2F6F5}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--cat1:#2FA79A; --cat2:#B98438; --grid:#20302C; --tipbg:#E6EFEC; --tipink:#0B1513}}
+:root[data-theme="dark"]{--cat1:#2FA79A; --cat2:#B98438; --grid:#20302C; --tipbg:#E6EFEC; --tipink:#0B1513}
+.fig{margin:26px 0 0; padding:20px 20px 16px; background:var(--surface); border:1px solid var(--line)}
+.fig figcaption h3{font-size:18px; font-weight:600; letter-spacing:-.015em}
+.fig figcaption p{font-size:14px; color:var(--ink-2); margin-top:6px; max-width:70ch}
+.legend{display:flex; flex-wrap:wrap; gap:18px; margin-top:14px; font-size:13px; color:var(--ink-2)}
+.legend span{display:inline-flex; align-items:center; gap:7px}
+.sw{width:11px; height:11px; border-radius:2px; display:inline-block; flex:none}
+.sw1{background:var(--cat1)} .sw2{background:var(--cat2)}
+.chartbox{position:relative; margin-top:10px; overflow-x:auto}
+.chartbox svg{width:100%; min-width:520px; height:auto; display:block}
+.tip{position:absolute; pointer-events:none; background:var(--tipbg); color:var(--tipink); padding:8px 10px; font-size:12.5px; line-height:1.4; max-width:250px; border-radius:3px; z-index:5; box-shadow:0 4px 14px rgba(0,0,0,.25)}
+.tip b{display:block; font-family:var(--mono); font-size:10.5px; letter-spacing:.08em; text-transform:uppercase; opacity:.75; margin-bottom:3px; font-weight:400}
+.tip i{font-style:normal; font-family:var(--mono); font-variant-numeric:tabular-nums}
+.fig .src{font-size:12.5px; color:var(--ink-3); margin-top:12px}
+.tbl{margin-top:12px}
+.tbl summary{font-family:var(--mono); font-size:11px; letter-spacing:.09em; text-transform:uppercase; color:var(--accent); cursor:pointer}
+.tbl summary:focus-visible{outline:2px solid var(--accent-2); outline-offset:3px}
+.tbl .scroll{margin-top:10px}
+</style>
+<script>
+(function(){
+  var D=[
+    {ep:1,v:1582,t:"My journey | EP.1",e:0},
+    {ep:2,v:1197,t:"Rotina, Ginásio e Surpreendi os meus seguidores",e:0},
+    {ep:3,v:5536,t:"Conheci o Celso Lascasas, o homem que ficou Milionário a vender Mobiliário",e:1},
+    {ep:5,v:579,t:"Behind The Scenes do próximo episódio da Thousand Feelings",e:0},
+    {ep:8,v:661,t:"VIAGEM aos AÇORES com os meus PAIS",e:0},
+    {ep:10,v:826,t:"A Transformação",e:0},
+    {ep:11,v:1100,t:"FIZ a minha VIAGEM de SONHO 🇺🇸",e:0},
+    {ep:12,v:805,t:"CRUZEIRO pelas BAHAMAS e fiquei 24H em NY",e:0},
+    {ep:13,v:811,t:"5 dias no ALGARVE, Comecei a treinar BOXE e a realidade de ser EMPREENDEDOR",e:0},
+    {ep:15,v:574,t:"O meu maior PROPÓSITO",e:0},
+    {ep:16,v:1004,t:"Respondi a TUDO",e:0},
+    {ep:17,v:2310,t:"Vou viver para o DUBAI? 🇦🇪",e:1},
+    {ep:18,v:944,t:"A melhor experiência da minha VIDA 🇦🇪",e:0},
+    {ep:19,v:859,t:"A realidade de um jovem empreendedor com 22 anos a morar em 🇵🇹",e:0},
+    {ep:20,v:2163,t:"O dropshipping está finalmente a funcionar…",e:1},
+    {ep:21,v:1301,t:"Um dia na vida de um empreendedor que fatura +10k$/semana",e:0},
+    {ep:22,v:2210,t:"O DROPSHIPPING mudou a minha VIDA",e:1},
+    {ep:23,v:3016,t:"REVELEI pela primeira vez a minha LOJA...",e:1}
+  ];
+  var svg=document.getElementById('epchart'), tip=document.getElementById('eptip'), rows=document.getElementById('eprows');
+  if(!svg) return;
+  var NS='http://www.w3.org/2000/svg';
+  var L=46,R=14,T=26,B=34,W=780,H=300, pw=W-L-R, ph=H-T-B, MAX=6000, N=23;
+  var slot=pw/N, bw=Math.min(21, slot*0.66);
+  function y(v){ return T+ph*(1-v/MAX); }
+  function x(ep){ return L+(ep-1)*slot+(slot-bw)/2; }
+  function el(n,a){ var e=document.createElementNS(NS,n); for(var k in a) e.setAttribute(k,a[k]); return e; }
+  function fmt(n){ return n.toLocaleString('pt-PT'); }
+
+  [0,2000,4000,6000].forEach(function(g){
+    svg.appendChild(el('line',{x1:L,x2:W-R,y1:y(g),y2:y(g),stroke:'var(--grid)','stroke-width':1}));
+    var tx=el('text',{x:L-9,y:y(g)+3.5,'text-anchor':'end',fill:'var(--ink-3)','font-size':'10','font-family':'var(--mono)'});
+    tx.textContent = g===0 ? '0' : (g/1000)+'k'; svg.appendChild(tx);
+  });
+
+  var byEp={}; D.forEach(function(d){ byEp[d.ep]=d; });
+  for(var ep=1; ep<=N; ep++){
+    var lx=L+(ep-1)*slot+slot/2;
+    var xl=el('text',{x:lx,y:H-16,'text-anchor':'middle',fill:'var(--ink-3)','font-size':'9.5','font-family':'var(--mono)'});
+    xl.textContent=ep; svg.appendChild(xl);
+    var d=byEp[ep];
+    if(!d){
+      svg.appendChild(el('line',{x1:lx-3,x2:lx+3,y1:y(0),y2:y(0),stroke:'var(--ink-3)','stroke-width':1.5,'stroke-dasharray':'2 2',opacity:.55}));
+      continue;
+    }
+    var h=Math.max(3,y(0)-y(d.v)), yy=y(d.v), r=Math.min(4,h/2), xx=x(ep);
+    var path='M'+xx+' '+(yy+h)+'V'+(yy+r)+'a'+r+' '+r+' 0 0 1 '+r+' -'+r+'h'+(bw-2*r)+'a'+r+' '+r+' 0 0 1 '+r+' '+r+'V'+(yy+h)+'Z';
+    var g=el('g',{});
+    g.appendChild(el('path',{d:path,fill:d.e?'var(--cat2)':'var(--cat1)'}));
+    g.appendChild(el('rect',{x:xx-4,y:T,width:bw+8,height:ph,fill:'transparent'}));
+    if(d.e||d.ep===1){
+      var vl=el('text',{x:xx+bw/2,y:yy-7,'text-anchor':'middle',fill:'var(--ink)','font-size':'10','font-family':'var(--mono)'});
+      vl.textContent=fmt(d.v); g.appendChild(vl);
+    }
+    g.style.cursor='default';
+    (function(d,xx){
+      function show(ev){
+        tip.hidden=false;
+        tip.innerHTML='<b>Ep. '+d.ep+'</b>'+d.t+'<br><i>'+fmt(d.v)+' visualizações</i>';
+        var box=svg.getBoundingClientRect(), sc=box.width/W;
+        var px=(xx+bw/2)*sc, py=y(d.v)*sc;
+        tip.style.left=Math.max(4,Math.min(box.width-tip.offsetWidth-4,px-tip.offsetWidth/2))+'px';
+        tip.style.top=Math.max(0,py-tip.offsetHeight-10)+'px';
+      }
+      g.addEventListener('mouseenter',show);
+      g.addEventListener('mousemove',show);
+      g.addEventListener('mouseleave',function(){ tip.hidden=true; });
+    })(d,xx);
+    svg.appendChild(g);
+  }
+  svg.appendChild(el('line',{x1:L,x2:W-R,y1:y(0),y2:y(0),stroke:'var(--line)','stroke-width':1.5}));
+
+  if(rows){
+    D.forEach(function(d){
+      var tr=document.createElement('tr');
+      tr.innerHTML='<td class="num">'+d.ep+'</td><td>'+d.t+(d.e?' <span class="tag w">acontecimento</span>':'')+'</td><td class="num">'+fmt(d.v)+'</td>';
+      rows.appendChild(tr);
+    });
+  }
+})();
+</script>
