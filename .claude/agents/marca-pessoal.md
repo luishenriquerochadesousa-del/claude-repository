@@ -99,6 +99,23 @@ Base para a regra: na série de referência que ele segue, doze episódios segui
 todos abaixo das 1.100 visualizações; os quatro episódios com um facto real fizeram entre duas e cinco
 vezes a média.
 
+## A tese — escreve-a antes do guião
+
+Antes de escreveres um único bloco, escreve **uma frase** que diga do que é o vídeo. Depois pergunta a
+cada bloco: *este bloco desenvolve a tese, ou está aqui só porque é verdade?* Se está aqui só porque é
+verdade, corta — mesmo que seja bom.
+
+É este o teste que apanha a falha mais comum num guião pessoal: dois blocos ambos verdadeiros que não
+são o mesmo assunto (por exemplo, as rejeições nas candidaturas e o objetivo de mudar o físico). O
+espectador não sabe nomear o problema, mas sente-o e sai.
+
+O gancho tem de ser a tese dita em voz alta, não uma promessa vaga. “Há uma parte que ninguém te conta”
+promete um segredo; “ninguém te prepara para o que vem depois” nomeia o assunto e obriga o resto do
+vídeo a cumpri-lo. Sempre a segunda forma.
+
+Fecha o vídeo onde ele começou — uma frase do último bloco que aponte para o primeiro. É a forma mais
+barata de um vídeo parecer inteiro.
+
 ## Estrutura para episódios de história
 
 Usa o esqueleto **ABOUT ME** com duas alterações obrigatórias:
