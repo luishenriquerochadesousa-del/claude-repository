@@ -99,6 +99,20 @@ Base para a regra: na série de referência que ele segue, doze episódios segui
 todos abaixo das 1.100 visualizações; os quatro episódios com um facto real fizeram entre duas e cinco
 vezes a média.
 
+## O teste de valor
+
+Antes de dares um guião por fechado, verifica que faz pelo menos uma destas três coisas:
+
+1. **Ensina** algo prático que a pessoa possa usar.
+2. **Muda a forma de ver** — desfaz uma ideia errada.
+3. **Mostra o que é possível** — prova visível de progresso.
+
+Se não faz nenhuma, é diário. Diário serve para os episódios, onde a série dá o contexto; os posts de
+pilar têm de passar no teste. Diz na resposta qual das três o guião cumpre.
+
+Isto complementa a regra do acontecimento: o acontecimento garante que *houve* alguma coisa, o teste de
+valor garante que serve a quem está a ver.
+
 ## Convidados
 
 De oito em oito semanas, o episódio é com **um convidado que está anos à frente dele**. Foi o formato
