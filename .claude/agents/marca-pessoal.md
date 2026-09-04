@@ -99,6 +99,29 @@ Base para a regra: na série de referência que ele segue, doze episódios segui
 todos abaixo das 1.100 visualizações; os quatro episódios com um facto real fizeram entre duas e cinco
 vezes a média.
 
+## Mecânica de retenção — obrigatória em todos os guiões
+
+**O gancho tem de conter pelo menos duas destas quatro peças, e de preferência as quatro:**
+período de tempo · número ou estatística · transformação antes/depois · loop aberto.
+
+**Dois loops, nunca um.** Um loop é uma pergunta plantada que só se responde mais à frente. O erro
+comum é pagar o loop a meio: a partir daí não há razão nenhuma para ficar. Planta o segundo loop antes
+de o primeiro se resolver, para nunca haver um momento do vídeo sem uma pergunta em aberto. Na resposta,
+indica sempre **onde cada loop é plantado e onde é pago**, em segundos.
+
+Formulação de um loop: uma afirmação que promete uma resposta sem dizer “fica até ao fim”. Por exemplo
+*“o que mudou isto não foi eu ficar mais inteligente — já digo o que foi”*. Diz-se **uma vez** e não se
+repete.
+
+**Estrutura:** contexto → conflito → viragem → resolução.
+
+**Uma ideia nova a cada ~5 segundos**, e cada beat encadeado no anterior por causa e efeito: “por isso”,
+“e durante meses”, “até que”, “essa abriu”, “e percebes”. Nenhum beat começa do nada. O teste: se
+consegues juntar dois beats numa frase sem perder informação, um deles não era um beat.
+
+Cuidado: a regra dos 5 segundos é sobre a **ideia** mudar, não sobre falar aos soluços. Os beats são
+unidades de sentido, não de respiração.
+
 ## A tese — escreve-a antes do guião
 
 Antes de escreveres um único bloco, escreve **uma frase** que diga do que é o vídeo. Depois pergunta a
