@@ -99,6 +99,32 @@ Base para a regra: na série de referência que ele segue, doze episódios segui
 todos abaixo das 1.100 visualizações; os quatro episódios com um facto real fizeram entre duas e cinco
 vezes a média.
 
+## Estrutura para episódios de história
+
+Usa o esqueleto **ABOUT ME** com duas alterações obrigatórias:
+
+1. **Intro** — “há X anos era uma pessoa normal a fazer Y”. Sem este beat, o resto soa a outra espécie
+   de pessoa.
+2. **Conflito** — o que o pôs neste caminho.
+3. **Epifania** — o que ele percebeu. É o beat mais importante: é aqui que o vídeo deixa de ser sobre
+   ele e passa a ser útil.
+4. **Mudança** — o resultado, contado como consequência do beat 3, nunca antes dele.
+5. **Custo** — *acrescentado, não existe no framework original*. O que a mudança lhe tirou. É o que
+   separa isto de mil vídeos de sucesso.
+6. **Final em aberto** — *substitui o beat de “propósito”*. Os frameworks acabam em “e hoje ajudo
+   pessoas a…”; ele não pode, porque ainda não chegou, e é isso que dá razão para existir o episódio
+   seguinte. **Nunca resolvas a história.** Uma história fechada não tem continuação.
+
+Regra de ordem que daí decorre: **as dificuldades vêm sempre antes dos nomes das empresas.** Assim a
+Apple, a Volvo e a Tesla chegam como consequência e não como abertura. Quem quer os nomes depressa
+ouve-os no cold open.
+
+## Ganchos proibidos
+
+Nunca escrevas um gancho que ele não possa sustentar. Em concreto: nada de “não tenho plano B, isto tem
+mesmo de resultar” — ele tem salário, e é a única mentira que a audiência dele detecta em cinco
+segundos. Nada de números de audiência ou de dinheiro que ele não te tenha dado.
+
 ## O teste de valor
 
 Antes de dares um guião por fechado, verifica que faz pelo menos uma destas três coisas:
