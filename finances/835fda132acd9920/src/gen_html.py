@@ -18,8 +18,8 @@ GROUPS = [
     ("Trade Republic Brokerage",  ["Trade Republic Inv. - Brokerage"]),
     ("Trade Republic Crypto",     ["Trade Republic Inv. - Crypto"]),
     ("Trade Republic Cash",       ["Trade Republic Account"]),
-    ("Trading 212",               ["Trading 212 Account"]),
-    ("Robinhood",                 ["Robinhood"]),
+    ("Trading 212",               ["Trading 212 Account", "Trading 212 Brokerage"]),
+    ("Robinhood",                 ["Robinhood (5% Yield)", "Robinhood (Crypto)"]),
     ("Revolut",                   ["Revolut", "Revolut - Wealth Build",
                                    "Revolut - Fundo Emergência"]),
     ("Certificados CTT",          ["Certificados de Aforro CTT - Série E",
@@ -81,10 +81,11 @@ payload = {
               "value": a["value"][-1]} for a in inv["accounts"]],
             key=lambda a: -a["value"]),
     },
-    "labels": ["Start", "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug"],
+    "labels": ["Start", "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct"],
     "full": ["1 January 2026", "end of January 2026", "end of February 2026",
              "end of March 2026", "end of April 2026", "end of May 2026",
-             "end of June 2026", "end of July 2026", "5 August 2026"],
+             "end of June 2026", "end of July 2026", "end of August 2026",
+             "end of September 2026", "October 2026, month in progress"],
     "groups": groups,
     "panels": panels,
     "totals": [d["start_total"]] + d["totals"],
@@ -408,16 +409,16 @@ HTML = """<title>Account balances — Personal Finance Tracker 2026</title>
 
 <div class="wrap">
   <header>
-    <div class="eyebrow">Personal Finance Tracker &middot; rebuilt from Notion, 9 Aug 2026</div>
+    <div class="eyebrow">Personal Finance Tracker &middot; rebuilt from Notion, 28 Oct 2026</div>
     <h1>Where the money sits, month by month</h1>
-    <p class="lede">End-of-month balance for all 15 accounts since the tracker started on
+    <p class="lede">End-of-month balance for all 17 accounts since the tracker started on
       1 January 2026, reconstructed from every income, expense and transfer row in Notion.</p>
   </header>
 
   <section>
     <div class="hero">
       <div class="card hero-fig">
-        <div class="tile-label">Net worth &middot; 5 Aug 2026</div>
+        <div class="tile-label">Net worth &middot; October 2026</div>
         <div class="hero-num" id="hero"></div>
         <div id="heroDelta"></div>
       </div>
@@ -470,8 +471,7 @@ HTML = """<title>Account balances — Personal Finance Tracker 2026</title>
       <p class="hint" id="gainHint" hidden>
         <span class="sw"><i class="a"></i><i class="b"></i></span>
         Within a column, the solid band is capital and the lighter band directly above it is that
-        group&rsquo;s accumulated gains. A group sitting on a cumulative loss &mdash; Crypto, at
-        &minus;&euro;95.57 &mdash; has no lighter band; hover it for the figure.
+        group&rsquo;s accumulated gains. A group sitting on a cumulative loss has no lighter band; hover it for the figure.
         This view always shows all eight groups, so the legend here is a key rather than a filter.
       </p>
     </div>
@@ -494,7 +494,7 @@ HTML = """<title>Account balances — Personal Finance Tracker 2026</title>
         <div>
           <div class="tile-label">Portfolio value</div>
           <div class="tile-val" id="ivVal"></div>
-          <div class="tile-note">across 8 accounts, 5 Aug</div>
+          <div class="tile-note">across 10 accounts, October</div>
         </div>
         <div>
           <div class="tile-label">Return earned</div>
@@ -504,7 +504,7 @@ HTML = """<title>Account balances — Personal Finance Tracker 2026</title>
         <div>
           <div class="tile-label">Annualised rate</div>
           <div class="tile-val" id="ivIrr"></div>
-          <div class="tile-note">money-weighted, through 31 Jul</div>
+          <div class="tile-note">money-weighted, through 30 Sep</div>
         </div>
       </div>
       <div class="scroller">
@@ -553,40 +553,47 @@ HTML = """<title>Account balances — Personal Finance Tracker 2026</title>
         accounts is a <i>Portfolio Delta</i>, a <i>CTT Aforro Delta</i>, or a fund delta, so the
         classification needs no guesswork. The split reproduces all eight account balances exactly.</p>
       <ol>
-        <li><b>August is partial.</b> The last transaction on record is 5 August 2026.</li>
+        <li><b>October is still running</b>, and some month-end rows are already dated the 31st.
+          Treat the last column as the month so far, not a closed month.</li>
+        <li><b>No income has been recorded since July.</b> The Income database has one row per month
+          from January to July (Prodigius, then Tesla), nothing at all for August or September, and
+          an October row for Helsign AI GmbH with the <b>Amount left blank</b>. That blank is read as
+          zero here, so the fall in net worth since August is partly real spending and partly
+          salary that has not been entered. Filling in those rows is the single biggest thing that
+          would change this page.</li>
         <li><b>Returns are measured from 1 January 2026, not from when you bought.</b> The
           &euro;13,735 already invested on 1 Jan enters as opening capital at its then value, so the
-          +5.70% is this year's return, not lifetime performance on those holdings.</li>
-        <li><b>The rate is money-weighted and annualised from seven months.</b> It answers "what
-          rate would turn my actual contributions into today's value", computed through 31 July so
-          the five-day August stub doesn't distort it. Annualising a partial year assumes the rest
-          of it behaves the same, which it won't &mdash; read it as a pace, not a forecast.</li>
-        <li><b>Dividends and cash interest leave the portfolio.</b> &euro;24.40 of dividends and 2%
+          +15.85% is this year's return, not lifetime performance on those holdings.</li>
+        <li><b>The rate is money-weighted and annualised from nine months</b>, computed through
+          30 September so the unfinished October does not distort it. Annualising a partial year
+          assumes the rest behaves the same, which it will not &mdash; read it as a pace, not a
+          forecast.</li>
+        <li><b>Four accounts were emptied over August to October</b> &mdash; CTT Série F, Revolut
+          Wealth Build, Revolut Fundo Emergência and Trading 212 Account &mdash; and Conta Poupança
+          sits at zero. Where an account earned something and was then fully withdrawn, its net
+          contribution goes negative: more came out than ever went in, the difference being the
+          gains. Those accounts show no return percentage, because a ratio against a base at or
+          below zero says nothing.</li>
+        <li><b>Dividends and cash interest leave the portfolio.</b> &euro;30.98 of dividends and 2%
           interest was paid into Trade Republic <i>Account</i> rather than reinvested, so it sits
-          outside the portfolio return and is counted separately.</li>
+          outside the portfolio return and is counted separately. Its January&ndash;July split is
+          carried over from the August extraction; August onward was re-read.</li>
         <li><b>Portfolio deltas are your own monthly marks.</b> Value moves only when you record a
-          delta row, so the value line steps at month ends rather than moving daily &mdash; and any
-          month you skip shows as flat rather than unknown. Crypto has deltas through July but the
-          brokerage's June delta was entered on 31 July, which is why June looks quiet.</li>
-        <li><b>The 30 June brokerage label has been corrected in Notion</b> (it read
-          <i>(+)</i> on a &euro;40.68 outflow; it is now <i>(&minus;)</i>). No figure here changes,
-          because delta rows are counted by the direction they were entered, never by their label.</li>
-        <li><b>Revolut dips slightly negative</b> in January (&minus;&euro;19.36) and May
-          (&minus;&euro;15.48) &mdash; confirmed as points where the account genuinely needed a
-          top-up, so the dips are real and are drawn as they happened.</li>
-        <li><b>Two transfers are double-tagged.</b> <i>Investimentos - Trading 212</i> (29 Jun,
-          &euro;100 in) and <i>Reembolso - Trading 212</i> (6 Jul, &euro;100 out) each name both
-          Trading 212 and Robinhood as the account. Both are counted here against Trading 212, which
-          the descriptions name. They cancel out, so no end balance changes &mdash; only the Jun/Jul
-          split for those two accounts.</li>
-        <li><b>Transfers with a blank From or To account</b> are money entering or leaving the
-          tracker from outside it, and are counted one-sided.</li>
+          delta row, so the value line steps at month ends rather than moving daily, and any month
+          you skip shows as flat rather than unknown.</li>
+        <li><b>One delta row is incomplete.</b> <i>T212 Brokerage - Portfolio Delta - October 2026
+          ()</i> has no amount and neither a From nor a To account &mdash; note the empty brackets
+          where the sign belongs. It contributes nothing, so Trading 212 Brokerage carries no
+          October delta.</li>
+        <li><b>Two small negatives.</b> Revolut dips to &minus;&euro;19.36 in January and
+          &minus;&euro;15.48 in May, both confirmed top-up gaps. Robinhood (Crypto) shows
+          &minus;&euro;1.83 at the end of August, which looks like the same kind of timing gap.</li>
       </ol>
     </div>
   </section>
 
   <footer>
-    Source: Notion &mdash; Accounts, Income, Expenses and Transfer databases, read 9 August 2026.
+    Source: Notion &mdash; Accounts, Income, Expenses and Transfer databases, read 28 October 2026.
     All figures in euro.
     <br>Unlisted page: it is excluded from search engines, but anyone holding this URL can read it.
   </footer>
@@ -1230,11 +1237,13 @@ ivSvg.addEventListener("pointerleave", () => {
 });
 
 document.getElementById("ivTbl").innerHTML =
-  "<caption>Per account, at 5 August 2026. Return % is measured against capital in that account.</caption>" +
-  "<thead><tr><th>Investment account</th><th>Capital</th><th>Return</th>" +
+  "<caption>Per account, at 28 October 2026. Return % is measured against capital in that account.</caption>" +
+  "<thead><tr><th>Investment account</th><th>Net contributed</th><th>Return</th>" +
   "<th>Value</th><th>Return %</th></tr></thead><tbody>" +
   IV.accounts.map(a => {
-    const pct = Math.abs(a.capital) > 0.005
+    // A ratio against a base at or below zero says nothing: those accounts have
+    // been drained, so more has come out than ever went in.
+    const pct = a.capital > 0.005
       ? ((a.returns >= 0 ? "+" : "\\u2212") + Math.abs(a.returns / a.capital * 100).toFixed(2) + "%")
       : "\\u2014";
     const col = Math.abs(a.returns) < 0.005 ? "--muted" : a.returns > 0 ? "--pos" : "--neg";

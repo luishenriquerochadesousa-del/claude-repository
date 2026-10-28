@@ -20,36 +20,43 @@ separately as investment income received in cash.
 
 import json
 
-from build import (ACCOUNTS, BROK, CRYPTO, CTTE, CTTF, EMERG, MONTHS, TRANSFER_IN,
-                   TRANSFER_OUT, WEALTH)
+from build import (ACCOUNTS, BROK, CRYPTO, CTTE, CTTF, EMERG, MONTHS, ROBIN5, ROBINC,
+                   T212, T212BROK, TRANSFER_IN, TRANSFER_OUT, WEALTH)
 
 # One-sided inflows into investment accounts — gains.
 GAINS = {
-    BROK:   {"2026-01": 189.53,          # Portfolio Delta - January
-             "2026-02": 0.10,            # Portfolio Delta - February
-             "2026-04": 3.02 + 910.06,   # Cashback savings plan + Portfolio Delta
-             "2026-05": 3.61 + 648.49,
-             "2026-06": 10.21,
-             "2026-07": 15.00 + 10.93,   # cashback + June delta, entered 31 Jul
-             "2026-08": 2.27},
-    CRYPTO: {"2026-04": 15.81},
-    CTTE:   {"2026-02": 3.37, "2026-05": 3.44},        # CTT Aforro interest
-    CTTF:   {"2026-02": 20.90, "2026-04": 1.57, "2026-05": 21.30},
-    WEALTH: {"2026-07": 0.54},
-    EMERG:  {"2026-07": 0.82},
+    BROK:     {"2026-01": 189.53, "2026-02": 0.10, "2026-04": 913.08, "2026-05": 652.10,
+               "2026-06": 10.21, "2026-07": 25.93, "2026-08": 500.25, "2026-09": 1062.96,
+               "2026-10": 15.00},
+    CRYPTO:   {"2026-04": 15.81, "2026-08": 181.94, "2026-09": 128.59},
+    CTTE:     {"2026-02": 3.37, "2026-05": 3.44, "2026-08": 3.54},
+    CTTF:     {"2026-02": 20.90, "2026-04": 1.57, "2026-05": 21.30, "2026-07": 1.54,
+               "2026-08": 23.79},
+    EMERG:    {"2026-06": 0.34, "2026-07": 0.42, "2026-08": 0.10},
+    WEALTH:   {"2026-06": 0.03, "2026-07": 0.40, "2026-08": 0.28},
+    T212:     {"2026-08": 0.26, "2026-09": 0.01},
+    T212BROK: {"2026-07": 40.98, "2026-08": 5.99},
+    # "Yield Payment (5%)" each month.
+    ROBIN5:   {"2026-08": 0.03, "2026-09": 2.34, "2026-10": 3.63},
+    # Five "Referral Reward Michael" crypto buy orders — money that arrived without
+    # being contributed, so a gain rather than capital.
+    ROBINC:   {"2026-07": 50.00, "2026-09": 100.00},
 }
 
 # One-sided outflows from investment accounts — losses.
 LOSSES = {
-    BROK:   {"2026-03": 242.81,   # Portfolio Delta - March
-             "2026-06": 40.68},   # entered as an outflow, so a loss; its "(+)" label
-                                  # has since been corrected to "(-)" in Notion
-    CRYPTO: {"2026-05": 23.43, "2026-06": 38.09, "2026-07": 49.86},
+    BROK:     {"2026-03": 242.81, "2026-06": 40.68},
+    CRYPTO:   {"2026-05": 23.43, "2026-06": 38.09, "2026-07": 49.86},
+    T212BROK: {"2026-09": 15.79},
+    CTTF:     {"2026-10": 0.12},
 }
 
-# Dividends and the 2% cash interest, credited to Trade Republic Account.
+# Dividends and the 2% cash interest, credited to Trade Republic Account. Refunds
+# and adjustments paid into the same account are excluded — they are not returns.
+# Jan-Jul carried over from the 9 August extraction; Aug-Oct re-read 28 October.
 INCOME_TO_CASH = {"2026-01": 0.76, "2026-02": 3.32, "2026-03": 0.52, "2026-04": 0.66,
-                  "2026-05": 5.95, "2026-06": 6.80, "2026-07": 2.14, "2026-08": 4.25}
+                  "2026-05": 5.95, "2026-06": 6.80, "2026-07": 2.14, "2026-08": 4.51,
+                  "2026-09": 5.58, "2026-10": 0.74}
 
 PORTFOLIO = [aid for aid, (_n, kind, _b, _s) in ACCOUNTS.items() if kind == "Investment"]
 
@@ -112,8 +119,8 @@ def irr(flows):
 
 # Cash flows from the investor's side: opening capital and each month's net
 # contribution are money in; the closing value is what it is worth now.
-# Run through 31 July — August is only 5 days and would distort the rate.
-n = MONTHS.index("2026-07") + 1
+# Run through 30 September — October is unfinished and would distort the rate.
+n = MONTHS.index("2026-09") + 1
 flows = [-start_cap] + [-(sum(r["net_contrib"][k] for r in rows)) for k in range(n)]
 flows[n] += val_t[n - 1]
 monthly = irr(flows)
@@ -130,20 +137,22 @@ out = {
     "monthly_delta": monthly_delta,
     "income_to_cash": INCOME_TO_CASH,
     "income_to_cash_total": round(sum(INCOME_TO_CASH.values()), 2),
-    "irr_monthly": monthly, "irr_annual": annual, "irr_through": "2026-07",
+    "irr_monthly": monthly, "irr_annual": annual, "irr_through": "2026-09",
 }
 with open("investments.json", "w") as fh:
     json.dump(out, fh, indent=1)
 
 if __name__ == "__main__":
     w = max(len(r["name"]) for r in rows)
-    print(f"{'Account':<{w}} {'capital':>10} {'returns':>10} {'value':>11} {'ret %':>8}")
+    print(f"{'Account':<{w}} {'net contrib':>12} {'returns':>10} {'value':>11} {'ret %':>8}")
     for r in sorted(rows, key=lambda r: -r["value"][-1]):
         c, s, v = r["capital"][-1], r["returns"][-1], r["value"][-1]
-        pct = f"{s / c * 100:+.2f}%" if abs(c) > 0.005 else "—"
-        print(f"{r['name']:<{w}} {c:>10,.2f} {s:>10,.2f} {v:>11,.2f} {pct:>8}")
+        # A percentage against a base at or below zero says nothing: those accounts
+        # have been drained, so more came out than ever went in.
+        pct = f"{s / c * 100:+.2f}%" if c > 0.005 else "—"
+        print(f"{r['name']:<{w}} {c:>12,.2f} {s:>10,.2f} {v:>11,.2f} {pct:>8}")
     print("-" * (w + 43))
-    print(f"{'PORTFOLIO':<{w}} {cap_t[-1]:>10,.2f} {ret_t[-1]:>10,.2f} {val_t[-1]:>11,.2f} "
+    print(f"{'PORTFOLIO':<{w}} {cap_t[-1]:>12,.2f} {ret_t[-1]:>10,.2f} {val_t[-1]:>11,.2f} "
           f"{ret_t[-1] / cap_t[-1] * 100:>+7.2f}%")
     print()
     print(f"Opening capital 1 Jan      {start_cap:>10,.2f}")
@@ -153,7 +162,7 @@ if __name__ == "__main__":
           "   (paid into Trade Republic Account)")
     print(f"Total investment gain      {ret_t[-1] + out['income_to_cash_total']:>10,.2f}")
     if annual is not None:
-        print(f"\nMoney-weighted return through 31 Jul: {monthly * 100:.2f}%/month "
+        print(f"\nMoney-weighted return through 30 Sep: {monthly * 100:.2f}%/month "
               f"= {annual * 100:.1f}% annualised")
     print("\ncapital:", cap_t)
     print("returns:", ret_t)

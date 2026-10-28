@@ -13,7 +13,8 @@ MONTHS, ACCOUNTS, FLOWS = d["months"], d["accounts"], d["flows"]
 INV = json.load(open("investments.json"))
 LABELS = {"2026-01": "Jan 2026", "2026-02": "Feb 2026", "2026-03": "Mar 2026",
           "2026-04": "Apr 2026", "2026-05": "May 2026", "2026-06": "Jun 2026",
-          "2026-07": "Jul 2026", "2026-08": "Aug 2026"}
+          "2026-07": "Jul 2026", "2026-08": "Aug 2026", "2026-09": "Sep 2026",
+          "2026-10": "Oct 2026"}
 
 EUR = '€#,##0.00;(€#,##0.00);-'
 FONT = "Arial"
@@ -39,7 +40,7 @@ rm.column_dimensions["B"].width = 104
 
 lines = [
     (TITLE, "Personal Finance Tracker — Account Balances 2026"),
-    (SUB, "Rebuilt from the Notion databases (Accounts, Income, Expenses, Transfers) on 2026-08-09."),
+    (SUB, "Rebuilt from the Notion databases (Accounts, Income, Expenses, Transfers) on 2026-10-28."),
     (None, ""),
     (BOLD, "What is in this file"),
     (INK, "Monthly Flows       — one row per account per month: income, expenses, transfers in, transfers out."),
@@ -60,15 +61,20 @@ lines = [
     (INK, "   is filtered out by status."),
     (INK, "2. Transfers with an empty From Account are money arriving from outside the tracker (e.g. family"),
     (INK, "   transfers); transfers with an empty To Account are money leaving it. Both are counted one-sided."),
-    (INK, "3. Two transfers — 'Investimentos - Trading 212' (29 Jun, €100 in) and 'Reembolso - Trading 212'"),
-    (INK, "   (6 Jul, €100 out) — are each tagged to BOTH Trading 212 and Robinhood in Notion. They are"),
-    (INK, "   attributed here to Trading 212, which both descriptions name. They cancel out, so no account's"),
-    (INK, "   end balance is affected — only the Jun/Jul split for those two accounts."),
+    (INK, "3. Four accounts were emptied between August and October (CTT Série F, Revolut Wealth Build,"),
+    (INK, "   Revolut Fundo Emergência, Trading 212 Account) and Conta Poupança sits at zero. Where an"),
+    (INK, "   account earned something and was then fully withdrawn, its net contribution goes negative:"),
+    (INK, "   more came out than ever went in, the difference being the gains."),
     (INK, "4. Investment accounts track contributed cash, not market value: the tracker records transfers in"),
     (INK, "   and out, not price movements. Trade Republic Inv. - Brokerage in particular is 'money put in'."),
-    (INK, "5. August 2026 is partial — the last transaction in Notion is dated 5 August 2026."),
-    (INK, "6. Revolut shows a small negative balance in Jan (-€19.36) and May (-€15.48). That points to a"),
-    (INK, "   missing or mis-dated top-up in Notion rather than a real overdraft."),
+    (INK, "5. October 2026 is still running, and some month-end rows are already dated the 31st."),
+    (INK, "6. No income has been recorded since July: nothing for August or September, and the October"),
+    (INK, "   row (Helsign AI GmbH) has a blank Amount. A blank reads as zero here, so part of the fall"),
+    (INK, "   in net worth since August is salary that has not been entered yet."),
+    (INK, "7. Revolut dips negative in Jan (-€19.36) and May (-€15.48) — confirmed top-up gaps. Robinhood"),
+    (INK, "   (Crypto) shows -€1.83 at end of August, which looks like the same kind of timing gap."),
+    (INK, "8. 'T212 Brokerage - Portfolio Delta - October 2026 ()' has no amount and no accounts set, so"),
+    (INK, "   it contributes nothing."),
     (None, ""),
     (BOLD, "Editing this file"),
     (INK, "Change or add rows on Monthly Flows only. Blue = type over it. Black = formula, leave alone."),
@@ -293,7 +299,7 @@ ret_tot = block_first["Cumulative return"] + NM
 val_tot = block_first["Portfolio value"] + NM
 lastc = get_column_letter(4 + NC)
 
-iv.cell(row=row, column=1, value="Summary at 5 Aug 2026").font = BOLD
+iv.cell(row=row, column=1, value="Summary at 28 Oct 2026").font = BOLD
 row += 1
 for label, formula in [
         ("Capital invested", f"={lastc}{cap_tot}"),
@@ -311,10 +317,10 @@ for label, formula in [
 # Money-weighted return: opening capital and each month's net contribution are
 # money in, the closing value is money out. Through 31 July — August is 5 days.
 row += 1
-iv.cell(row=row, column=1, value="Money-weighted return (cash flows through 31 Jul)").font = BOLD
+iv.cell(row=row, column=1, value="Money-weighted return (cash flows through 30 Sep)").font = BOLD
 row += 1
 iv.cell(row=row, column=1, value="Cash flow").font = INK
-n_irr = MONTHS.index("2026-07") + 1
+n_irr = MONTHS.index("2026-09") + 1
 c = iv.cell(row=row, column=4, value=f"=-D{cap_tot}")
 c.font, c.number_format = LINK, EUR
 for k in range(n_irr):
@@ -340,8 +346,8 @@ row += 2
 note = iv.cell(row=row, column=1, value=(
     "Returns are measured from 1 Jan 2026: the €13,735 already invested enters as opening capital at "
     "its then value, so this is the year's return, not lifetime performance. Value moves only in months "
-    "where you recorded a delta row. The 30 Jun brokerage row is labelled '(+)' but was entered as money "
-    "leaving the account, so it is counted as the loss it is."))
+    "where you recorded a delta row. An account that was emptied after earning something shows a negative "
+    "net contribution: more came out than ever went in, the difference being the gains."))
 note.font = SUB
 
 iv.column_dimensions["A"].width = 46
