@@ -14,7 +14,7 @@ INV = json.load(open("investments.json"))
 LABELS = {"2026-01": "Jan 2026", "2026-02": "Feb 2026", "2026-03": "Mar 2026",
           "2026-04": "Apr 2026", "2026-05": "May 2026", "2026-06": "Jun 2026",
           "2026-07": "Jul 2026", "2026-08": "Aug 2026", "2026-09": "Sep 2026",
-          "2026-10": "Oct 2026"}
+          "2026-10": "Oct 2026", "2026-11": "Nov 2026"}
 
 EUR = '€#,##0.00;(€#,##0.00);-'
 FONT = "Arial"
@@ -40,7 +40,7 @@ rm.column_dimensions["B"].width = 104
 
 lines = [
     (TITLE, "Personal Finance Tracker — Account Balances 2026"),
-    (SUB, "Rebuilt from the Notion databases (Accounts, Income, Expenses, Transfers) on 2026-10-28."),
+    (SUB, "Rebuilt from the Notion databases (Accounts, Income, Expenses, Transfers) on 2026-10-30."),
     (None, ""),
     (BOLD, "What is in this file"),
     (INK, "Monthly Flows       — one row per account per month: income, expenses, transfers in, transfers out."),
@@ -67,7 +67,8 @@ lines = [
     (INK, "   more came out than ever went in, the difference being the gains."),
     (INK, "4. Investment accounts track contributed cash, not market value: the tracker records transfers in"),
     (INK, "   and out, not price movements. Trade Republic Inv. - Brokerage in particular is 'money put in'."),
-    (INK, "5. October 2026 is still running, and some month-end rows are already dated the 31st."),
+    (INK, "5. November has not started. It is included because the rows are entered, but holds only the"
+    "   committed rent and half-deposit, with no salary. October closed at 33,678.15."),
     (INK, "6. No income has been recorded since July: nothing for August or September, and the October"),
     (INK, "   row (Helsign AI GmbH) has a blank Amount. A blank reads as zero here, so part of the fall"),
     (INK, "   in net worth since August is salary that has not been entered yet."),
@@ -299,7 +300,7 @@ ret_tot = block_first["Cumulative return"] + NM
 val_tot = block_first["Portfolio value"] + NM
 lastc = get_column_letter(4 + NC)
 
-iv.cell(row=row, column=1, value="Summary at 28 Oct 2026").font = BOLD
+iv.cell(row=row, column=1, value="Summary at 30 Oct 2026").font = BOLD
 row += 1
 for label, formula in [
         ("Capital invested", f"={lastc}{cap_tot}"),

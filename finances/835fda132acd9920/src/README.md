@@ -2,7 +2,7 @@
 
 Regenerates `../index.html` and `../Account Balances 2026.xlsx` from the figures
 pulled out of the Notion Personal Finance Tracker on 30 October 2026
-(January–October, 18 accounts).
+(January–November, 18 accounts).
 
 ## Why this exists
 
@@ -54,7 +54,7 @@ Both models self-check rather than asserting correctness by eye:
   account balances, and refuses negative contributions or withdrawals.
 - `verify_book.py` evaluates the *written workbook's* formulas with the `formulas`
   package (`pip install formulas`) and compares every cell against the JSON — 617
-  checks (627 at the October 30 extraction), including the workbook's own `=IRR()` against a bisection solve in Python.
+  checks (689 at the latest extraction), including the workbook's own `=IRR()` against a bisection solve in Python.
   It finds its cells by scanning sheet labels rather than hardcoding addresses, so
   adding a month or an account cannot silently point the checks at the wrong cells.
   (It replaces the earlier `verify_xlsx.py` / `verify_inv.py`, which did hardcode
@@ -73,25 +73,31 @@ and to `labels` / `full` in `gen_html.py`.
 
 ## Data notes
 
-1. **October is read to the 30th**, including month-end rows already dated the 31st.
-   No account carries an October portfolio-delta row except the brokerage cashback,
-   so October's investment move is contributions, not a mark to market.
-2. **Rows dated into November are held out** of `MONTHS` because the month has not
-   started — a €1,099.00 Revolut expense and a €1,250.00 Revolut → Flat Deposit
-   transfer (internal). See `NOVEMBER` in `build.py`. Net effect when November
-   arrives: −€1,099.00.
-3. **August and September have no income rows.** October's are in (€6,336.15 over two
-   rows, Helsign AI), but the Jul→Oct gap is unrecorded pay, not only spending.
-4. **Accounts that were emptied show a negative net contribution** — more came out
-   than ever went in, the difference being the gains. CTT Série F, Revolut Wealth
-   Build and Trading 212 Account sit at zero; Robinhood (Crypto) holds referral
-   rewards rather than contributed money. No return percentage is shown for those.
-5. **Two delta rows have had their Amount cleared** in Notion: `T212 Brokerage -
-   Portfolio Delta` for August (inflow) and September (outflow). Both read as zero.
-6. **Small negatives**: Revolut −€19.36 (Jan) and −€15.48 (May), confirmed top-up
-   gaps; Robinhood (Crypto) −€1.83 at end of August, which looks like the same.
-7. **Accounts added over time**: Robinhood (Crypto) and Trading 212 Brokerage in
-   September, Flat Deposit (Cash) in October. Robinhood was renamed Robinhood
-   (5% Yield). The Flat Deposit joins the Santander/PayPal/cash group.
-8. **Dividends into Trade Republic Account**: derived as that account's one-sided
-   inflows minus the refunds and adjustments paid into it, which are not returns.
+1. **November is included but has not started.** It holds only the rows already
+   entered — a €1,099.00 Revolut rent expense and a €1,250.00 Revolut → Flat Deposit
+   transfer — with no salary against them. **October closed at €33,678.15**; that is
+   the figure to compare months against.
+2. **The flat deposit counts as the user's money.** The transfer into it is internal,
+   so it moves €1,250.00 between accounts and leaves net worth unchanged. Only the
+   rent reduces it, hence November = October − €1,099.00.
+3. **Revolut reads −€2,339.00 in November** because both outflows are entered before
+   the funding for them. It corrects once November's inflows are recorded.
+4. **The four reconciliation figures on the page are computed, not written in.** They
+   were hardcoded from the first August build and silently went stale for three
+   months; `gen_html.py` now derives them from `build.INCOME`, `build.EXPENSES`,
+   `build.EXT_IN`/`EXT_OUT` and `investments.json`, and the page prints the identity
+   so a drift would be visible.
+5. **One-sided transfers are two different things**, which is why the old "net from
+   outside" tile was unreadable. They are now split into investment returns (deltas,
+   interest, dividends, cashback, referral rewards) and money paid back to the user
+   (refunds, deposits returned, friends settling up).
+6. **October carries no portfolio marks** beyond the brokerage cashback, so its
+   investment movement is contributions. The annualised rate stops at 30 September.
+7. **August and September have no income rows** (Tesla → Helsign gap). October's are
+   in, at €6,336.15 over two rows.
+8. **Accounts that were emptied show a negative net contribution** — more came out
+   than ever went in, the difference being the gains. No return percentage is shown.
+9. **Two delta rows have had their Amount cleared**: `T212 Brokerage - Portfolio Delta`
+   for August and September. Both read as zero.
+10. **Small negatives**: Revolut −€19.36 (Jan) and −€15.48 (May), confirmed top-up
+    gaps; Robinhood (Crypto) −€1.83 at end of August.

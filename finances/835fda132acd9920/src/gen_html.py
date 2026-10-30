@@ -6,7 +6,22 @@ d = json.load(open("balances.json"))
 accounts = d["accounts"]
 by_name = {a["name"]: a for a in accounts}
 
+import build
+
 inv = json.load(open("investments.json"))
+
+# The four figures that reconcile the change in net worth. Computed here rather
+# than written into the markup, which is how they went stale before.
+earned = round(sum(v for t in build.INCOME.values() for v in t.values()), 2)
+spent = round(sum(v for t in build.EXPENSES.values() for v in t.values()), 2)
+ext_net = round(sum(build.EXT_IN) - sum(build.EXT_OUT), 2)
+# One-sided flows are two different things wearing one label, so split them:
+# what the investments earned, and what other people and refunds paid back.
+inv_net = round(inv["returns"][-1] + inv["income_to_cash_total"], 2)
+other_net = round(ext_net - inv_net, 2)
+RECON = {"earned": earned, "spent": spent, "inv": inv_net, "other": other_net,
+         "change": round(earned - spent + ext_net, 2)}
+
 inv_by_name = {a["name"]: a for a in inv["accounts"]}
 NM = len(d["months"])
 
@@ -35,7 +50,7 @@ assert sorted(n for _g, ms in GROUPS for n in ms) == sorted(by_name), "group cov
 months_keys = inv["months"]
 tr_cash_gain, acc = [], 0.0
 for m in months_keys:
-    acc += inv["income_to_cash"][m]
+    acc += inv["income_to_cash"].get(m, 0.0)
     tr_cash_gain.append(round(acc, 2))
 
 def gains_for(name):
@@ -81,11 +96,13 @@ payload = {
               "value": a["value"][-1]} for a in inv["accounts"]],
             key=lambda a: -a["value"]),
     },
-    "labels": ["Start", "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct"],
+    "recon": RECON,
+    "labels": ["Start", "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov"],
     "full": ["1 January 2026", "end of January 2026", "end of February 2026",
              "end of March 2026", "end of April 2026", "end of May 2026",
              "end of June 2026", "end of July 2026", "end of August 2026",
-             "end of September 2026", "October 2026, to the 30th"],
+             "end of September 2026", "end of October 2026",
+             "November 2026 — committed rows only"],
     "groups": groups,
     "panels": panels,
     "totals": [d["start_total"]] + d["totals"],
@@ -418,32 +435,35 @@ HTML = """<title>Account balances — Personal Finance Tracker 2026</title>
   <section>
     <div class="hero">
       <div class="card hero-fig">
-        <div class="tile-label">Net worth &middot; October 2026</div>
+        <div class="tile-label">Net worth &middot; incl. committed November</div>
         <div class="hero-num" id="hero"></div>
         <div id="heroDelta"></div>
+        <div class="tile-note" style="margin-top:7px" id="heroNote"></div>
       </div>
       <div class="card">
-        <div class="tiles">
+        <div class="tiles tiles-4">
           <div>
             <div class="tile-label">Money earned</div>
-            <div class="tile-val">&euro;25,119</div>
-            <div class="tile-note">7 salary &amp; freelance entries</div>
+            <div class="tile-val" id="rcEarned"></div>
+            <div class="tile-note">salary and freelance</div>
           </div>
           <div>
             <div class="tile-label">Money spent</div>
-            <div class="tile-val">&euro;19,238</div>
-            <div class="tile-note">423 expenses</div>
+            <div class="tile-val" id="rcSpent"></div>
+            <div class="tile-note">every expense row</div>
           </div>
           <div>
-            <div class="tile-label">Net from outside</div>
-            <div class="tile-val">+&euro;4,782</div>
-            <div class="tile-note">family transfers, refunds</div>
+            <div class="tile-label">Investment returns</div>
+            <div class="tile-val" id="rcInv"></div>
+            <div class="tile-note">deltas, interest, dividends</div>
+          </div>
+          <div>
+            <div class="tile-label">Paid back to you, net</div>
+            <div class="tile-val" id="rcOther"></div>
+            <div class="tile-note">refunds, deposits, friends</div>
           </div>
         </div>
-        <p class="recon" style="margin:16px 0 0">
-          25,118.75 &minus; 19,237.62 + 4,782.02 = <b>+10,663.15</b> &mdash; which is exactly the
-          change in net worth, so nothing is unaccounted for.
-        </p>
+        <p class="recon" style="margin:16px 0 0" id="rcLine"></p>
       </div>
     </div>
   </section>
@@ -494,7 +514,7 @@ HTML = """<title>Account balances — Personal Finance Tracker 2026</title>
         <div>
           <div class="tile-label">Portfolio value</div>
           <div class="tile-val" id="ivVal"></div>
-          <div class="tile-note">across 10 accounts, October</div>
+          <div class="tile-note">across 10 accounts</div>
         </div>
         <div>
           <div class="tile-label">Return earned</div>
@@ -553,36 +573,33 @@ HTML = """<title>Account balances — Personal Finance Tracker 2026</title>
         accounts is a <i>Portfolio Delta</i>, a <i>CTT Aforro Delta</i>, or a fund delta, so the
         classification needs no guesswork. The split reproduces all eight account balances exactly.</p>
       <ol>
-        <li><b>October is read to the 30th</b>, with month-end rows already dated the 31st
-          included. The brokerage has no October portfolio-delta row yet, so its October move is
-          contributions only &mdash; this month is not marked to market.</li>
-        <li><b>Three rows are dated into November and are held out</b>, because the month has not
-          started: a &euro;1,099.00 Revolut expense, and a &euro;1,250.00 Revolut &rarr; Flat
-          Deposit transfer, which is internal. Net effect once November arrives: &minus;&euro;1,099.00.</li>
-        <li><b>August and September still have no income rows.</b> October's are now in
-          (&euro;6,336.15 across two rows), but the gap between July and October remains, so the
-          dip across those two months is partly unrecorded pay rather than spending.</li>
+        <li><b>November has not started.</b> It is shown because the rows are already entered, but
+          it holds only what is committed &mdash; the &euro;1,099.00 rent and the &euro;1,250.00
+          half-deposit &mdash; with no salary against them. <b>October closed at
+          &euro;33,678.15</b>; that is the figure to compare months against.</li>
+        <li><b>The flat deposit still counts as yours.</b> It is money you own sitting where you
+          cannot spend it, so the transfer into it is internal: it moves &euro;1,250.00 from Revolut
+          to the deposit and leaves net worth unchanged. Only the rent reduces it, which is why
+          November is &euro;1,099.00 below October and not &euro;2,349.00.</li>
+        <li><b>Revolut shows &minus;&euro;2,339.00 in November</b> for the same reason: both
+          outflows are entered but the money to cover them has not been moved in yet. It will
+          correct itself once November's funding is recorded.</li>
+        <li><b>October carries no portfolio marks.</b> No account has an October delta row beyond
+          the brokerage cashback, so October's investment movement is contributions, not a mark to
+          market. The annualised rate therefore stops at 30 September.</li>
+        <li><b>August and September have no income rows.</b> October's are in (&euro;6,336.15 over
+          two Helsign AI rows), but the July&ndash;October gap is unrecorded pay rather than only
+          spending.</li>
         <li><b>Returns are measured from 1 January 2026, not from when you bought.</b> The
-          &euro;13,735 already invested on 1 Jan enters as opening capital at its then value, so the
-          +12.49% is this year's return, not lifetime performance on those holdings.</li>
-        <li><b>The rate is money-weighted and annualised from nine months</b>, computed through
-          30 September because October carries no portfolio marks yet. Annualising a partial year
-          assumes the rest behaves the same, which it will not &mdash; read it as a pace, not a
-          forecast.</li>
+          &euro;13,735 already invested on 1 Jan enters as opening capital at its then value.</li>
         <li><b>Accounts that were emptied show a negative net contribution</b> &mdash; more came out
-          than ever went in, the difference being the gains. CTT Série F, Revolut Wealth Build and
-          Trading 212 Account sit at zero, and Robinhood (Crypto) is on referral rewards rather than
-          your own money. Those rows show no return percentage, because a ratio against a base at or
-          below zero says nothing.</li>
-        <li><b>Dividends and cash interest leave the portfolio.</b> &euro;30.99 of dividends and 2%
-          interest was paid into Trade Republic <i>Account</i> rather than reinvested, so it sits
-          outside the portfolio return and is counted separately.</li>
+          than ever went in, the difference being the gains. Those rows show no return percentage,
+          because a ratio against a base at or below zero says nothing.</li>
+        <li><b>Dividends and cash interest leave the portfolio.</b> &euro;30.99 was paid into Trade
+          Republic <i>Account</i> rather than reinvested, so it is counted separately.</li>
         <li><b>Two delta rows have had their Amount cleared</b> in Notion &mdash; <i>T212 Brokerage -
-          Portfolio Delta</i> for August (an inflow) and for September (an outflow). Both read as
-          zero, so Trading 212 Brokerage carries no mark for those two months.</li>
-        <li><b>Small negatives.</b> Revolut dips to &minus;&euro;19.36 in January and
-          &minus;&euro;15.48 in May, both confirmed top-up gaps; Robinhood (Crypto) shows
-          &minus;&euro;1.83 at the end of August, which looks like the same kind of timing gap.</li>
+          Portfolio Delta</i> for August and September &mdash; so Trading 212 Brokerage carries no
+          mark for those months.</li>
       </ol>
     </div>
   </section>
@@ -651,6 +668,24 @@ const totals = DATA.totals;
 document.getElementById("hero").textContent = eur(totals[totals.length - 1]);
 const chg = totals[totals.length - 1] - totals[0];
 const pct = (chg / totals[0]) * 100;
+/* The last point is a month that has not started, so name what it holds and what
+   the last closed month actually finished at. */
+const RC = DATA.recon;
+document.getElementById("rcEarned").textContent = eur0(RC.earned);
+document.getElementById("rcSpent").textContent = eur0(RC.spent);
+const sgn = v => (v >= 0 ? "+" : "\u2212") + eur0(Math.abs(v));
+document.getElementById("rcInv").textContent = sgn(RC.inv);
+document.getElementById("rcOther").textContent = sgn(RC.other);
+document.getElementById("rcLine").innerHTML =
+  eur(RC.earned) + " earned \u2212 " + eur(RC.spent) + " spent " +
+  (RC.inv >= 0 ? "+ " : "\u2212 ") + eur(Math.abs(RC.inv)) + " from investments " +
+  (RC.other >= 0 ? "+ " : "\u2212 ") + eur(Math.abs(RC.other)) + " paid back = <b>" +
+  sgn(RC.change) + "</b>, exactly the change in net worth since 1 January.";
+
+const oct = totals[totals.length - 2];
+document.getElementById("heroNote").innerHTML =
+  "October closed at <b>" + eur(oct) + "</b>. November so far is only the rent and the " +
+  "half-deposit transfer \u2014 no salary entered yet.";
 document.getElementById("heroDelta").innerHTML =
   '<span class="delta ' + (chg >= 0 ? "up" : "down") + '">' +
   (chg >= 0 ? "\\u2191" : "\\u2193") + " " + eur(Math.abs(chg)) +
