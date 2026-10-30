@@ -25,7 +25,7 @@ GROUPS = [
     ("Certificados CTT",          ["Certificados de Aforro CTT - Série E",
                                    "Certificados de Aforro CTT - Série F"]),
     ("Santander, PayPal & cash",  ["Conta Corrente", "Conta Poupança", "Conta Bolsas",
-                                   "PayPal", "Cash Withdrawls"]),
+                                   "PayPal", "Cash Withdrawls", "Flat Deposit"]),
 ]
 assert sorted(n for _g, ms in GROUPS for n in ms) == sorted(by_name), "group cover mismatch"
 
@@ -85,7 +85,7 @@ payload = {
     "full": ["1 January 2026", "end of January 2026", "end of February 2026",
              "end of March 2026", "end of April 2026", "end of May 2026",
              "end of June 2026", "end of July 2026", "end of August 2026",
-             "end of September 2026", "October 2026, month in progress"],
+             "end of September 2026", "October 2026, to the 30th"],
     "groups": groups,
     "panels": panels,
     "totals": [d["start_total"]] + d["totals"],
@@ -409,9 +409,9 @@ HTML = """<title>Account balances — Personal Finance Tracker 2026</title>
 
 <div class="wrap">
   <header>
-    <div class="eyebrow">Personal Finance Tracker &middot; rebuilt from Notion, 28 Oct 2026</div>
+    <div class="eyebrow">Personal Finance Tracker &middot; rebuilt from Notion, 30 Oct 2026</div>
     <h1>Where the money sits, month by month</h1>
-    <p class="lede">End-of-month balance for all 17 accounts since the tracker started on
+    <p class="lede">End-of-month balance for all 18 accounts since the tracker started on
       1 January 2026, reconstructed from every income, expense and transfer row in Notion.</p>
   </header>
 
@@ -553,47 +553,42 @@ HTML = """<title>Account balances — Personal Finance Tracker 2026</title>
         accounts is a <i>Portfolio Delta</i>, a <i>CTT Aforro Delta</i>, or a fund delta, so the
         classification needs no guesswork. The split reproduces all eight account balances exactly.</p>
       <ol>
-        <li><b>October is still running</b>, and some month-end rows are already dated the 31st.
-          Treat the last column as the month so far, not a closed month.</li>
-        <li><b>No income has been recorded since July.</b> The Income database has one row per month
-          from January to July (Prodigius, then Tesla), nothing at all for August or September, and
-          an October row for Helsign AI GmbH with the <b>Amount left blank</b>. That blank is read as
-          zero here, so the fall in net worth since August is partly real spending and partly
-          salary that has not been entered. Filling in those rows is the single biggest thing that
-          would change this page.</li>
+        <li><b>October is read to the 30th</b>, with month-end rows already dated the 31st
+          included. The brokerage has no October portfolio-delta row yet, so its October move is
+          contributions only &mdash; this month is not marked to market.</li>
+        <li><b>Three rows are dated into November and are held out</b>, because the month has not
+          started: a &euro;1,099.00 Revolut expense, and a &euro;1,250.00 Revolut &rarr; Flat
+          Deposit transfer, which is internal. Net effect once November arrives: &minus;&euro;1,099.00.</li>
+        <li><b>August and September still have no income rows.</b> October's are now in
+          (&euro;6,336.15 across two rows), but the gap between July and October remains, so the
+          dip across those two months is partly unrecorded pay rather than spending.</li>
         <li><b>Returns are measured from 1 January 2026, not from when you bought.</b> The
           &euro;13,735 already invested on 1 Jan enters as opening capital at its then value, so the
-          +15.85% is this year's return, not lifetime performance on those holdings.</li>
+          +12.49% is this year's return, not lifetime performance on those holdings.</li>
         <li><b>The rate is money-weighted and annualised from nine months</b>, computed through
-          30 September so the unfinished October does not distort it. Annualising a partial year
+          30 September because October carries no portfolio marks yet. Annualising a partial year
           assumes the rest behaves the same, which it will not &mdash; read it as a pace, not a
           forecast.</li>
-        <li><b>Four accounts were emptied over August to October</b> &mdash; CTT Série F, Revolut
-          Wealth Build, Revolut Fundo Emergência and Trading 212 Account &mdash; and Conta Poupança
-          sits at zero. Where an account earned something and was then fully withdrawn, its net
-          contribution goes negative: more came out than ever went in, the difference being the
-          gains. Those accounts show no return percentage, because a ratio against a base at or
+        <li><b>Accounts that were emptied show a negative net contribution</b> &mdash; more came out
+          than ever went in, the difference being the gains. CTT Série F, Revolut Wealth Build and
+          Trading 212 Account sit at zero, and Robinhood (Crypto) is on referral rewards rather than
+          your own money. Those rows show no return percentage, because a ratio against a base at or
           below zero says nothing.</li>
-        <li><b>Dividends and cash interest leave the portfolio.</b> &euro;30.98 of dividends and 2%
+        <li><b>Dividends and cash interest leave the portfolio.</b> &euro;30.99 of dividends and 2%
           interest was paid into Trade Republic <i>Account</i> rather than reinvested, so it sits
-          outside the portfolio return and is counted separately. Its January&ndash;July split is
-          carried over from the August extraction; August onward was re-read.</li>
-        <li><b>Portfolio deltas are your own monthly marks.</b> Value moves only when you record a
-          delta row, so the value line steps at month ends rather than moving daily, and any month
-          you skip shows as flat rather than unknown.</li>
-        <li><b>One delta row is incomplete.</b> <i>T212 Brokerage - Portfolio Delta - October 2026
-          ()</i> has no amount and neither a From nor a To account &mdash; note the empty brackets
-          where the sign belongs. It contributes nothing, so Trading 212 Brokerage carries no
-          October delta.</li>
-        <li><b>Two small negatives.</b> Revolut dips to &minus;&euro;19.36 in January and
-          &minus;&euro;15.48 in May, both confirmed top-up gaps. Robinhood (Crypto) shows
+          outside the portfolio return and is counted separately.</li>
+        <li><b>Two delta rows have had their Amount cleared</b> in Notion &mdash; <i>T212 Brokerage -
+          Portfolio Delta</i> for August (an inflow) and for September (an outflow). Both read as
+          zero, so Trading 212 Brokerage carries no mark for those two months.</li>
+        <li><b>Small negatives.</b> Revolut dips to &minus;&euro;19.36 in January and
+          &minus;&euro;15.48 in May, both confirmed top-up gaps; Robinhood (Crypto) shows
           &minus;&euro;1.83 at the end of August, which looks like the same kind of timing gap.</li>
       </ol>
     </div>
   </section>
 
   <footer>
-    Source: Notion &mdash; Accounts, Income, Expenses and Transfer databases, read 28 October 2026.
+    Source: Notion &mdash; Accounts, Income, Expenses and Transfer databases, read 30 October 2026.
     All figures in euro.
     <br>Unlisted page: it is excluded from search engines, but anyone holding this URL can read it.
   </footer>
@@ -1237,7 +1232,7 @@ ivSvg.addEventListener("pointerleave", () => {
 });
 
 document.getElementById("ivTbl").innerHTML =
-  "<caption>Per account, at 28 October 2026. Return % is measured against capital in that account.</caption>" +
+  "<caption>Per account, at 30 October 2026. Return % is measured against capital in that account.</caption>" +
   "<thead><tr><th>Investment account</th><th>Net contributed</th><th>Return</th>" +
   "<th>Value</th><th>Return %</th></tr></thead><tbody>" +
   IV.accounts.map(a => {

@@ -35,11 +35,9 @@ GAINS = {
     EMERG:    {"2026-06": 0.34, "2026-07": 0.42, "2026-08": 0.10},
     WEALTH:   {"2026-06": 0.03, "2026-07": 0.40, "2026-08": 0.28},
     T212:     {"2026-08": 0.26, "2026-09": 0.01},
-    T212BROK: {"2026-07": 40.98, "2026-08": 5.99},
-    # "Yield Payment (5%)" each month.
+    # The August delta row's Amount has been cleared in Notion, so it is zero here.
+    T212BROK: {"2026-07": 40.98},
     ROBIN5:   {"2026-08": 0.03, "2026-09": 2.34, "2026-10": 3.63},
-    # Five "Referral Reward Michael" crypto buy orders — money that arrived without
-    # being contributed, so a gain rather than capital.
     ROBINC:   {"2026-07": 50.00, "2026-09": 100.00},
 }
 
@@ -47,16 +45,15 @@ GAINS = {
 LOSSES = {
     BROK:     {"2026-03": 242.81, "2026-06": 40.68},
     CRYPTO:   {"2026-05": 23.43, "2026-06": 38.09, "2026-07": 49.86},
-    T212BROK: {"2026-09": 15.79},
     CTTF:     {"2026-10": 0.12},
+    # The September T212 Brokerage delta row's Amount has been cleared too.
 }
 
 # Dividends and the 2% cash interest, credited to Trade Republic Account. Refunds
 # and adjustments paid into the same account are excluded — they are not returns.
-# Jan-Jul carried over from the 9 August extraction; Aug-Oct re-read 28 October.
 INCOME_TO_CASH = {"2026-01": 0.76, "2026-02": 3.32, "2026-03": 0.52, "2026-04": 0.66,
-                  "2026-05": 5.95, "2026-06": 6.80, "2026-07": 2.14, "2026-08": 4.51,
-                  "2026-09": 5.58, "2026-10": 0.74}
+                  "2026-05": 5.95, "2026-06": 6.79, "2026-07": 2.14, "2026-08": 4.51,
+                  "2026-09": 5.58, "2026-10": 0.76}
 
 PORTFOLIO = [aid for aid, (_n, kind, _b, _s) in ACCOUNTS.items() if kind == "Investment"]
 
