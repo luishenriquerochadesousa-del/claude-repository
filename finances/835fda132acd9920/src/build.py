@@ -16,7 +16,7 @@ import json
 from collections import defaultdict
 
 MONTHS = ["2026-01", "2026-02", "2026-03", "2026-04", "2026-05", "2026-06",
-          "2026-07", "2026-08", "2026-09", "2026-10", "2026-11"]
+          "2026-07", "2026-08", "2026-09", "2026-10"]
 
 ACCOUNTS = {
     "31c08fe59d8d8025bc1cf1d752004897": ("Conta Bolsas",                          "Account",    "Santander",     0.00),
@@ -51,9 +51,11 @@ BROK, CRYPTO = "31c08fe59d8d803f9d4feb846c0c5cd6", "35908fe59d8d8049b574ef9d59f5
 T212, T212BROK = "38f08fe59d8d800aaf90dd05fa6050ae", "40408fe59d8d80f8b6e8fa1204a5d5ec"
 
 # --- monthly aggregates pulled from Notion (SQL GROUP BY account, month) -----
-# Re-extracted 30 October 2026. November is included at the user's request: the
-# rows already entered there are the rent and the second half of the flat deposit.
-# November is forward-dated, so it holds only committed rows and no salary yet.
+# Re-extracted 30 October 2026. Two rows are dated November in Notion — the rent
+# and the second half of the flat deposit — and are treated here as already paid,
+# so they are folded into October and the tracker ends there. Each is written as
+# "<what Notion has for October> + <the November row>" so the adjustment stays
+# visible and is trivial to undo.
 INCOME = {
     CC: {"2026-01": 330.00, "2026-02": 6928.70, "2026-03": 3402.11, "2026-04": 5012.96,
          "2026-05": 3499.29, "2026-06": 3499.29, "2026-07": 2446.40, "2026-10": 6336.15},
@@ -66,7 +68,7 @@ EXPENSES = {
     CASH: {"2026-03": 45.89},
     REV:  {"2026-01": 1795.52, "2026-02": 987.69, "2026-03": 648.82, "2026-04": 638.08,
            "2026-05": 586.02, "2026-06": 308.23, "2026-07": 310.90, "2026-08": 192.52,
-           "2026-09": 70.97, "2026-10": 1302.23, "2026-11": 1099.00},  # Nov rent
+           "2026-09": 70.97, "2026-10": 1302.23 + 1099.00},  # + rent dated Nov
     TRA:  {"2026-03": 302.75, "2026-04": 361.93, "2026-05": 1021.65, "2026-06": 1599.89,
            "2026-07": 227.93, "2026-08": 976.31, "2026-09": 1781.48, "2026-10": 742.29},
 }
@@ -78,7 +80,7 @@ TRANSFER_OUT = {
     CASH:     {"2026-04": 6.89, "2026-05": 1.99, "2026-10": 1.20},
     REV:      {"2026-01": 5.00, "2026-03": 106.58, "2026-04": 17.00, "2026-05": 97.76,
                "2026-06": 1454.53, "2026-07": 673.50, "2026-08": 910.38, "2026-09": 25.00,
-               "2026-10": 4055.81, "2026-11": 1250.00},  # 1/2 flat deposit
+               "2026-10": 4055.81 + 1250.00},  # + 1/2 flat deposit dated Nov
     BOLSAS:   {"2026-03": 4.00},
     BROK:     {"2026-03": 242.81, "2026-06": 40.68},
     POUP:     {"2026-01": 1600.00, "2026-02": 1010.24, "2026-07": 20.00, "2026-08": 3188.56,
@@ -107,7 +109,7 @@ TRANSFER_IN = {
     CASH:     {"2026-02": 10.00, "2026-03": 45.99},
     # The deposit is money you still own, just parked where you cannot spend it,
     # so the transfer into it is internal and does not change net worth.
-    FLAT:     {"2026-10": 1250.00, "2026-11": 1250.00},
+    FLAT:     {"2026-10": 1250.00 + 1250.00},
     REV:      {"2026-01": 1781.16, "2026-02": 1007.63, "2026-03": 1731.48, "2026-04": 39.43,
                "2026-05": 307.29, "2026-06": 1815.00, "2026-07": 959.00, "2026-08": 1092.56,
                "2026-09": 172.17, "2026-10": 5290.82},
@@ -141,7 +143,7 @@ TRANSFER_IN = {
 # tracker; To Account empty = money out of it). Pulled with the rest.
 EXT_IN = [2704.99, 1846.38, 1071.56, 971.00, 761.64, 1062.28, 228.67, 714.70,
           3831.39, 576.57, 0.00]
-EXT_OUT = [5.00, 0.00, 303.40, 29.35, 195.22, 2701.75, 543.96, 186.34, 195.10, 8.37, 0.00]
+EXT_OUT = [5.00, 0.00, 303.40, 29.35, 195.22, 2701.75, 543.96, 186.34, 195.10, 8.37]
 ext_in, ext_out = sum(EXT_IN), sum(EXT_OUT)
 
 # --- build the running-balance matrix ---------------------------------------

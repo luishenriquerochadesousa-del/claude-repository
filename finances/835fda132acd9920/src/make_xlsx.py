@@ -14,7 +14,7 @@ INV = json.load(open("investments.json"))
 LABELS = {"2026-01": "Jan 2026", "2026-02": "Feb 2026", "2026-03": "Mar 2026",
           "2026-04": "Apr 2026", "2026-05": "May 2026", "2026-06": "Jun 2026",
           "2026-07": "Jul 2026", "2026-08": "Aug 2026", "2026-09": "Sep 2026",
-          "2026-10": "Oct 2026", "2026-11": "Nov 2026"}
+          "2026-10": "Oct 2026"}
 
 EUR = '€#,##0.00;(€#,##0.00);-'
 FONT = "Arial"
@@ -67,8 +67,9 @@ lines = [
     (INK, "   more came out than ever went in, the difference being the gains."),
     (INK, "4. Investment accounts track contributed cash, not market value: the tracker records transfers in"),
     (INK, "   and out, not price movements. Trade Republic Inv. - Brokerage in particular is 'money put in'."),
-    (INK, "5. November has not started. It is included because the rows are entered, but holds only the"
-    "   committed rent and half-deposit, with no salary. October closed at 33,678.15."),
+    (INK, "5. The 1,099.00 rent and the 1,250.00 half-deposit are dated November in Notion but are"
+    "   counted here as already paid, folded into October. On Notion's dates October reads"
+    "   33,678.15. The deposit transfer is internal, so only the rent changes net worth."),
     (INK, "6. No income has been recorded since July: nothing for August or September, and the October"),
     (INK, "   row (Helsign AI GmbH) has a blank Amount. A blank reads as zero here, so part of the fall"),
     (INK, "   in net worth since August is salary that has not been entered yet."),

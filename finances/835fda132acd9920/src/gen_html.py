@@ -97,12 +97,11 @@ payload = {
             key=lambda a: -a["value"]),
     },
     "recon": RECON,
-    "labels": ["Start", "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov"],
+    "labels": ["Start", "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct"],
     "full": ["1 January 2026", "end of January 2026", "end of February 2026",
              "end of March 2026", "end of April 2026", "end of May 2026",
              "end of June 2026", "end of July 2026", "end of August 2026",
-             "end of September 2026", "end of October 2026",
-             "November 2026 — committed rows only"],
+             "end of September 2026", "end of October 2026"],
     "groups": groups,
     "panels": panels,
     "totals": [d["start_total"]] + d["totals"],
@@ -435,7 +434,7 @@ HTML = """<title>Account balances — Personal Finance Tracker 2026</title>
   <section>
     <div class="hero">
       <div class="card hero-fig">
-        <div class="tile-label">Net worth &middot; incl. committed November</div>
+        <div class="tile-label">Net worth &middot; October 2026</div>
         <div class="hero-num" id="hero"></div>
         <div id="heroDelta"></div>
         <div class="tile-note" style="margin-top:7px" id="heroNote"></div>
@@ -573,20 +572,21 @@ HTML = """<title>Account balances — Personal Finance Tracker 2026</title>
         accounts is a <i>Portfolio Delta</i>, a <i>CTT Aforro Delta</i>, or a fund delta, so the
         classification needs no guesswork. The split reproduces all eight account balances exactly.</p>
       <ol>
-        <li><b>November has not started.</b> It is shown because the rows are already entered, but
-          it holds only what is committed &mdash; the &euro;1,099.00 rent and the &euro;1,250.00
-          half-deposit &mdash; with no salary against them. <b>October closed at
-          &euro;33,678.15</b>; that is the figure to compare months against.</li>
-        <li><b>The flat deposit still counts as yours.</b> It is money you own sitting where you
-          cannot spend it, so the transfer into it is internal: it moves &euro;1,250.00 from Revolut
-          to the deposit and leaves net worth unchanged. Only the rent reduces it, which is why
-          November is &euro;1,099.00 below October and not &euro;2,349.00.</li>
-        <li><b>Revolut shows &minus;&euro;2,339.00 in November</b> for the same reason: both
-          outflows are entered but the money to cover them has not been moved in yet. It will
-          correct itself once November's funding is recorded.</li>
+        <li><b>Two November-dated rows are counted as already paid</b>, at your request: the
+          &euro;1,099.00 rent and the &euro;1,250.00 second half of the flat deposit. Both are
+          dated November in Notion and are folded into October here, so the tracker ends at
+          October with both settled. On Notion's own dates October would read
+          <b>&euro;33,678.15</b>.</li>
+        <li><b>The flat deposit is still your money.</b> It sits where you cannot spend it, so the
+          transfer into it is internal: it moves &euro;1,250.00 from Revolut to the deposit, now
+          &euro;2,500.00, and leaves net worth unchanged. Only the rent reduces it, which is why
+          counting both costs &euro;1,099.00 and not &euro;2,349.00.</li>
+        <li><b>Revolut therefore reads &minus;&euro;2,339.00.</b> Both payments are counted before
+          the money to fund them has been moved in. Record that transfer and it corrects.</li>
         <li><b>October carries no portfolio marks.</b> No account has an October delta row beyond
           the brokerage cashback, so October's investment movement is contributions, not a mark to
-          market. The annualised rate therefore stops at 30 September.</li>
+          market. The annualised rate therefore stops at 30 September, and these figures will move
+          again once you enter the October deltas.</li>
         <li><b>August and September have no income rows.</b> October's are in (&euro;6,336.15 over
           two Helsign AI rows), but the July&ndash;October gap is unrecorded pay rather than only
           spending.</li>
@@ -684,8 +684,8 @@ document.getElementById("rcLine").innerHTML =
 
 const oct = totals[totals.length - 2];
 document.getElementById("heroNote").innerHTML =
-  "October closed at <b>" + eur(oct) + "</b>. November so far is only the rent and the " +
-  "half-deposit transfer \u2014 no salary entered yet.";
+  "Counts the \u20ac1,099 rent and the \u20ac1,250 half-deposit as already paid, " +
+  "though both are dated November in Notion. Without them October is <b>\u20ac33,678.15</b>.";
 document.getElementById("heroDelta").innerHTML =
   '<span class="delta ' + (chg >= 0 ? "up" : "down") + '">' +
   (chg >= 0 ? "\\u2191" : "\\u2193") + " " + eur(Math.abs(chg)) +

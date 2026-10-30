@@ -2,7 +2,7 @@
 
 Regenerates `../index.html` and `../Account Balances 2026.xlsx` from the figures
 pulled out of the Notion Personal Finance Tracker on 30 October 2026
-(January–November, 18 accounts).
+(January–October, 18 accounts).
 
 ## Why this exists
 
@@ -54,7 +54,7 @@ Both models self-check rather than asserting correctness by eye:
   account balances, and refuses negative contributions or withdrawals.
 - `verify_book.py` evaluates the *written workbook's* formulas with the `formulas`
   package (`pip install formulas`) and compares every cell against the JSON — 617
-  checks (689 at the latest extraction), including the workbook's own `=IRR()` against a bisection solve in Python.
+  checks (627 at the latest extraction), including the workbook's own `=IRR()` against a bisection solve in Python.
   It finds its cells by scanning sheet labels rather than hardcoding addresses, so
   adding a month or an account cannot silently point the checks at the wrong cells.
   (It replaces the earlier `verify_xlsx.py` / `verify_inv.py`, which did hardcode
@@ -73,15 +73,16 @@ and to `labels` / `full` in `gen_html.py`.
 
 ## Data notes
 
-1. **November is included but has not started.** It holds only the rows already
-   entered — a €1,099.00 Revolut rent expense and a €1,250.00 Revolut → Flat Deposit
-   transfer — with no salary against them. **October closed at €33,678.15**; that is
-   the figure to compare months against.
-2. **The flat deposit counts as the user's money.** The transfer into it is internal,
-   so it moves €1,250.00 between accounts and leaves net worth unchanged. Only the
-   rent reduces it, hence November = October − €1,099.00.
-3. **Revolut reads −€2,339.00 in November** because both outflows are entered before
-   the funding for them. It corrects once November's inflows are recorded.
+1. **Two November-dated rows are counted as already paid**, at the user's request:
+   the €1,099.00 rent and the €1,250.00 second half of the flat deposit. They are
+   folded into October in `build.py`, written as `<October> + <the November row>` so
+   the adjustment stays visible and is trivial to undo. On Notion's own dates
+   October reads **€33,678.15**.
+2. **The flat deposit is the user's money.** The transfer into it is internal, so it
+   moves €1,250.00 from Revolut to the deposit (now €2,500.00) and leaves net worth
+   unchanged. Only the rent reduces it — hence €1,099.00, not €2,349.00.
+3. **Revolut reads −€2,339.00** because both payments are counted before the money to
+   fund them has been moved in. Recording that transfer corrects it.
 4. **The four reconciliation figures on the page are computed, not written in.** They
    were hardcoded from the first August build and silently went stale for three
    months; `gen_html.py` now derives them from `build.INCOME`, `build.EXPENSES`,
