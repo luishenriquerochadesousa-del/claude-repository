@@ -1,0 +1,1266 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Bugatti Rimac Prep Workspace — CAE Engineer, Exterior</title>
+<style>
+:root{
+  --bg:#0a0e14; --bg2:#10161f; --bg3:#161e2a; --line:#223044;
+  --tx:#dfe7f1; --tx2:#8ea2b8; --tx3:#5f7186;
+  --acc:#5b9dff; --acc2:#7fd6c4; --warn:#ffb454; --bad:#ff6b6b; --good:#5fd68a;
+  --mono:ui-monospace,SFMono-Regular,Menlo,monospace;
+  --sans:-apple-system,BlinkMacSystemFont,"Segoe UI",Inter,Helvetica,Arial,sans-serif;
+  --strong:#ffffff; --grp:#4a5b6d; --foot:#42536a; --sayBg:#0e1a17; --dontBg:#1c1214; --codeBg:#0c1218; --hair:#1a2430;
+  --shadow:rgba(0,0,0,.55); --markBg:rgba(91,157,255,.26); --markTx:#bcdcff; --flash:rgba(91,157,255,.30); --onAcc:#04121f; --accHi:#76aeff;
+  --p1b:#1b3a2a; --p1t:#7ee0a0; --p2b:#2b3550; --p2t:#93b4ff; --p3b:#4a3116; --p3t:#ffc27a; --p4b:#4a1e22; --p4t:#ff9a9a;
+  --p5b:#173a3a; --p5t:#7ee0e0; --p6b:#3a2748; --p6t:#d0a8ff; --p7b:#4a3a12; --p7t:#ffd77a; --p9b:#3d1f2b; --p9t:#f0a8c0;
+  --pTb:#2a2f38; --pTt:#a8bacd; --pAllb:#252d38; --pAllt:#c3d0de;
+}
+:root[data-theme="light"]{
+  --bg:#f5f7fa; --bg2:#ffffff; --bg3:#e9edf2; --line:#ccd5df; --tx:#111820; --tx2:#495a6b; --tx3:#78899b;
+  --acc:#0a56ad; --acc2:#0a6249; --warn:#8a4f00; --bad:#b02419; --good:#1a6438; --strong:#000000; --grp:#78899b; --foot:#8593a3;
+  --sayBg:#ecf6f1; --dontBg:#fdeded; --codeBg:#eef1f5; --hair:#e2e7ed; --shadow:rgba(16,24,40,.18); --markBg:rgba(10,86,173,.20);
+  --markTx:#08376e; --flash:rgba(10,86,173,.20); --onAcc:#ffffff; --accHi:#08468c;
+  --p1b:#dcf2e4; --p1t:#14562f; --p2b:#e1e8fa; --p2t:#233b87; --p3b:#fbe9c8; --p3t:#734503; --p4b:#fbdcda; --p4t:#8f1e19;
+  --p5b:#d5efef; --p5t:#0b5252; --p6b:#eaddf9; --p6t:#552787; --p7b:#faebc0; --p7t:#735304; --p9b:#fadde7; --p9t:#871c42;
+  --pTb:#e4e9ef; --pTt:#3d4b5a; --pAllb:#e4e9ef; --pAllt:#2f3b47;
+}
+*{box-sizing:border-box}
+html,body{margin:0;padding:0}
+body{background:var(--bg);color:var(--tx);font-family:var(--sans);font-size:15px;line-height:1.62;-webkit-font-smoothing:antialiased}
+a{color:var(--acc)}
+#wrap{display:flex;min-height:100vh}
+#side{width:256px;flex:0 0 256px;background:var(--bg2);border-right:1px solid var(--line);position:sticky;top:0;height:100vh;overflow-y:auto;padding:20px 0}
+#side h1{font-size:14px;letter-spacing:.14em;text-transform:uppercase;margin:0 20px 4px;color:var(--acc)}
+#side .sub{margin:0 20px 16px;font-size:12px;color:var(--tx2);line-height:1.5}
+#side nav a{display:block;padding:8px 20px;color:var(--tx2);text-decoration:none;font-size:13.5px;border-left:3px solid transparent;cursor:pointer}
+#side nav a:hover{background:var(--bg3);color:var(--tx)}
+#side nav a.on{background:var(--bg3);color:var(--tx);border-left-color:var(--acc);font-weight:600}
+#side .grp{margin:18px 20px 6px;font-size:10.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--grp)}
+#main{flex:1;min-width:0;padding:30px 44px 120px;max-width:1080px}
+section{display:none;animation:fade .18s ease}
+section.on{display:block}
+@keyframes fade{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:none}}
+h2{font-size:25px;margin:0 0 6px;letter-spacing:-.01em}
+h2 .tag{font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--acc);display:block;margin-bottom:7px;font-weight:700}
+.lede{color:var(--tx2);margin:0 0 24px;font-size:14.5px;max-width:76ch}
+h3{font-size:17px;margin:30px 0 10px;border-bottom:1px solid var(--line);padding-bottom:7px}
+h4{font-size:14px;margin:18px 0 7px;color:var(--acc2);letter-spacing:.02em}
+p{margin:0 0 12px;max-width:80ch}
+ul,ol{margin:0 0 14px;padding-left:20px;max-width:80ch}
+li{margin:0 0 6px}
+strong{color:var(--strong)}
+em{color:var(--acc2);font-style:normal;font-weight:600}
+code{font-family:var(--mono);background:var(--bg3);padding:1.5px 5px;border-radius:4px;font-size:13px;color:var(--acc2)}
+.card{background:var(--bg2);border:1px solid var(--line);border-radius:10px;padding:16px 19px;margin:0 0 14px}
+.card.acc{border-left:3px solid var(--acc)} .card.warnb{border-left:3px solid var(--warn)}
+.card.badb{border-left:3px solid var(--bad)} .card.goodb{border-left:3px solid var(--good)}
+.card > :last-child{margin-bottom:0}
+.grid{display:grid;gap:13px} .g2{grid-template-columns:repeat(auto-fit,minmax(285px,1fr))} .g3{grid-template-columns:repeat(auto-fit,minmax(205px,1fr))}
+.stat{background:var(--bg2);border:1px solid var(--line);border-radius:10px;padding:14px 16px}
+.stat b{display:block;font-size:22px;color:var(--acc);font-weight:700;line-height:1.2}
+.stat span{font-size:12.5px;color:var(--tx2);display:block;margin-top:3px}
+.tw{overflow-x:auto;margin:0 0 18px}
+table{width:100%;border-collapse:collapse;font-size:13.5px}
+th,td{text-align:left;padding:9px 11px;border-bottom:1px solid var(--line);vertical-align:top}
+th{color:var(--acc);font-size:11px;letter-spacing:.1em;text-transform:uppercase;font-weight:700}
+.say{background:var(--sayBg);border-left:3px solid var(--acc2);border-radius:0 8px 8px 0;padding:13px 16px;margin:9px 0 14px;font-size:14.5px;line-height:1.68}
+.say:before{content:"SAY THIS";display:block;font-size:9.5px;letter-spacing:.18em;color:var(--acc2);margin-bottom:6px;font-weight:700}
+.dont{background:var(--dontBg);border-left:3px solid var(--bad);border-radius:0 8px 8px 0;padding:11px 16px;margin:9px 0 14px;font-size:13.5px}
+.dont:before{content:"DO NOT SAY";display:block;font-size:9.5px;letter-spacing:.18em;color:var(--bad);margin-bottom:6px;font-weight:700}
+.pill{display:inline-block;font-size:10.5px;letter-spacing:.09em;text-transform:uppercase;padding:2.5px 8px;border-radius:20px;font-weight:700;margin-right:6px}
+.p1{background:var(--p1b);color:var(--p1t)}.p2{background:var(--p2b);color:var(--p2t)}.p3{background:var(--p3b);color:var(--p3t)}
+.p4{background:var(--p4b);color:var(--p4t)}.p5{background:var(--p5b);color:var(--p5t)}.p6{background:var(--p6b);color:var(--p6t)}
+.p7{background:var(--p7b);color:var(--p7t)}.p9{background:var(--p9b);color:var(--p9t)}.pT{background:var(--pTb);color:var(--pTt)}
+.q{border:1px solid var(--line);border-radius:10px;margin:0 0 11px;background:var(--bg2);overflow:hidden}
+.qh{padding:13px 16px;cursor:pointer;display:flex;gap:12px;align-items:flex-start}
+.qh:hover{background:var(--bg3)}
+.qn{font-family:var(--mono);color:var(--tx2);font-size:12.5px;flex:0 0 26px;padding-top:2px}
+.qt{flex:1;font-weight:600;font-size:14.5px}
+.qw{font-weight:400;font-size:12px;color:var(--tx3)}
+.qb{display:none;padding:4px 16px 18px 54px;border-top:1px solid var(--line)}
+.q.open .qb{display:block} .q.open .qh{background:var(--bg3)}
+.chev{color:var(--tx2);font-size:12px;padding-top:3px}
+.ctrl{display:flex;gap:9px;flex-wrap:wrap;align-items:center;margin:0 0 20px}
+button{font-family:inherit;font-size:13px;padding:8px 15px;border-radius:7px;border:1px solid var(--line);background:var(--bg3);color:var(--tx);cursor:pointer;font-weight:600}
+button:hover{border-color:var(--acc);color:var(--strong)}
+button.pri{background:var(--acc);border-color:var(--acc);color:var(--onAcc)} button.pri:hover{background:var(--accHi)}
+button.gd{border-color:var(--good);color:var(--good)} button.bd{border-color:var(--bad);color:var(--bad)}
+select{font-family:inherit;font-size:13px;padding:8px 11px;border-radius:7px;border:1px solid var(--line);background:var(--bg3);color:var(--tx)}
+#timer{font-family:var(--mono);font-size:24px;color:var(--acc2);font-weight:700;min-width:82px}
+#timer.hot{color:var(--warn)} #timer.over{color:var(--bad)}
+#stage{background:var(--bg2);border:1px solid var(--line);border-radius:12px;padding:26px 28px;min-height:190px}
+#stageQ{font-size:20px;font-weight:600;line-height:1.45;margin:0 0 8px}
+#stageMeta{font-size:12px;color:var(--tx2);margin-bottom:16px}
+#stageA{display:none;border-top:1px solid var(--line);padding-top:16px;margin-top:8px} #stageA.on{display:block}
+.prog{font-size:12.5px;color:var(--tx2);margin-top:14px;font-family:var(--mono)}
+.bar{height:5px;background:var(--bg3);border-radius:3px;overflow:hidden;margin:9px 0 0} .bar i{display:block;height:100%;background:var(--acc);width:0;transition:width .3s}
+.drill{border:1px solid var(--line);border-radius:10px;background:var(--bg2);padding:15px 17px;margin:0 0 11px}
+.drill h5{margin:0 0 8px;font-size:14.5px;color:var(--strong)}
+.eq{font-family:var(--mono);background:var(--codeBg);border:1px solid var(--line);border-radius:7px;padding:10px 13px;margin:8px 0;font-size:12.5px;line-height:1.55;color:var(--acc2);white-space:pre-wrap;overflow-x:auto}
+.catch{font-size:13px;color:var(--warn);margin-top:9px} .catch b,.catch strong{color:var(--warn)}
+.tl{border-left:2px solid var(--line);padding-left:19px;margin:0 0 8px}
+.tl .ev{position:relative;margin-bottom:15px}
+.tl .ev:before{content:"";position:absolute;left:-25px;top:6px;width:9px;height:9px;border-radius:50%;background:var(--acc)}
+.tl .ev b{display:block;font-size:13px;color:var(--acc)}
+.chk{list-style:none;padding-left:0} .chk li{display:flex;gap:10px;align-items:flex-start}
+.chk input{margin-top:5px;accent-color:var(--acc);width:16px;height:16px;flex:0 0 16px}
+.chk li.done span{color:var(--tx3);text-decoration:line-through}
+.foot{margin-top:60px;padding-top:18px;border-top:1px solid var(--line);color:var(--foot);font-size:11.5px}
+#navToggle{display:none}
+#sideCtl{display:flex;gap:8px;margin:0 20px 12px}
+#themeToggle{flex:0 0 auto;background:var(--bg3);color:var(--tx2);border:1px solid var(--line);border-radius:9px;padding:9px 13px;font-size:13px;display:inline-flex;align-items:center;gap:7px;line-height:1}
+#themeToggle:hover{color:var(--tx);border-color:var(--acc)}
+#searchWrap{position:sticky;top:0;z-index:60;margin:0 0 22px;padding:14px 0 12px;background:var(--bg);border-bottom:1px solid var(--line)}
+#searchBox{position:relative}
+#searchIn{width:100%;font-family:inherit;font-size:15px;padding:11px 92px 11px 40px;border-radius:9px;border:1px solid var(--line);background:var(--bg2);color:var(--tx);outline:none}
+#searchIn:focus{border-color:var(--acc);background:var(--bg3)} #searchIn::placeholder{color:var(--tx3)}
+#searchBox .mag{position:absolute;left:13px;top:50%;transform:translateY(-50%);color:var(--tx3);font-size:15px;pointer-events:none}
+#searchBox .kbd{position:absolute;right:11px;top:50%;transform:translateY(-50%);display:flex;gap:4px;pointer-events:none}
+#searchBox .kbd span{font-family:var(--mono);font-size:10.5px;color:var(--tx3);border:1px solid var(--line);border-radius:4px;padding:2px 5px;background:var(--bg)}
+#searchClear{position:absolute;right:11px;top:50%;transform:translateY(-50%);display:none;border:0;background:none;color:var(--tx2);font-size:17px;padding:2px 6px;font-weight:400}
+#searchWrap.has #searchClear{display:block} #searchWrap.has .kbd{display:none}
+#searchRes{position:absolute;left:0;right:0;top:calc(100% + 7px);background:var(--bg2);border:1px solid var(--line);border-radius:10px;box-shadow:0 14px 40px var(--shadow);max-height:64vh;overflow-y:auto;display:none}
+#searchRes.on{display:block}
+#searchRes .rcount{padding:8px 14px;font-size:11px;letter-spacing:.11em;text-transform:uppercase;color:var(--tx3);border-bottom:1px solid var(--line);position:sticky;top:0;background:var(--bg2)}
+.rItem{padding:10px 14px;cursor:pointer;border-bottom:1px solid var(--hair);display:flex;gap:11px;align-items:flex-start}
+.rItem:last-child{border-bottom:0} .rItem:hover,.rItem.sel{background:var(--bg3)} .rItem.sel{box-shadow:inset 3px 0 0 var(--acc)}
+.rItem .rmain{flex:1;min-width:0} .rItem .rt{font-size:14px;font-weight:600;color:var(--tx);line-height:1.4}
+.rItem .rs{font-size:12.5px;color:var(--tx2);margin-top:3px;line-height:1.45;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.rItem mark{background:var(--markBg);color:var(--markTx);border-radius:2px;padding:0 1px}
+.rItem .rwhere{font-size:10.5px;color:var(--tx3);margin-top:4px;font-family:var(--mono)}
+.rEmpty{padding:20px 14px;color:var(--tx2);font-size:13.5px}
+@keyframes hitflash{0%{background:var(--flash)}100%{background:transparent}} .hitflash{animation:hitflash 1.7s ease-out}
+#tierPills{display:flex;flex-wrap:wrap;gap:7px;margin:0 0 16px}
+.tpill{display:inline-flex;align-items:center;gap:6px;font-size:11.5px;letter-spacing:.06em;text-transform:uppercase;padding:6px 12px;border-radius:20px;font-weight:700;cursor:pointer;user-select:none;border:1px solid transparent;opacity:.5;transition:opacity .12s}
+.tpill:hover{opacity:.85} .tpill.on{opacity:1;border-color:currentColor}
+.tpill .tn{font-family:var(--mono);font-size:10.5px;opacity:.75;font-weight:400} .tpill.all{background:var(--pAllb);color:var(--pAllt)}
+:root[data-theme="light"] .tpill{opacity:.72}
+.fig{background:var(--codeBg);border:1px solid var(--line);border-radius:8px;padding:12px 12px 9px;margin:12px 0}
+.fig svg{display:block;width:100%;height:auto}
+.figc{font-size:12px;color:var(--tx2);margin-top:9px;text-align:center;line-height:1.5}
+@media(max-width:820px){
+  #wrap{flex-direction:column}
+  #side{width:100%;flex:none;height:auto;position:static;border-right:0;border-bottom:1px solid var(--line);padding:14px 0 0}
+  #navToggle{display:block;flex:1;text-align:left;background:var(--bg3);color:var(--tx);border:1px solid var(--line);border-radius:9px;padding:11px 14px;font-size:14px}
+  #navToggle:after{content:"\25BE";float:right;color:var(--acc)} #side.navopen #navToggle:after{content:"\25B4"}
+  #side nav{display:none;flex-wrap:wrap;padding:0 12px 10px} #side.navopen nav{display:flex}
+  #side nav a{border-left:0;border-bottom:2px solid transparent;padding:7px 11px} #side nav a.on{border-left:0;border-bottom-color:var(--acc)}
+  #side .grp{width:100%;margin:10px 20px 2px}
+  #main{padding:20px 16px 90px} .qb{padding-left:16px}
+  #searchIn{font-size:16px;padding-right:40px} #searchBox .kbd{display:none}
+}
+</style>
+<script>
+(function(){try{var t=localStorage.getItem('prep_theme');if(t==='light'||t==='dark')document.documentElement.setAttribute('data-theme',t);}catch(e){}})();
+</script>
+</head>
+<body>
+<div id="wrap">
+<aside id="side">
+  <h1>Bugatti Rimac Prep</h1>
+  <p class="sub"><strong>CAE Engineer &mdash; Exterior</strong><br>CAE &amp; Materials &middot; Kerestinec / Sveta Nedelja<br>Technical panel &middot; <strong>Mon 2 Nov 2026</strong><br>Gustavo Andrade &middot; Ivan &Scaron;u&scaron;ak &middot; Vijay George<br><span id="cd"></span></p>
+  <div id="sideCtl">
+    <button id="navToggle" type="button">Sections</button>
+    <button id="themeToggle" type="button"></button>
+  </div>
+  <nav id="nav">
+    <div class="grp">Brief</div>
+    <a data-s="brief" class="on">0 &middot; <strong>Read this first</strong></a>
+    <a data-s="helsing">! &middot; <strong>The Helsing question</strong></a>
+    <a data-s="role">1 &middot; The role, decoded</a>
+    <a data-s="intel">2 &middot; Company intel</a>
+    <a data-s="panel">3 &middot; The panel &amp; the 60 minutes</a>
+    <div class="grp">Positioning</div>
+    <a data-s="record">4 &middot; Your CAE record</a>
+    <a data-s="stories">5 &middot; Stories, CAE cut</a>
+    <a data-s="gaps">6 &middot; Gaps &amp; handlers</a>
+    <div class="grp">Technical</div>
+    <a data-s="loads">7 &middot; Exterior load cases</a>
+    <a data-s="ie">8 &middot; Implicit vs explicit</a>
+    <a data-s="hw">9 &middot; HyperWorks crash course</a>
+    <a data-s="corr">10 &middot; Correlation &amp; testing</a>
+    <a data-s="drill">11 &middot; Hand-calc drills</a>
+    <div class="grp">Practice</div>
+    <a data-s="bank">12 &middot; Question bank</a>
+    <a data-s="mock">13 &middot; Mock mode</a>
+    <div class="grp">Close</div>
+    <a data-s="ask">14 &middot; Questions to ask</a>
+    <a data-s="money">&euro; &middot; Money &amp; the move</a>
+    <a data-s="day">&#9733; &middot; Day-of card &mdash; Mon 2 Nov</a>
+  </nav>
+</aside>
+<main id="main">
+
+<div id="searchWrap">
+  <div id="searchBox">
+    <span class="mag">&#9906;</span>
+    <input id="searchIn" type="text" autocomplete="off" autocorrect="off" spellcheck="false" placeholder="Search everything&hellip; try &ldquo;hourglass&rdquo;, &ldquo;oil canning&rdquo;, &ldquo;Radioss&rdquo;, &ldquo;Helsing&rdquo;">
+    <span class="kbd"><span>&#8984;K</span><span>/</span></span>
+    <button id="searchClear" title="Clear">&times;</button>
+    <div id="searchRes"></div>
+  </div>
+</div>
+
+<!-- ================= 0 BRIEF ================= -->
+<section id="brief" class="on">
+  <h2><span class="tag">Section 0</span>Read this first</h2>
+  <p class="lede">Second round, technical panel, Microsoft Teams. Three CAE people, no HR. This is the round where they find out whether the FEA on your CV is real. The past two prep sites were design interviews. <strong>This one is an analyst interview.</strong> Your Volvo thesis and your Abaqus work matter most here. The Tesla end effector matters least.</p>
+
+  <div class="card badb">
+    <h4>Fix the start time today</h4>
+    <p>You have <strong>13:00</strong>. Ana's email of 26 Oct proposed <strong>&ldquo;Monday 2 November at 3 pm (CEST)&rdquo;</strong>, and you accepted that. CEST ended on 25 Oct. On 2 Nov Zagreb and Munich are both on CET (UTC+1). That leaves two readings:</p>
+    <ul>
+      <li>She meant <strong>15:00 Zagreb time</strong>: that is 15:00 in Munich and 14:00 in Lisbon.</li>
+      <li>She meant UTC+2 literally: that is 13:00 UTC, which is 14:00 in Munich and 13:00 in Lisbon.</li>
+    </ul>
+    <p><strong>Open the Teams invite (&ldquo;Technical interview &ndash; Lu&iacute;s Henrique Sousa&rdquo;, sent 29 Oct, 08:36) in Outlook or Teams and use the time it shows in your own time zone.</strong> If you are unsure, email Ana tonight with one line: &ldquo;Just confirming: 15:00 Zagreb time tomorrow?&rdquo; You missed the 23 Sep HR slot. A second timing slip in the same process would end it. The countdown in the sidebar uses 13:00 in your browser's local time.</p>
+  </div>
+
+  <h3>What decides tomorrow</h3>
+  <div class="grid g3">
+    <div class="stat"><b>1 &middot; Fundamentals</b><span>Implicit vs explicit, time step, contact, element choice, energy checks, convergence. Ivan will push on this until you hit the edge of what you know. Answer cleanly, and say plainly where your knowledge stops.</span></div>
+    <div class="stat"><b>2 &middot; Judgement</b><span>Can you set up a load case from a vague requirement, choose the cheapest model that answers it, and tell whether the result is believable? That is the job. It is also how your Volvo and TEKEVER work reads best.</span></div>
+    <div class="stat"><b>3 &middot; Credibility</b><span>About four weeks at Helsing, six months at Tesla, and no HyperWorks on your CV. All three will be noticed. Each needs a short, true answer you have already rehearsed. See <em>! The Helsing question</em> and <em>&sect;6</em>.</span></div>
+  </div>
+
+  <h3>Your one-sentence pitch to this panel</h3>
+  <div class="say">My background is structural analysis that I correlate against my own tests: a multi-scale crash model of lithium-ion cells at Volvo, calibrated on layer-level tests I ran, plus explicit drop-test and implicit wing-box work in Abaqus. In industry I've spent time on both sides of the model: on the design side at Tesla, where one unrequested thermal study reversed a design decision, and on the failure side at Apple, where I traced field returns to root cause. I want to do CAE full time, and exterior on a car built in batches of 250, where simulation carries more of the validation, is the version of that job I want.</div>
+
+  <h3>Priority order if you only have three hours tonight</h3>
+  <ol>
+    <li><strong>45 min</strong>: <em>&sect;8 Implicit vs explicit</em> and drills 1&ndash;4 out loud. This is the most likely first technical question, and you must answer it fluently.</li>
+    <li><strong>30 min</strong>: <em>! The Helsing question</em>. Settle your true answer and say it out loud five times until it is 35 seconds.</li>
+    <li><strong>30 min</strong>: reconstruct the Volvo thesis numbers (<em>&sect;5 Story 1</em>, the &ldquo;go find tonight&rdquo; list). If you cannot name your material model, element type and solver without notes, this is the most valuable thing you can do tonight.</li>
+    <li><strong>30 min</strong>: <em>&sect;7 Exterior load cases</em> and <em>&sect;9 HyperWorks</em> vocabulary. Learn the card names well enough to recognise them, not to recite them.</li>
+    <li><strong>30 min</strong>: mock mode on the <em>FEA core</em>, <em>Explicit</em> and <em>Exterior</em> tiers, answering out loud.</li>
+    <li><strong>15 min</strong>: day-of card. Then stop.</li>
+  </ol>
+
+  <div class="card warnb">
+    <h4>How this round differs from SpaceX and Helsing</h4>
+    <ul>
+      <li><strong>Three interviewers.</strong> Gustavo will probably run the call. Ivan and Vijay will each take a technical block. Address the person who asked the question, and bring the others in with your eyes when you summarise.</li>
+      <li><strong>Depth beats breadth.</strong> One mechanism explained down to the equation is worth more than five named software packages.</li>
+      <li><strong>&ldquo;I don't know, but here is how I would find out&rdquo; is a strong answer</strong> with FEA experts, as long as the &ldquo;how&rdquo; is specific: a hand calculation, a one-element test model, a mesh study, an energy check.</li>
+      <li><strong>Have paper and a pen in frame.</strong> You will likely be asked to sketch a boundary condition or a load path. Offer to: &ldquo;Can I sketch how I'd constrain it?&rdquo;</li>
+    </ul>
+  </div>
+</section>
+
+<!-- ================= HELSING QUESTION ================= -->
+<section id="helsing">
+  <h2><span class="tag">Highest-variance moment</span>The Helsing question</h2>
+  <p class="lede">You started at Helsing in Munich on 6 October, so you are four weeks in. Gustavo can see that on LinkedIn, and HR may already have told him. Put it next to the six months at Tesla and the question writes itself: <strong>&ldquo;Why would you leave after a month, and why should we believe you'd stay?&rdquo;</strong> This page cannot supply your reason for you. It can make sure the answer is true, short and consistent.</p>
+
+  <div class="card badb">
+    <h4>Answer these privately before the call</h4>
+    <ol>
+      <li><strong>Would you actually take this job?</strong> The posting starts at <strong>&euro;37,500 gross</strong>. Your Helsing base is &euro;80,000, plus options that vest only after a 12-month cliff. If an offer came, would you move to Zagreb for less than half the salary and give up the equity? If the answer is &ldquo;probably not&rdquo;, you are rehearsing for a job you will turn down. Decide that tonight, not after a third round.</li>
+      <li><strong>What is the real reason?</strong> Pick the one that is true. Do not pick the one that sounds best. Three experts will ask two follow-ups each, and only the true answer keeps the same shape under that pressure.</li>
+      <li><strong>What did you tell Ana?</strong> Your HR call was booked for around 12 October, after your Helsing start. Whatever you said then about your current situation, say the same thing tomorrow. The panel will have her notes.</li>
+    </ol>
+  </div>
+
+  <h3>The facts you can use</h3>
+  <ul>
+    <li><strong>This process started before you joined Helsing.</strong> The assessment invitation came in early September, and Ana's first-interview invitation is dated 11 September. You started at Helsing on 6 October. This is true and you can check it in your inbox. It shows you applied while you were choosing between offers, not that you started looking after a month.</li>
+    <li><strong>The Helsing role is design. This role is analysis.</strong> At Helsing you are a Mechanical Engineer in Physical Products: CAD, drawings, DFMA. Everything on your CV that is analysis (Volvo, the AW101 drop test, the wing box, A400M fatigue, the Tesla thermal study) points to CAE. If that is the true reason, it is the strongest one available, because it is about the work and not about the employer.</li>
+    <li><strong>You had already noticed it at Helsing.</strong> In the Helsing process you prepared a Plan B for their Stress &amp; Dynamics role, and you have kept getting Helsing simulation-role alerts. That is evidence the pull towards analysis predates this application. <em>Do not mention any of this unless asked.</em> It is background for your own conviction.</li>
+  </ul>
+
+  <h3>Script: if the true reason is &ldquo;I want to do CAE, not design&rdquo; (about 35 seconds)</h3>
+  <div class="say">Yes, I joined Helsing in Munich in October as a mechanical engineer on the design side. This process actually started before that: I applied here in the summer and the assessment was in early September. I'll be straight about why I'm still in it. Everything I've done that I'm proudest of is analysis: the Volvo crash model, the drop-test and fatigue work, and the thermal study at Tesla that changed a decision. Helsing is a design role, and a good one. But a month in, I'm sure that I want to be the person running the model and correlating it to the test, not the person handing over the geometry. A dedicated CAE role in exterior is exactly that.</div>
+  <p>Then <strong>stop</strong>. Do not fill the silence.</p>
+
+  <h4>Likely follow-ups</h4>
+  <div class="tw"><table>
+    <tr><th>They ask</th><th>You answer</th></tr>
+    <tr><td>&ldquo;Why should we believe you'd stay?&rdquo;</td><td>&ldquo;Fair question, with Tesla on there too. The pattern I'd point to is that both times the mismatch was about how much of the job was the work I'm best at. This time I'm moving towards that work, not away from a company. And a car programme runs on a timescale where you only learn anything if you stay for the next one. That's what I'm planning on.&rdquo;</td></tr>
+    <tr><td>&ldquo;Does Helsing know?&rdquo;</td><td>Tell the truth, in one line. Do not dramatise it.</td></tr>
+    <tr><td>&ldquo;What's your notice period?&rdquo;</td><td>You are inside the German probation period (<em>Probezeit</em>). Probation notice in Germany is typically <strong>two weeks</strong> by law (&sect;622(3) BGB) unless your contract says otherwise. <strong>Check your contract tonight</strong>, then give the real number.</td></tr>
+    <tr><td>&ldquo;Isn't it a big pay cut?&rdquo;</td><td>&ldquo;It is, and I've thought about it. The reason I'd make it is the work. I'd rather discuss the package with HR.&rdquo; If that is not true, see red card 1 above.</td></tr>
+    <tr><td>&ldquo;Why not move into simulation inside Helsing?&rdquo;</td><td>Have a real answer ready. If the honest answer is that you haven't asked, say: &ldquo;It's possible in principle. But I was hired into a design team a month ago, and I don't think it's fair to them or realistic to switch in the first months. This role is the CAE job, done properly, from day one.&rdquo;</td></tr>
+  </table></div>
+
+  <div class="dont">Anything critical of Helsing, its people, its mission or defence work &middot; &ldquo;it wasn't what I expected&rdquo; (after Tesla, that sounds like a pattern) &middot; hiding or blurring the current job &middot; a three-minute explanation &middot; a different reason from the one you gave Ana</div>
+
+  <div class="card acc">
+    <h4>If they don't raise it</h4>
+    <p>Then do not raise it yourself. If they ask &ldquo;What are you doing at the moment?&rdquo;, answer factually in one sentence: &ldquo;I joined Helsing in Munich in October, on the mechanical design side.&rdquo; Then go straight back to the analysis work. Never present the current job as something other than what it is.</p>
+  </div>
+</section>
+
+<!-- ================= 1 ROLE ================= -->
+<section id="role">
+  <h2><span class="tag">Section 1</span>The role, decoded</h2>
+  <p class="lede">The posting is short and generic. Each line below is matched with what they are really testing and the evidence you have for it. Use this table to steer answers back to your evidence.</p>
+  <div class="tw"><table>
+    <tr><th>Posting says</th><th>What they'll test</th><th>Your evidence</th></tr>
+    <tr><td>Set up, run, post-process, report and review exterior CAE, <strong>implicit and explicit</strong></td><td>Do you know when to use each, and can you run the whole chain alone: mesh, BCs, materials, solve, sanity checks, report?</td><td>Abaqus/Standard (wing box, structural) and Abaqus/Explicit (AW101 fuselage drop test, Volvo cell crash). Thesis: you ran the whole loop, including the tests.</td></tr>
+    <tr><td>Develop FEA models with FEM tools</td><td>Meshing judgement: element type, size, quality, connections (welds, bolts, adhesive), material cards</td><td>Mesh-convergence and energy-balance checks in the thesis. RVE homogenisation into an equivalent medium.</td></tr>
+    <tr><td>Analyse results, <strong>recommend design improvements</strong></td><td>Do you turn a contour plot into a change someone can make?</td><td>Tesla thermal: study &rarr; G10 near its service-temperature limit &rarr; copper kept &rarr; decision reversed before freeze. TEKEVER jig: predicted the first mode, designed it out of band.</td></tr>
+    <tr><td>Work with design and engineering teams</td><td>Can you talk to designers without throwing results over the wall?</td><td>You have <em>been</em> the designer (Tesla, TEKEVER, Helsing). You know what a designer needs from CAE: a direction and a margin, not a picture.</td></tr>
+    <tr><td><strong>Participate in physical testing</strong> to validate and refine models</td><td>Correlation discipline: what you measure, how you compare, what you change when the model is wrong</td><td>Volvo: your own layer tests, plus quasi-static and dynamic cell tests for calibration. TEKEVER: shaker validation of a predicted frequency. Apple: CT, teardown, field-return data.</td></tr>
+    <tr><td>Prepare and present reports</td><td>Structure: question &rarr; answer &rarr; margin &rarr; assumptions &rarr; recommendation</td><td>Habit from the Helsing prep: state which inputs are <em>measured</em> and which are <em>assumed</em>.</td></tr>
+    <tr><td><strong>Altair HyperWorks</strong></td><td>Have you used it? How fast will you be productive?</td><td>Honest gap. See <em>&sect;6</em> and <em>&sect;9</em>. Self-taught 3DEXPERIENCE thermal at Tesla in weeks is your proof that you learn tools fast.</td></tr>
+    <tr><td>Analyse complex simulation <strong>and test</strong> data</td><td>Statistics, scatter, filtering, what is signal and what is noise</td><td>Apple: reliability data, Monte Carlo, scripted processing of 10,000+ images. Volvo: DOE and optimisation in MATLAB.</td></tr>
+  </table></div>
+
+  <h3>What &ldquo;exterior&rdquo; almost certainly covers at Bugatti Rimac</h3>
+  <p>Inferred from the vehicle and from how OEMs usually split body CAE. Confirm in your questions.</p>
+  <div class="grid g2">
+    <div class="card"><h4>Closures</h4><p>Doors (the Tourbillon's are electrically actuated <strong>dihedral</strong> doors), bonnet / frunk lid, engine cover, fuel and charge flaps. Stiffness, sag, slam, overslam, hinge and actuator loads, seal loads, durability.</p></div>
+    <div class="card"><h4>Aero devices</h4><p>The Tourbillon's <strong>active rear wing</strong> (adds downforce, works as an airbrake, retracts at top speed), diffuser, splitters, flaps. Aero pressure loads, actuator loads, stiffness, modal and flutter, fatigue.</p></div>
+    <div class="card"><h4>Panels &amp; trim</h4><p>CFRP outer panels, fenders, fascias, sills, mirrors, lamps, glazing attachment. Dent resistance and oil-canning, palm and snow load, thermal distortion, gap &amp; flush, modal / NVH.</p></div>
+    <div class="card"><h4>Impact &amp; homologation</h4><p>Low-speed bumper impact, towing eye, possibly pedestrian protection, depending on how the car is type-approved. The rear diffuser has an <strong>integrated crash structure</strong>, so explicit work on exterior parts is real here.</p></div>
+  </div>
+</section>
+
+<!-- ================= 2 INTEL ================= -->
+<section id="intel">
+  <h2><span class="tag">Section 2</span>Company intel</h2>
+  <p class="lede">Enough to sound informed. Do not use it to show off. CAE people care about the car and the engineering, not the cap table.</p>
+
+  <div class="grid g3">
+    <div class="stat"><b>Nov 2021</b><span>Bugatti Rimac formed: Rimac Group 55%, Porsche 45%</span></div>
+    <div class="stat"><b>9 Sep 2026</b><span>Porsche's stakes sold to a HOF Capital-led consortium (BlueFive Capital the largest investor). Deal closed.</span></div>
+    <div class="stat"><b>Mate Rimac</b><span>CEO of Bugatti Rimac, and now also President of Bugatti Automobiles</span></div>
+    <div class="stat"><b>Tourbillon</b><span>8.3 L NA V16 (with Cosworth) + 3 e-motors, 1,800 hp total, 250 cars, from &euro;3.8 M net</span></div>
+    <div class="stat"><b>T800 CFRP</b><span>Monocoque with the battery as a structural member; 3D-printed aluminium suspension parts</span></div>
+    <div class="stat"><b>Kerestinec</b><span>Rimac Campus near Zagreb: Nevera assembly and Tourbillon development and production work. Final assembly in Molsheim.</span></div>
+  </div>
+
+  <h3>Tourbillon facts that matter to exterior CAE</h3>
+  <ul>
+    <li><strong>Design requirement: stable above 400 km/h.</strong> Every exterior attachment has to survive aero pressure that scales with v&sup2;. At 400 km/h the dynamic pressure is about <strong>7.6 kPa</strong> (&frac12;&middot;1.225&middot;111&sup2;). Expect them to like that number.</li>
+    <li><strong>Active rear wing.</strong> It adds downforce at lower speeds, works as an <em>airbrake</em> under deceleration, and stays <em>submerged</em> on top-speed runs. The airbrake case (high angle, high speed, sudden deployment) is probably its worst structural case. See drill 3.</li>
+    <li><strong>Dihedral doors, electrically actuated</strong>, opened from the key fob. The door load cases change: actuator and hinge loads through the whole opening arc, gravity acting in a different direction, wind gusts on an open door, and abuse at the end stops.</li>
+    <li><strong>Through-flow front bonnet</strong>. Cooling air passes through and out of the bonnet, and there is a frunk between the two radiators. That means a stiffness case on a lid with openings, and thermal loading near the radiator exhaust.</li>
+    <li><strong>&ldquo;Flying&rdquo; fenders</strong> that channel air under the headlights to the side intakes. These are slender, cantilevered aero surfaces, so check stiffness, modal behaviour and aero load.</li>
+    <li><strong>Rear diffuser with an integrated composite crash structure</strong>, inspired by motorsport. Explicit crash of CFRP is in scope for someone on this team.</li>
+    <li><strong>250 cars.</strong> Prototypes cost a fortune and composite tooling is slow to change. So CAE carries more of the validation than at a volume OEM, and the correlation of the few physical tests matters more. Use this as your &ldquo;why exterior CAE here&rdquo; argument.</li>
+  </ul>
+
+  <h3>Status (as of 1 Nov 2026)</h3>
+  <ul>
+    <li>Bugatti's 9 Sep 2026 release put the Tourbillon in &ldquo;the final stage of the testing phase&rdquo;, with type approval not yet granted. Deliveries were planned for 2026. <strong>I found no confirmed source that deliveries have started.</strong> Don't claim either way. A good question: &ldquo;Where is the exterior team's focus now that Tourbillon is in final testing: launch support or the next programme?&rdquo;</li>
+    <li>Rimac also builds the <strong>Nevera</strong> and Nevera R under Bugatti Rimac. <strong>Rimac Technology</strong> (batteries, e-axles, supplier business) is a separate company in the Rimac Group. Your Battery Systems Engineer rejection came from that side; don't mention it.</li>
+    <li><strong>Altair, which makes HyperWorks, was acquired by Siemens (completed March 2025).</strong> HyperWorks now sits in the Siemens Xcelerator portfolio. Showing you know this is a cheap, credible signal that you follow the tools.</li>
+  </ul>
+
+  <div class="card warnb">
+    <h4>Things not to bring up</h4>
+    <p>The stolen-Chiron story (October 2026 headlines) &middot; the ownership deal unless they raise it &middot; the price of the car &middot; Mate Rimac fandom. One sentence on why the engineering appeals to you is enough. More reads as enthusiasm about the brand, not about the CAE.</p>
+  </div>
+</section>
+
+<!-- ================= 3 PANEL ================= -->
+<section id="panel">
+  <h2><span class="tag">Section 3</span>The panel &amp; the 60 minutes</h2>
+  <p class="lede">Public information on these three is thin. What follows is labelled as fact or inference. Never quote their CVs back to them.</p>
+
+  <div class="grid g2">
+    <div class="card acc">
+      <h4>Gustavo Andrade, MSc &mdash; Head of CAE &amp; Materials</h4>
+      <p><strong>Fact (LinkedIn snippet):</strong> previously &ldquo;Body CAE Team Leader&rdquo; at Bugatti Rimac. Describes himself as an experienced <em>CAE durability</em> engineer in automotive, designing structures for <em>body exterior, interior and chassis</em>. A colleague's recommendation calls him a great CAE manager.</p>
+      <p><strong>Inference:</strong> he is the hiring manager, and his background is durability and stiffness, mostly implicit. Expect from him: motivation, the Helsing question, how you work with designers, how you report, and one exterior case to walk through (&ldquo;how would you set up a door sag analysis?&rdquo;). The &ldquo;Materials&rdquo; in his title means material cards and characterisation sit with his team. Your layer-level testing at Volvo speaks directly to that.</p>
+    </div>
+    <div class="card">
+      <h4>Ivan &Scaron;u&scaron;ak &mdash; FEA Expert</h4>
+      <p><strong>Nothing reliable found online.</strong> The title suggests the solver and theory person.</p>
+      <p><strong>Expect from him:</strong> element formulations, integration, shear locking and hourglassing, Newton&ndash;Raphson and convergence, contact algorithms, stability of explicit time integration, mass scaling, nonlinearity types, buckling, and singularities versus real stress peaks. He will drill down until you hit your limit. Croatian FEA culture is strong and theory-heavy (FSB Zagreb has a strong computational mechanics school), so be precise with the equations.</p>
+    </div>
+    <div class="card">
+      <h4>Vijay George &mdash; CAE Expert</h4>
+      <p><strong>Nothing reliable found online.</strong> The title suggests the process and application person.</p>
+      <p><strong>Expect from him:</strong> HyperWorks workflow, meshing quality criteria, connections (spot welds, adhesives, bolts), load-case setup, post-processing, scripting and automation, model checks before submission, and turnaround. This is where the HyperWorks gap shows most. Answer with the <em>concept</em> and the Abaqus equivalent, and show you know the HyperWorks names.</p>
+    </div>
+    <div class="card warnb">
+      <h4>Before the call</h4>
+      <p>Open each LinkedIn profile tonight, logged in. Note each person's previous employer and core domain (crash, durability, NVH, composites). If one of them has a crash background, read <em>&sect;8</em> twice. Write the three names on your paper. <strong>Pronounce &Scaron;u&scaron;ak as &ldquo;SHOO-shahk&rdquo;.</strong></p>
+    </div>
+  </div>
+
+  <h3>Probable shape of the call (60 min, unconfirmed)</h3>
+  <div class="tw"><table>
+    <tr><th>Min</th><th>Block</th><th>Who</th><th>Your target</th></tr>
+    <tr><td>0&ndash;5</td><td>Introductions, team overview</td><td>Gustavo</td><td>Listen. Write down what they say the team does. Reuse it later.</td></tr>
+    <tr><td>5&ndash;10</td><td>&ldquo;Tell us about yourself&rdquo;</td><td>Gustavo</td><td>The CAE version (Q1 in the bank), 90 seconds. Analysis first, design second.</td></tr>
+    <tr><td>10&ndash;15</td><td>Current situation / why Rimac</td><td>Gustavo</td><td>The Helsing script, 35 seconds. Why exterior CAE here, 30 seconds.</td></tr>
+    <tr><td>15&ndash;35</td><td>Thesis deep-dive and FEA fundamentals</td><td>Ivan</td><td>Volvo told as a <em>method</em>. Implicit vs explicit fluently. Concede limits early.</td></tr>
+    <tr><td>35&ndash;50</td><td>Exterior case and tools</td><td>Vijay / Gustavo</td><td>Set up one load case end to end out loud. Handle HyperWorks honestly with the mapping.</td></tr>
+    <tr><td>50&ndash;60</td><td>Your questions</td><td>All</td><td>Two questions: one to Ivan or Vijay about the work, one to Gustavo about the team.</td></tr>
+  </table></div>
+</section>
+
+<!-- ================= 4 RECORD ================= -->
+<section id="record">
+  <h2><span class="tag">Section 4</span>Your CAE record &mdash; the evidence matrix</h2>
+  <p class="lede">Your CV files a lot of the most relevant work under &ldquo;Projects&rdquo;. For this panel it is your experience, so present it that way. Know every number in the right-hand column without notes.</p>
+  <div class="tw"><table>
+    <tr><th>Work</th><th>Analysis type</th><th>Solver / tool</th><th>What it proves</th><th>Numbers</th></tr>
+    <tr><td><strong>Volvo Cars MSc thesis</strong>: multi-scale FE of Li-ion cells under crash</td><td>Nonlinear, strain-rate dependent, explicit dynamic plus quasi-static; RVE homogenisation; calibration by DOE and optimisation</td><td>Abaqus <em>(confirm: Explicit? which material model?)</em>, MATLAB</td><td>Method development, material calibration, test&ndash;sim correlation, mesh and energy checks</td><td>+33% accuracy, &minus;64% calibration parameters, &minus;50% calibration time</td></tr>
+    <tr><td><strong>AW101 fuselage drop test</strong> (academic)</td><td>Explicit impact, crashworthiness</td><td>Abaqus/Explicit</td><td>Explicit workflow: contact, energy balance, time step</td><td><em>recall: drop velocity, peak g, energy absorbed</em></td></tr>
+    <tr><td><strong>Wing box</strong> (academic)</td><td>Implicit static; loads from the flight envelope; buckling in rib flanges</td><td>Abaqus/Standard, MATLAB for loads</td><td>Load derivation, margins, stability</td><td><em>recall: critical load case, min MoS</em></td></tr>
+    <tr><td><strong>A400M fatigue</strong> (academic)</td><td>Mission-profile damage, S-N, crack growth</td><td>MATLAB, NASGRO</td><td>Durability vocabulary (this is Gustavo's domain)</td><td>489 h and 770 h inspection intervals</td></tr>
+    <tr><td><strong>Tesla</strong>: thermal screening study</td><td>Steady-state thermal, current-derived heat load</td><td>3DEXPERIENCE (self-taught in weeks)</td><td>Unrequested analysis that reversed a decision before freeze</td><td>&asymp;$7,500 of rework avoided, 100 A interface</td></tr>
+    <tr><td><strong>TEKEVER</strong>: shaker jigs</td><td>Modal: hand estimate, then FE, then shaker validation</td><td>SolidWorks (Simulation)</td><td>Physical testing, prediction vs measurement</td><td>First mode 2&ndash;3&times; above the excitation band</td></tr>
+    <tr><td><strong>Apple</strong>: iPhone failure analysis</td><td>Test data, reliability statistics, Monte Carlo</td><td>CT, teardown, scripting</td><td>&ldquo;Analyse complex test data&rdquo;; root cause at scale</td><td>1M+ users affected; 100+ field returns; 10,000+ images processed by script</td></tr>
+    <tr><td>Politecnico di Milano semester</td><td>FEA, CFD, structural reliability coursework</td><td>&mdash;</td><td>Formal FEA theory background</td><td>&mdash;</td></tr>
+  </table></div>
+  <div class="card badb">
+    <h4>Highest-return task tonight</h4>
+    <p>Write down the Volvo thesis on one page, without notes: the solver, element types and size, the material model and its parameters, the strain-rate law, which tests you ran (loading mode, rates), how you homogenised, the DOE design and the objective function, the convergence result, the energy ratios, and <strong>where the model disagreed with the test</strong>. Ivan will go at least three levels deep on this. It is the only part of your CV that is pure CAE.</p>
+  </div>
+</section>
+
+<!-- ================= 5 STORIES ================= -->
+<section id="stories">
+  <h2><span class="tag">Section 5</span>Stories, retold for a CAE panel</h2>
+  <p class="lede">The same stories as before, with the emphasis moved. For designers you led with the geometry and the drawing. For analysts, lead with the <em>model, its assumptions and how you knew it was right</em>.</p>
+
+  <h3>Story 1 &mdash; Volvo multi-scale cell model (the main one)</h3>
+  <div class="say">My thesis at Volvo Cars was a multi-scale FE method to predict how lithium-ion cells respond in a crash, including strain-rate dependence. A cell is a layered structure: anode, cathode, separator, current collectors. Modelling every layer at full-cell scale is too expensive, and the full-cell models Volvo had needed a lot of parameters fitted to whole-cell tests. So I worked bottom-up. I ran layer-level tests myself to get the constituent behaviour, built a representative volume element of the layer stack, and homogenised it into an equivalent continuum. Then I calibrated the full-cell model against quasi-static and dynamic cell tests, using a DOE and optimisation loop in MATLAB. I did mesh convergence and energy-balance checks throughout. The result was 33% better accuracy against test, about 64% fewer parameters needing calibration, and calibration time halved.</div>
+  <h4>Follow-ups to have cold</h4>
+  <ul>
+    <li><strong>&ldquo;Why multi-scale?&rdquo;</strong> Fewer free parameters means fewer ways to get a good fit for the wrong reason. Physically grounded parameters transfer better to other cell formats and load cases.</li>
+    <li><strong>&ldquo;What strain-rate law?&rdquo;</strong> Name it. If it was a Cowper&ndash;Symonds or Johnson&ndash;Cook style multiplier, write it: <code>&sigma;<sub>d</sub>/&sigma;<sub>s</sub> = 1 + (&#949;&#775;/C)<sup>1/p</sup></code>. If it was tabulated curves per strain rate, say so.</li>
+    <li><strong>&ldquo;How did you validate, as opposed to calibrate?&rdquo;</strong> The critical distinction. Be clear which tests were used for fitting and which were held out. If none were held out, say so, and say what you would hold out next time. They will respect that more than a vague answer.</li>
+    <li><strong>&ldquo;Where was it wrong?&rdquo;</strong> Have one specific discrepancy and its likely cause, for example the post-peak or densification regime, or anisotropy in-plane versus through-thickness.</li>
+    <li><strong>&ldquo;What would you do differently?&rdquo;</strong> Check whether the coarse model already answered the question before refining (your own self-critique from the Helsing prep). Hold out a validation test.</li>
+  </ul>
+
+  <h3>Story 2 &mdash; Tesla thermal study (simulation that changed a decision)</h3>
+  <div class="say">At Tesla the plan of record was to delete copper heat-sink blocks at a 100-amp interface to simplify the build. Nobody asked me to check it, but there was a G10 structural part right next to it. I'd never opened 3DEXPERIENCE, so I taught myself its thermal workflow and ran a steady-state screening model: a current-derived heat load at the contact, conduction through the copper, convection to still air. It showed the G10 heading towards its continuous service temperature under sustained running. The decision was reversed before freeze. That avoided about $7,500 of rework and weeks of schedule. It was a screening model, not a qualification model. It answered a yes/no question, and that was all it needed to do.</div>
+  <p class="catch"><strong>Say &ldquo;continuous service temperature&rdquo;, never &ldquo;melting point&rdquo;.</strong> G10 is a thermoset laminate and it does not melt. An FEA expert will notice.</p>
+  <p><strong>Why it lands with this panel:</strong> it shows CAE driving a decision, the tool learned fast (your HyperWorks argument), and honesty about how far the model can be trusted.</p>
+
+  <h3>Story 3 &mdash; TEKEVER shaker jig (prediction, then test)</h3>
+  <div class="say">I designed fixtures for vibration-testing antennas on TEKEVER's shaker. The governing requirement was that the fixture must not resonate inside the test band, otherwise you amplify the input and fail parts that are fine. Before opening CAD I estimated the first mode from stiffness and mass and targeted two to three times the top of the excitation band. Then I checked it in FE and validated it on the shaker. There was no fixture resonance in band, and the design was reused for other variants.</div>
+  <p><strong>Have ready:</strong> how you measured the jig's response (sine sweep, accelerometer on the fixture) and how close the prediction was. If you don't remember the number, say &ldquo;within the margin I'd designed for&rdquo;. Do not invent a percentage.</p>
+
+  <h3>Story 4 &mdash; Apple (complex test data &rarr; root cause)</h3>
+  <div class="say">At Apple I did failure analysis on iPhones already in customers' hands: teardowns, CT, materials analysis and reliability statistics including Monte Carlo. I traced a critical component failure affecting over a million users to its root cause. Separately, I characterised how 100+ field returns had actually failed, built a seal-leak test method from that, and it became a new module-level reliability test. The lesson I carry into CAE is that the test you didn't think of is the one that bites. A model only covers the failure modes you put into it.</div>
+
+  <h3>Story 5 &mdash; the mistake (CAE-specific, use this one)</h3>
+  <div class="say">The clearest technical mistake I've made was trusting a boundary condition I'd assumed rather than checked. On the Tesla end effector I modelled an interface as better constrained than it really was once it was bolted up. The hardware didn't behave the way the model said, and it took me about a week, changing one variable at a time, to find it. Two things changed. When I present an analysis now I say explicitly which inputs are measured and which are assumed, so someone else can catch me. And I treat boundary conditions as the first suspect, not the last. In my experience they're wrong more often than the material model or the mesh.</div>
+  <p>This is a strong answer for an FEA panel because &ldquo;the BCs were wrong&rdquo; is the most common real-world FEA failure, and every one of them has lived it.</p>
+
+  <h3>Story 6 &mdash; the second mistake (over-fidelity)</h3>
+  <div class="say">The other pattern is over-investing in fidelity. On the Volvo thesis I spent a long time refining model detail before checking whether the coarse version already answered the question. Now I ask what decision the analysis feeds, build the cheapest model that can make that decision, and refine only if the answer sits near the limit.</div>
+</section>
+
+<!-- ================= 6 GAPS ================= -->
+<section id="gaps">
+  <h2><span class="tag">Section 6</span>Gaps &amp; handlers</h2>
+  <p class="lede">Name the gap before they do. Each answer below takes under 30 seconds.</p>
+
+  <h3>Gap 1 &mdash; HyperWorks <span class="pill p4">They will ask</span></h3>
+  <p>It is the only tool named in the posting. Decide tonight exactly how much you have touched it. If you ever opened HyperMesh at FEUP or in Milan, say precisely how much. Do not round up.</p>
+  <div class="say">My production work has been in Abaqus, Standard and Explicit, plus 3DEXPERIENCE for thermal. I haven't used HyperWorks on a real project. What carries over is everything except the interface: mesh-quality criteria, connection modelling, load-case logic, contact, the implicit and explicit checks. I know the map: HyperMesh for pre-processing, OptiStruct for implicit, Radioss for explicit, HyperView and HyperGraph for post, HyperStudy for DOE, which is what I did by hand in MATLAB for the thesis. On the evidence: at Tesla I went from never having opened 3DEXPERIENCE to a study that reversed a design decision in a few weeks. I'd expect HyperMesh to be similar, and I'd start on it before day one.</div>
+  <p class="catch">Only say &ldquo;I'd start before day one&rdquo; if you will. The Altair/Siemens student edition is free and the HyperMesh tutorials are public.</p>
+
+  <h3>Gap 2 &mdash; No CAE job title in industry</h3>
+  <div class="say">That's true. My industry roles were design and failure analysis, and my CAE has been the thesis and academic projects. But the thesis was an industry project at Volvo with real test data, and I ran the whole chain: tests, material calibration, model, correlation. What I'm missing is volume: dozens of load cases on a real vehicle programme, with real deadlines. That's what this role gives me, and it's the right gap to have at my stage.</div>
+
+  <h3>Gap 3 &mdash; Short tenures (Tesla six months, Helsing one month)</h3>
+  <p>See <em>! The Helsing question</em>. For Tesla, the 30-second version:</p>
+  <div class="say">The Tesla role was titled design engineer but sat in Manufacturing Test, and in practice it was mostly test. At the end of probation both sides agreed it wasn't the right long-term fit. I'd add one thing: I didn't ask what fraction of the week was design before I joined, and that's on me. I've asked that question directly in every process since, including this one.</div>
+  <div class="dont">Anything critical of Tesla or Helsing &middot; &ldquo;mis-sold&rdquo; &middot; over-explaining &middot; letting a second follow-up change the story</div>
+
+  <h3>Gap 4 &mdash; Composites in an industrial setting</h3>
+  <div class="say">My composite work is from the MSc: laminate theory, failure envelopes, ply-level modelling, plus G10 in a real design at Tesla. I haven't modelled a production CFRP exterior panel. I know the questions that matter there: ply-based versus zone-based definition, which failure criterion and why, how you treat bonded joints, and that the material card is often the weakest link, which is presumably why CAE and Materials sit together here.</div>
+
+  <h3>Gap 5 &mdash; Exterior-specific experience</h3>
+  <div class="say">I haven't worked on closures or exterior trim specifically. The physics is familiar: stiffness, stability for oil-canning, contact and impact for slam and overslam, fatigue for durability, modal behaviour for mirrors and aero devices. What I'd need to learn quickly is your requirements catalogue: the targets, test procedures and load magnitudes. That's company knowledge, and the first thing I'd ask for.</div>
+
+  <h3>Gap 6 &mdash; Croatian</h3>
+  <p>The posting asks for fluent English only. If asked: &ldquo;Not yet, and I'd start. I've done this in Ireland, Sweden and Germany.&rdquo; Only list countries where it is true.</p>
+</section>
+
+<!-- ================= 7 LOADS ================= -->
+<section id="loads">
+  <h2><span class="tag">Section 7</span>Exterior load cases &mdash; the catalogue</h2>
+  <p class="lede">This is the vocabulary of exterior CAE. You don't need every target value. You need to know, for each case, the <em>physics, the analysis type and what can go wrong</em>. Load magnitudes are indicative orders of magnitude only. Real targets are company-specific, so say that if asked.</p>
+
+  <div class="tw"><table>
+    <tr><th>Case</th><th>What it checks</th><th>Analysis</th><th>Set-up notes &amp; traps</th></tr>
+    <tr><td><strong>Door sag</strong></td><td>Door drop at the striker under its own weight plus a vertical load at the free end. Elastic and permanent set.</td><td>Implicit, nonlinear (plasticity at hinges, contact at check/stop)</td><td>Load at the outer end with the door open; measure at the latch. Hinge modelled with a real pin or a revolute joint. Unload and check permanent set. For dihedral doors, the gravity vector relative to the door changes through the arc, so check several angles.</td></tr>
+    <tr><td><strong>Door overslam / over-opening</strong></td><td>Door forced past its open stop</td><td>Implicit quasi-static or explicit</td><td>Hinge, stop and reinforcement plasticity; actuator back-drive loads for powered doors.</td></tr>
+    <tr><td><strong>Slam durability</strong></td><td>Repeated closing impact: panel and inner cracking, adhesive debond, mirror and trim loosening</td><td>Explicit transient &rarr; stress history &rarr; fatigue (e.g. nCode / HyperLife)</td><td>Seal compression load curve; latch modelling; tens of thousands of cycles. Can be a powered-close case on the Tourbillon.</td></tr>
+    <tr><td><strong>Lid / bonnet stiffness</strong> (bending, torsion)</td><td>Global stiffness of the inner-outer assembly</td><td>Linear static (OptiStruct)</td><td>Constrain at hinges and latch; load at a corner for torsion. Openings for through-flow cooling reduce torsional stiffness; check around the cut-outs.</td></tr>
+    <tr><td><strong>Dent resistance &amp; oil-canning</strong></td><td>Local stiffness of the outer skin; permanent dent; snap-through (&ldquo;oil-canning&rdquo;) of a shallow panel</td><td>Implicit, geometric nonlinear; oil-canning needs arc-length (Riks) or displacement control</td><td>Rigid indenter pressed at grid points; load-deflection curve. A drop in the curve, or a flat section, means instability. Load-control Newton fails at the limit point. Drill 12.</td></tr>
+    <tr><td><strong>Palm / lean / sit loads, snow load</strong></td><td>Customer abuse and environment on large panels</td><td>Linear or nonlinear static</td><td>Distributed load on a pad area; check visible permanent deformation.</td></tr>
+    <tr><td><strong>Aero load on devices</strong> (wing, splitter, flaps, mirrors)</td><td>Stiffness (aero shape must hold), strength, actuator loads</td><td>Static with mapped CFD pressure, or a lumped force from &frac12;&rho;v&sup2;C A</td><td>Pressure mapping from CFD onto the FE mesh; check total force and moment after mapping. Worst case is often <em>airbrake</em> deployment at high speed.</td></tr>
+    <tr><td><strong>Modal / NVH of attachments</strong></td><td>First modes of mirrors, wing, fenders, panels above excitation (road, engine, aero buffeting)</td><td>Normal modes (Lanczos), frequency response</td><td>V16 firing orders and road input give excitation bands. Flutter and buffeting for the wing are a coupled problem; flag it, don't claim to solve it.</td></tr>
+    <tr><td><strong>Thermal distortion, gap &amp; flush</strong></td><td>CTE mismatch CFRP / aluminium / steel brackets; paint-bake and hot-soak distortion</td><td>Thermal &rarr; static, linear or nonlinear</td><td>CFRP in-plane CTE is close to zero; aluminium is about 23 &micro;m/m&middot;K. Constrained mismatch gives stress plus a visible gap change. Drill 9.</td></tr>
+    <tr><td><strong>Low-speed impact</strong> (bumper, fascia, lamps)</td><td>Damageability and repair cost; ECE R42-type pendulum and barrier impacts at low speed</td><td>Explicit</td><td>Plastic fascias: strain-rate-dependent thermoplastic cards. Energy balance and contact. Which regs apply depends on the homologation route; ask rather than assert.</td></tr>
+    <tr><td><strong>Pedestrian protection</strong> (head / leg impactor)</td><td>HIC on bonnet and windscreen base; leg-impactor loads on the front end</td><td>Explicit</td><td>Applies under UN R127 / EU GSR for most M1 type approvals. Whether and how it applies to a 250-unit hypercar depends on the approval route. Ask.</td></tr>
+    <tr><td><strong>Towing eye / jacking / tie-down</strong></td><td>Local strength at attachment into CFRP or aluminium frame</td><td>Nonlinear static</td><td>Insert pull-out, bearing on composite, bonded inserts.</td></tr>
+    <tr><td><strong>Durability (road loads)</strong></td><td>Fatigue of brackets, hinges and attachments under road-load spectra</td><td>Inertia relief or modal transient &rarr; fatigue</td><td>Gustavo's home ground. Rainflow, Miner, mean-stress correction (Goodman/Gerber), S-N vs &epsilon;-N.</td></tr>
+  </table></div>
+
+  <h3>The universal set-up checklist (say this when asked &ldquo;how would you set up X?&rdquo;)</h3>
+  <ol>
+    <li><strong>Question:</strong> what decision does this feed, what is the target, what is the pass criterion?</li>
+    <li><strong>Hand estimate</strong> of the answer's order of magnitude (beam, plate, energy).</li>
+    <li><strong>Model scope:</strong> what is in, what is cut, how the cut boundary is represented (often the hardest choice).</li>
+    <li><strong>Mesh:</strong> element type (shell for thin CFRP and sheet, solid for castings and thick blocks), size from the feature and the gradient, quality criteria.</li>
+    <li><strong>Materials:</strong> source of the card, rate dependence, failure; for CFRP, the ply stack and orientation.</li>
+    <li><strong>Connections:</strong> hinges, bolts (beam plus preload or rigid spider), adhesive (cohesive or tied), welds.</li>
+    <li><strong>BCs and loads:</strong> avoid over-constraint; distribute point loads (RBE3 for loads, RBE2 only where truly rigid).</li>
+    <li><strong>Analysis type:</strong> linear / nonlinear / explicit, and why.</li>
+    <li><strong>Checks:</strong> reactions vs applied, units, mass, free-free modes for disconnected parts, energy (explicit), convergence (implicit), a mesh study at the hotspot.</li>
+    <li><strong>Report:</strong> answer, margin, assumptions (measured vs assumed), recommendation, and what would change the conclusion.</li>
+  </ol>
+</section>
+
+<!-- ================= 8 IMPLICIT vs EXPLICIT ================= -->
+<section id="ie">
+  <h2><span class="tag">Section 8</span>Implicit vs explicit &mdash; the answer you must give fluently</h2>
+  <p class="lede">Almost certainly the first technical question, because it is in the first line of the posting. Practise it until it takes 90 seconds and needs no notes. Then be ready for the next three levels down.</p>
+
+  <div class="say">Both solve the equation of motion, M&uuml; + C&uacute; + f<sub>int</sub>(u) = f<sub>ext</sub>, but they march through time differently. Implicit methods, like Newmark or HHT for dynamics, or a pure static solve, find equilibrium at the end of each increment. You assemble a tangent stiffness matrix and iterate with Newton&ndash;Raphson until the residual converges. Each increment is expensive, but stable for large steps, so it suits static and slow problems: stiffness, sag, dent, durability load cases, modal. Explicit methods, central difference, use the equilibrium at the <em>current</em> time to get accelerations directly from a lumped mass matrix: &uuml; = M<sup>&minus;1</sup>(f<sub>ext</sub> &minus; f<sub>int</sub>). No matrix inversion, no iterations, so each step is cheap. But it's only conditionally stable: the time step has to stay below the time a stress wave needs to cross the smallest element, &Delta;t &le; L<sub>e</sub>/c, with c = &radic;(E/&rho;). That means microsecond steps, so it suits short, highly nonlinear events with a lot of contact: impact, crash, slam, pedestrian. Rule of thumb: implicit when the event is slow and the nonlinearity is mild; explicit when the event is fast, or when contact and failure would make Newton&ndash;Raphson fail to converge.</div>
+
+  <h3>The three levels down</h3>
+  <div class="tw"><table>
+    <tr><th>Probe</th><th>Answer</th></tr>
+    <tr><td>Why is explicit conditionally stable?</td><td>Central difference is stable only if &Delta;t &le; 2/&omega;<sub>max</sub>, where &omega;<sub>max</sub> is the highest natural frequency of the mesh. For one element, &omega;<sub>max</sub> &asymp; 2c/L<sub>e</sub>, which gives the Courant (CFL) limit &Delta;t &le; L<sub>e</sub>/c. Solvers apply a safety factor of about 0.9.</td></tr>
+    <tr><td>What controls the explicit time step in practice?</td><td>The <em>smallest, stiffest, lightest</em> element. One bad element sets the step for the whole model. So mesh quality and minimum element size matter more in explicit, and you check the time-step report for the controlling elements.</td></tr>
+    <tr><td>What is mass scaling and what's the risk?</td><td>Adding non-physical mass to small elements to raise their critical &Delta;t (&Delta;t &prop; &radic;&rho;). It's fine if added mass is a small fraction of the total, commonly kept below a few percent, and isn't concentrated where inertia matters. Too much and you change the dynamics: kinetic energy, impact force, wave speed. Always report the added mass.</td></tr>
+    <tr><td>Can you run a quasi-static problem in explicit?</td><td>Yes, and it's common when contact or failure make implicit hard. Apply the load slowly enough that inertia is negligible: kinetic energy a small fraction (about &lt;5&ndash;10%) of internal energy, smooth ramp, check the result doesn't change if you slow it further. Speeding up the load or scaling mass shortens run time but both add inertia, so check.</td></tr>
+    <tr><td>What energy checks do you do in explicit?</td><td>Total energy roughly conserved (energy ratio near 1, no unexplained growth). <strong>Hourglass energy small</strong> compared with internal energy, a common target being under about 5&ndash;10%. Contact or sliding-interface energy small and not negative. Added mass reported. Kinetic and internal energy following the physics of the event.</td></tr>
+    <tr><td>What is hourglassing?</td><td>Reduced-integration elements (one integration point) have zero-energy deformation modes: the element deforms in an hourglass pattern without the single point seeing any strain. Controlled with hourglass stiffness or viscosity, which adds artificial energy, so you monitor it. Fixes: finer mesh, avoid point loads, distribute contact, a better hourglass formulation, or fully integrated elements where it matters.</td></tr>
+    <tr><td>Why not always use fully integrated elements?</td><td>Cost, plus <strong>locking</strong>. Fully integrated linear elements suffer shear locking in bending (too stiff) and volumetric locking for nearly incompressible materials (plasticity, rubber). Remedies include reduced integration with hourglass control, selective or reduced integration, incompatible-mode elements, or quadratic elements.</td></tr>
+    <tr><td>When does Newton&ndash;Raphson fail?</td><td>Sudden contact changes, material softening, buckling or snap-through (the tangent stiffness becomes singular at a limit point), a bad initial guess, increments that are too big. Remedies: smaller increments, line search, contact stabilisation, arc-length (Riks) for limit points, or switch to explicit.</td></tr>
+    <tr><td>Implicit dynamic &mdash; when?</td><td>When the response is dynamic but slow compared with wave propagation: low-frequency transients, door closing with soft contact, some drop cases. Large steps are allowed, but the time step still has to resolve the frequencies you care about (roughly 20 steps per period of the highest mode of interest). Numerical damping (HHT &alpha;) kills spurious high-frequency noise.</td></tr>
+    <tr><td>Implicit or explicit for door slam?</td><td>Usually explicit for the transient, because it's a short contact event with seal and latch nonlinearity. Then stress histories go to fatigue. Some OEMs use implicit dynamic or a quasi-static equivalent for parts of it. Say you'd follow the method that is already correlated to their test.</td></tr>
+  </table></div>
+
+  <div class="fig">
+    <svg viewBox="0 0 720 210" role="img" aria-label="Implicit vs explicit comparison">
+      <rect x="10" y="10" width="340" height="190" rx="8" fill="none" stroke="currentColor" opacity=".35"/>
+      <rect x="370" y="10" width="340" height="190" rx="8" fill="none" stroke="currentColor" opacity=".35"/>
+      <text x="180" y="36" text-anchor="middle" fill="currentColor" font-size="15" font-weight="700">IMPLICIT</text>
+      <text x="540" y="36" text-anchor="middle" fill="currentColor" font-size="15" font-weight="700">EXPLICIT</text>
+      <g fill="currentColor" font-size="12.5" opacity=".85">
+        <text x="28" y="66">K&#8320;&#916;u = R &#8594; iterate to equilibrium</text>
+        <text x="28" y="90">Unconditionally stable (static / Newmark)</text>
+        <text x="28" y="114">Large steps, few increments</text>
+        <text x="28" y="138">Cost: matrix factorisation per iteration</text>
+        <text x="28" y="162">Risk: non-convergence (contact, buckling)</text>
+        <text x="28" y="186">Sag, stiffness, dent, durability, modal</text>
+        <text x="388" y="66">&#252; = M&#8315;&#185;(f&#8337;&#8339;&#8348; &#8722; f&#7522;&#8345;&#8348;)  no iteration</text>
+        <text x="388" y="90">Conditionally stable: &#916;t &#8804; L&#8337;/c</text>
+        <text x="388" y="114">&#956;s steps, millions of increments</text>
+        <text x="388" y="138">Cost: cheap per step, many steps</text>
+        <text x="388" y="162">Risk: hourglass, mass scaling, noise</text>
+        <text x="388" y="186">Impact, slam, crash, pedestrian</text>
+      </g>
+    </svg>
+    <div class="figc">Draw this on paper if asked. Two columns, six rows.</div>
+  </div>
+
+  <h3>Other fundamentals Ivan may test</h3>
+  <ul>
+    <li><strong>Three sources of nonlinearity:</strong> material (plasticity, hyperelasticity, damage), geometric (large displacement or rotation, stress stiffening, buckling), boundary (contact, friction).</li>
+    <li><strong>Shells vs solids:</strong> shells when thickness is much smaller than the other dimensions (a ratio around 1:10 or less). Mid-surface extraction, offsets, through-thickness integration points (at least 3 for plasticity, 5 is common). Use solids for castings, thick bosses and inserts.</li>
+    <li><strong>Tets vs hexes:</strong> linear tets (CTETRA4/C3D4) are overly stiff, so use second-order tets (10-node) for implicit stress. Hexes are more efficient per DOF when the geometry allows.</li>
+    <li><strong>Singularities:</strong> stress at a sharp re-entrant corner or a point load/constraint does not converge with mesh refinement. It keeps rising. A real stress peak converges. Read stress a few elements away, model the real fillet, or use a fatigue or hot-spot approach.</li>
+    <li><strong>RBE2 vs RBE3:</strong> RBE2 is rigid, adds stiffness, and is right for a genuinely rigid part (bolt head on a thick boss). RBE3 is an interpolation element that distributes load without adding stiffness, right for applying a load or mass. Using RBE2 to apply loads on a thin panel artificially stiffens it.</li>
+    <li><strong>Inertia relief:</strong> for unconstrained bodies (a full car in a manoeuvre), balance applied loads with inertial loads instead of fixing arbitrary points.</li>
+    <li><strong>Contact:</strong> penalty (a spring, which allows small penetration; stiffness affects time step and convergence) vs Lagrange multiplier (exact, adds DOFs). Node-to-surface vs surface-to-surface. Initial penetrations must be cleaned. Self-contact in crash folding.</li>
+    <li><strong>Modal:</strong> eigenvalue problem (K &minus; &omega;&sup2;M)&phi; = 0. Lanczos for large sparse models. Free-free run: six rigid-body modes near 0 Hz, and a seventh near zero means a disconnected part, which is a great model check.</li>
+    <li><strong>Linear buckling:</strong> eigenvalue on the stress stiffness. It is non-conservative for imperfection-sensitive shells, so follow with nonlinear analysis using imperfections seeded from the buckling modes.</li>
+  </ul>
+</section>
+
+<!-- ================= 9 HYPERWORKS ================= -->
+<section id="hw">
+  <h2><span class="tag">Section 9</span>HyperWorks crash course</h2>
+  <p class="lede">The aim is recognition, not expertise. When Vijay names a card or a tool, you should know what it is and what the Abaqus equivalent is. Don't pretend to have used it.</p>
+
+  <div class="tw"><table>
+    <tr><th>HyperWorks</th><th>Role</th><th>Your equivalent</th></tr>
+    <tr><td><strong>HyperMesh</strong></td><td>Pre-processor: geometry clean-up, mid-surfacing, 2D/3D meshing, quality, connectors, load-case set-up. Writes OptiStruct, Radioss, also Abaqus, LS-DYNA and Nastran decks.</td><td>Abaqus/CAE pre, ANSA</td></tr>
+    <tr><td><strong>OptiStruct</strong></td><td>Implicit solver: linear and nonlinear static, normal modes, buckling, frequency response, heat transfer, fatigue. <em>Also the optimiser</em>: topology, topography (bead patterns on panels), size, shape, free-size, and three-phase composite optimisation.</td><td>Abaqus/Standard, Nastran</td></tr>
+    <tr><td><strong>Radioss</strong></td><td>Explicit solver: crash, impact, drop, pedestrian. Block format with keywords like <code>/MAT</code>, <code>/PROP</code>, <code>/INTER</code>.</td><td>Abaqus/Explicit, LS-DYNA</td></tr>
+    <tr><td><strong>HyperView / HyperGraph</strong></td><td>Post-processing: contours, animations, curves, filtering, energy plots</td><td>Abaqus/Viewer, META</td></tr>
+    <tr><td><strong>HyperStudy</strong></td><td>DOE, optimisation, stochastic studies, fitting</td><td>Your MATLAB DOE + optimisation loop for the thesis (<em>say this</em>)</td></tr>
+    <tr><td><strong>HyperCrash</strong></td><td>Crash-model set-up for Radioss</td><td>&mdash;</td></tr>
+    <tr><td><strong>Inspire</strong></td><td>Concept topology optimisation for designers</td><td>&mdash;</td></tr>
+    <tr><td><strong>HyperLife</strong> / nCode</td><td>Fatigue post-processing</td><td>Your A400M S-N work</td></tr>
+    <tr><td><strong>Tcl / Python</strong></td><td>Automation of HyperMesh and HyperView (the Tcl API is the classic one; Python is now supported)</td><td>Your Apple image-processing scripts; MATLAB</td></tr>
+  </table></div>
+
+  <h3>OptiStruct (Nastran-style bulk data) cards to recognise</h3>
+  <div class="eq">GRID            node
+CQUAD4/CTRIA3   shell elements          CHEXA/CPENTA/CTETRA  solids
+CBAR/CBEAM      beams                   CBUSH                spring/bush (bolts, mounts)
+RBE2 / RBE3     rigid / interpolation
+PSHELL          shell property          PCOMP / PCOMPP       laminate (zone / ply-based)
+PSOLID          solid property
+MAT1            isotropic               MAT8                 orthotropic shell (CFRP ply)
+SPC / SPC1      constraints             FORCE/MOMENT/PLOAD4  loads
+GRAV            gravity                 TEMP                 temperature load
+SUBCASE         load case               EIGRL                modal (Lanczos) request
+NLPARM          nonlinear parameters    CONTACT / TIE        contact / tied interfaces</div>
+  <p>The &ldquo;PCOMPP + STACK + PLY&rdquo; ply-based definition is how OptiStruct models CFRP so that it follows the actual laminate plies across zones. That's relevant to a carbon car.</p>
+
+  <h3>Radioss concepts to recognise</h3>
+  <ul>
+    <li><code>/MAT/LAW2</code> &mdash; Johnson&ndash;Cook elastoplastic (rate- and temperature-dependent). <code>/MAT/LAW36</code> &mdash; tabulated piecewise-linear plasticity with strain-rate curves (the workhorse for metals and plastics). <code>/MAT/LAW25</code> &mdash; composite shell (Tsai&ndash;Wu-type).</li>
+    <li><code>/INTER/TYPE7</code> &mdash; general node-to-surface contact. <code>/INTER/TYPE2</code> &mdash; tied interface. <code>/INTER/TYPE24</code> &mdash; penalty surface-to-surface contact.</li>
+    <li><code>/PROP/TYPE1</code> shell, <code>TYPE14</code> solid. <code>/DT/NODA</code> nodal time step control (Radioss's mass-scaling style control).</li>
+    <li>Two input files: <em>Starter</em> (model, _0000.rad) and <em>Engine</em> (run control, _0001.rad).</li>
+  </ul>
+  <p class="catch">If you're unsure of a card number, describe the concept and say &ldquo;I'd look up the exact law number&rdquo;. A wrong number said confidently is worse than no number.</p>
+
+  <h3>Mesh-quality criteria (HyperMesh quality index)</h3>
+  <div class="tw"><table>
+    <tr><th>Criterion</th><th>Typical automotive shell target (indicative)</th></tr>
+    <tr><td>Element size</td><td>Program-specific: often 5 mm for body-in-white durability, 2&ndash;5 mm for crash, finer at fillets</td></tr>
+    <tr><td>Aspect ratio</td><td>&lt; 3&ndash;5</td></tr>
+    <tr><td>Warpage (quads)</td><td>&lt; 10&ndash;15&deg;</td></tr>
+    <tr><td>Skew</td><td>&lt; 45&deg;&ndash;60&deg;</td></tr>
+    <tr><td>Jacobian</td><td>&gt; 0.6&ndash;0.7</td></tr>
+    <tr><td>Quad angles</td><td>45&deg;&ndash;135&deg;</td></tr>
+    <tr><td>Tria angles</td><td>20&deg;&ndash;120&deg;</td></tr>
+    <tr><td>Tria percentage</td><td>&lt; 5&ndash;10% of shells, kept away from critical areas</td></tr>
+    <tr><td>Min time step (explicit)</td><td>The model's target, e.g. around 0.5&ndash;1 &micro;s, with the controlling elements listed</td></tr>
+  </table></div>
+  <p>Say these are <em>typical</em> values and that you'd use their meshing guideline. Every OEM has one.</p>
+
+  <h3>The 2-minute tool answer if Vijay asks &ldquo;walk me through your workflow&rdquo;</h3>
+  <div class="say">CAD in, then clean the geometry: remove features that don't matter structurally, keep the fillets where stress will be read. Mid-surface for thin parts, solid for thick ones. Mesh to the guideline size, then run quality checks and fix the failing elements rather than hiding them. Assign properties and materials, ply stack for CFRP. Build the connections: bolts, adhesives, hinges. Then loads and constraints per the load-case spec. Before submitting: a mass check against CAD, free-edge and duplicate checks, and a free-free modal to catch disconnected parts. Solve, then sanity-check reactions and energy, and look at deformation before stress. Finally, read results against target and report.</div>
+</section>
+
+<!-- ================= 10 CORRELATION ================= -->
+<section id="corr">
+  <h2><span class="tag">Section 10</span>Correlation &amp; physical testing</h2>
+  <p class="lede">The posting says &ldquo;participate in physical testing to validate and refine simulation models&rdquo;. That is your strongest card. You have done it yourself (Volvo, TEKEVER), not just received a test report.</p>
+
+  <h3>The correlation loop (how to describe it)</h3>
+  <ol>
+    <li><strong>Plan the test with the model.</strong> Use pre-test simulation to place strain gauges and accelerometers at points that are informative and not in high gradients, and to pick load levels.</li>
+    <li><strong>Match the test, not the requirement.</strong> Model the real fixture, the real constraint stiffness, the real loading device and the measured thickness or ply count. Most correlation gaps come from boundary conditions.</li>
+    <li><strong>Compare like with like.</strong> Same filtering (e.g. CFC filters for crash data), same sampling point, same coordinate system.</li>
+    <li><strong>Metrics:</strong> stiffness (slope), peak force, displacement at peak, energy absorbed, strain at gauges, frequencies within a few percent and MAC &gt; about 0.9 for mode shapes. For full fields, DIC (digital image correlation) against contour plots.</li>
+    <li><strong>Diagnose in order:</strong> BCs and fixture &rarr; geometry and thickness &rarr; connections &rarr; material card &rarr; mesh. Change one thing at a time. Never tune a material parameter to fix a boundary-condition error.</li>
+    <li><strong>Validate on a case you didn't calibrate on.</strong> Otherwise you have only shown that you can fit.</li>
+    <li><strong>Feed back:</strong> update the modelling guideline so the next model starts correlated.</li>
+  </ol>
+
+  <div class="say">The thing I'm strictest about is the difference between calibration and validation. In the thesis I calibrated against quasi-static and dynamic cell tests. The question I'd now always ask is which test is held out, because a model that only matches the tests it was fitted to hasn't been validated yet.</div>
+  <p class="catch">Only say the second half of that if it is consistent with what you actually did. If you <em>did</em> hold out a test, say which. That makes it a much stronger story.</p>
+
+  <h3>Composite specifics for correlation</h3>
+  <ul>
+    <li>Scatter in CFRP properties is larger than in metals. Use B-basis or A-basis allowables for strength, and mean values for stiffness correlation.</li>
+    <li>Real ply drops, overlaps and fibre angles (from draping) differ from nominal. Draping simulation can feed fibre angles to the FE model.</li>
+    <li>Failure criteria (max stress or strain, Tsai&ndash;Wu, Hashin, Puck) predict onset differently. Matrix cracking and delamination need separate treatment (cohesive zones for delamination and adhesive joints).</li>
+    <li>Environmental knock-down: hot/wet conditions reduce matrix-dominated properties.</li>
+  </ul>
+</section>
+
+<!-- ================= 11 DRILLS ================= -->
+<section id="drill">
+  <h2><span class="tag">Section 11</span>Hand-calc drills</h2>
+  <p class="lede">Each card has the spoken answer, the equation you'd write, and where a strong interviewer catches people. Do the arithmetic on paper once tonight so the numbers come out naturally.</p>
+  <div id="drillList"></div>
+</section>
+
+<!-- ================= 12 BANK ================= -->
+<section id="bank">
+  <h2><span class="tag">Section 12</span>Question bank</h2>
+  <p class="lede">Tiered by who is likely to ask. Click to open. Gold <span class="pill p9">Hard / personal</span> questions are the ones that can sink the round. Rehearse them out loud first.</p>
+  <div id="tierPills"></div>
+  <div class="ctrl">
+    <button onclick="allQ(true)">Expand all</button>
+    <button onclick="allQ(false)">Collapse all</button>
+    <select id="filt" onchange="renderBank();renderPills()"><option value="all">All tiers</option></select>
+  </div>
+  <div id="bankList"></div>
+</section>
+
+<!-- ================= 13 MOCK ================= -->
+<section id="mock">
+  <h2><span class="tag">Section 13</span>Mock mode</h2>
+  <p class="lede">You get a random question with a timer running. Answer out loud before you reveal the answer. Speaking matters: silent rehearsal does not carry over to a live interview. Progress is saved in this browser.</p>
+  <div class="ctrl">
+    <select id="mockScope"><option value="all">Everything</option></select>
+    <button class="pri" onclick="nextQ()">Next question</button>
+    <button onclick="toggleAns()">Reveal answer</button>
+    <span id="timer">0:00</span>
+    <button onclick="resetTimer()">Reset timer</button>
+  </div>
+  <div id="stage">
+    <div id="stageQ">Press <em>Next question</em> to start.</div>
+    <div id="stageMeta"></div>
+    <div id="stageA"></div>
+    <div class="ctrl" style="margin:20px 0 0">
+      <button class="gd" onclick="mark(1)">Solid &mdash; move on</button>
+      <button class="bd" onclick="mark(0)">Shaky &mdash; keep in rotation</button>
+    </div>
+  </div>
+  <div class="prog" id="prog"></div>
+  <div class="bar"><i id="barI"></i></div>
+  <div class="ctrl" style="margin-top:18px"><button onclick="resetProg()">Reset progress</button></div>
+  <h3>Timing targets</h3>
+  <ul>
+    <li>Definitions and fundamentals: <strong>45&ndash;75 s</strong>, then stop and let them go deeper.</li>
+    <li>&ldquo;How would you set up X?&rdquo;: <strong>2&ndash;3 min</strong>, following the 10-step checklist in &sect;7.</li>
+    <li>Behavioural: <strong>60&ndash;90 s</strong>. The Helsing answer: <strong>35 s</strong>.</li>
+  </ul>
+  <p>The timer turns amber at 1:30 and red at 2:30.</p>
+</section>
+
+<!-- ================= 14 ASK ================= -->
+<section id="ask">
+  <h2><span class="tag">Section 14</span>Questions to ask</h2>
+  <p class="lede">Ask two or three. Ask about the work, not the package. Address each to a named person. That shows you were listening, and it gives each panellist a moment to talk.</p>
+  <div class="tw"><table>
+    <tr><th>To</th><th>Question</th><th>Why it works / what to listen for</th></tr>
+    <tr><td>Gustavo</td><td>&ldquo;With Tourbillon in its final testing phase, where is exterior CAE's effort going over the next year: launch and change support, or the next programme?&rdquo;</td><td>Shows you know where the car is. The answer tells you whether you'd be firefighting or doing development.</td></tr>
+    <tr><td>Gustavo</td><td>&ldquo;CAE and Materials sit together under you. How does material characterisation feed the cards: in-house testing, suppliers, or both? And how close is the CAE engineer to that?&rdquo;</td><td>Ties in your layer-level testing. Listen for a chance to be involved in testing.</td></tr>
+    <tr><td>Ivan</td><td>&ldquo;What's the most common modelling mistake you see in models from engineers new to the team?&rdquo;</td><td>Experts love this question. Whatever he says is your first-month checklist.</td></tr>
+    <tr><td>Ivan</td><td>&ldquo;For CFRP exterior parts, do you model ply-based with first-ply failure, or is stiffness the governing criterion for most exterior parts?&rdquo;</td><td>A precise technical question. Exterior CFRP is often stiffness- and stability-governed.</td></tr>
+    <tr><td>Vijay</td><td>&ldquo;How standardised is the load-case process: templates and automated set-up scripts, or built per part? Is there room to automate?&rdquo;</td><td>Positions your scripting background. Listen for Tcl/Python culture.</td></tr>
+    <tr><td>Vijay</td><td>&ldquo;Is the explicit work all in Radioss, or do you exchange models with suppliers in other solvers?&rdquo;</td><td>Practical, and it lets your Abaqus experience count.</td></tr>
+    <tr><td>All</td><td>&ldquo;With 250 cars and few prototypes, how much of the sign-off on exterior parts is virtual, and how much still needs physical test?&rdquo;</td><td>The strategic question about their discipline. It flatters CAE because it's true.</td></tr>
+    <tr><td>Gustavo</td><td>&ldquo;What would a strong first six months look like for this role?&rdquo;</td><td>Ask it last. It tells you the expectations, and their answer is your 30/60/90 plan.</td></tr>
+  </table></div>
+  <div class="dont">Salary, remote days, bonus, relocation (HR) &middot; &ldquo;What does a typical day look like?&rdquo; &middot; anything on the careers page &middot; the ownership deal &middot; the stolen Chiron</div>
+</section>
+
+<!-- ================= MONEY ================= -->
+<section id="money">
+  <h2><span class="tag">Reference</span>Money &amp; the move</h2>
+  <p class="lede">Not for the panel. This is for your own decision, and for HR if you get to an offer.</p>
+  <div class="grid g3">
+    <div class="stat"><b>&euro;37,500+</b><span>Posted starting gross per year at Bugatti Rimac (&ldquo;from&rdquo;)</span></div>
+    <div class="stat"><b>&euro;80,000</b><span>Your Helsing base, plus &euro;65,000 of options (12-month cliff, 48-month vest)</span></div>
+    <div class="stat"><b>&asymp;&euro;2,000&ndash;2,200</b><span>Rough net per month on &euro;37.5k in Zagreb. <em>Estimate only</em>: 20% pension contributions, then city income tax rates on the base after the personal allowance. Get a payslip estimate from HR.</span></div>
+  </div>
+  <h3>The rest of the posted package</h3>
+  <ul>
+    <li>Performance bonus and holiday bonus; at least 25 days holiday from day one</li>
+    <li>Up to 12 remote days a month; flexible hours</li>
+    <li>Private healthcare and mental-wellbeing support; transport allowance; subsidised meals</li>
+    <li>Kindergarten subsidies, family events; dog-friendly office</li>
+  </ul>
+  <div class="card warnb">
+    <h4>The plain arithmetic</h4>
+    <p>Zagreb is much cheaper than Munich. Rent alone may be less than half. But the posted floor is less than half your Helsing base, and moving inside probation forfeits the whole option grant. If the reason is a CAE career, that can be worth it. Specialising early compounds, and Bugatti Rimac CAE on a CFRP hypercar is a strong line on a CV. But make the decision on purpose. If they ask for salary expectations, the safe answer is: &ldquo;I'd like to understand the full package with HR. I know the posted range, and the role matters more to me than the number.&rdquo; Only say the second half if it's true.</p>
+  </div>
+</section>
+
+<!-- ================= DAY ================= -->
+<section id="day">
+  <h2><span class="tag">Day-of</span>Monday 2 November &mdash; the only page you need in the last hour</h2>
+  <p class="lede">Don't read anything new within an hour of the call.</p>
+
+  <div class="card badb">
+    <h4>Logistics</h4>
+    <ul>
+      <li><strong>Time:</strong> confirm from the Teams invite (see &sect;0). Ana's email said 15:00 &ldquo;CEST&rdquo;; you have 13:00. <strong>Resolve it before you sleep.</strong></li>
+      <li><strong>Link:</strong> the email &ldquo;Technical interview &ndash; Lu&iacute;s Henrique Sousa&rdquo; from Ana Vukoja, 29 Oct. Teams meeting ID 376 331 809 420 108 6; the passcode is in the invite.</li>
+      <li><strong>Panel:</strong> Gustavo Andrade (Head of CAE &amp; Materials), Ivan &Scaron;u&scaron;ak (FEA Expert), Vijay George (CAE Expert).</li>
+      <li>Join <strong>10 minutes early</strong>. Test Teams audio and camera tonight. If Helsing work overlaps, block the slot properly and take the call somewhere private, off the Helsing network and not on a Helsing laptop.</li>
+      <li>Paper, pen, water. Write the three names at the top of the page.</li>
+    </ul>
+  </div>
+
+  <h3>Checklist</h3>
+  <ul class="chk" id="dayChk">
+    <li><input type="checkbox" data-k="c1"><span>Interview time confirmed from the invite, in my own time zone</span></li>
+    <li><input type="checkbox" data-k="c2"><span>Helsing answer decided: true, 35 seconds, consistent with what I told Ana</span></li>
+    <li><input type="checkbox" data-k="c3"><span>Probation notice period checked in the Helsing contract</span></li>
+    <li><input type="checkbox" data-k="c4"><span>Volvo thesis one-pager written from memory: solver, element, material model, rate law, tests, DOE, errors</span></li>
+    <li><input type="checkbox" data-k="c5"><span>Implicit vs explicit said out loud in under 90 s, three times</span></li>
+    <li><input type="checkbox" data-k="c6"><span>Drills 1, 3, 4 and 12 done on paper</span></li>
+    <li><input type="checkbox" data-k="c7"><span>Three LinkedIn profiles read; domains noted</span></li>
+    <li><input type="checkbox" data-k="c8"><span>Teams tested: camera, mic, lighting, quiet room</span></li>
+    <li><input type="checkbox" data-k="c9"><span>Two questions picked from &sect;14 (one technical, one to Gustavo)</span></li>
+  </ul>
+
+  <h3>The three things to land</h3>
+  <ol>
+    <li><strong>I correlate models to tests I run myself.</strong> Volvo layer tests &rarr; calibrated, multi-scale cell model, +33% accuracy. TEKEVER: predicted mode, validated on the shaker.</li>
+    <li><strong>I know the fundamentals and where my knowledge stops.</strong> Implicit vs explicit, stability, energy checks, BCs as the first suspect. Measured vs assumed, stated explicitly.</li>
+    <li><strong>I'm choosing CAE on purpose.</strong> The analysis is the part of every job that I did best and most willingly. Exterior on a 250-unit CFRP car is where simulation decides the most.</li>
+  </ol>
+
+  <h3>Numbers to have cold</h3>
+  <div class="grid g3">
+    <div class="stat"><b>33 / 64 / 50 %</b><span>Volvo: accuracy &uarr;, parameters &darr;, calibration time &darr;</span></div>
+    <div class="stat"><b>&Delta;t &le; L/c</b><span>c = &radic;(E/&rho;) &asymp; 5,100 m/s for steel and aluminium &rarr; 5 mm element &asymp; 1 &micro;s</span></div>
+    <div class="stat"><b>7.6 kPa</b><span>Dynamic pressure at 400 km/h</span></div>
+    <div class="stat"><b>&lt; 5&ndash;10 %</b><span>Hourglass energy / internal energy; kinetic / internal for quasi-static explicit</span></div>
+    <div class="stat"><b>1M+ / 100+</b><span>Apple: users affected / field returns analysed</span></div>
+    <div class="stat"><b>$7,500</b><span>Tesla thermal study: rework avoided</span></div>
+  </div>
+
+  <h3>Opening and close</h3>
+  <div class="say">Open: &ldquo;Thanks for making the time, all three of you. I'm looking forward to it.&rdquo; Then let Gustavo lead.<br><br>Close: &ldquo;Thank you, this was a really useful conversation. What I take from it is [one thing they said about the work]. That's exactly the kind of work I want to be doing.&rdquo; Then stop.</div>
+
+  <h3>If you blank on a technical question</h3>
+  <div class="say">&ldquo;Let me think about that out loud.&rdquo; Then go back to first principles: what is the physics, what would a hand calculation give, what would a one-element test model show. Reasoning out loud from first principles beats a memorised answer with this panel.</div>
+</section>
+
+<div class="foot">Prepared 1 Nov 2026 for the Bugatti Rimac CAE Engineer &ndash; Exterior technical panel. Company facts are from Bugatti press releases (Tourbillon reveal; ownership transition, 9 Sep 2026) and the Rimac careers page. Interviewer notes are from public LinkedIn snippets where found, otherwise marked as inference. Load magnitudes, mesh criteria and energy thresholds are typical industry values, not Bugatti Rimac targets.</div>
+</main>
+</div>
+<script>
+/* ---------------- question bank ---------------- */
+const TIER={1:['p1','Warm-up'],2:['p2','FEA core'],3:['p5','Implicit'],4:['p4','Explicit'],5:['p3','Exterior'],6:['p6','Materials'],7:['p7','HyperWorks & process'],8:['pT','Test & reporting'],9:['p9','Hard / personal']};
+
+const QS=[
+/* ---------- 1 · WARM-UP ---------- */
+{t:1,w:'Gustavo',q:"Tell us about yourself.",a:`<p>This is the CAE version. Analysis comes first, design second. It runs <strong>about 90 seconds</strong>.</p>
+<div class="say">I'm a mechanical engineer with an MSc from Porto, a minor in aeronautical and vehicle structures, and a semester at Politecnico di Milano on FEA, CFD and structural reliability. The common thread in my work is building a model and then checking it against reality. My MSc thesis was at Volvo Cars: a multi-scale, strain-rate-dependent FE model of lithium-ion cells under crash, calibrated on layer-level tests I ran myself. It improved accuracy by a third and cut the calibration parameters by about two thirds. Through the degree I also did explicit drop-test work on a helicopter fuselage and implicit wing-box and fatigue work. In industry I've been on both sides of the model. At Apple I did failure analysis on iPhones in the field, root-causing a failure that affected over a million users. At Tesla I designed test equipment and ran a thermal study, unrequested, that reversed a design decision before freeze. I joined Helsing in October on the design side. What I've learned from all of it is that the analysis is the part I'm best at and want to do full time, and exterior CAE on a carbon hypercar is the most interesting version of that I can think of.</div>
+<p><strong>Then stop.</strong> If they want the Helsing part expanded, they will ask. Use the 35-second script.</p>`},
+{t:1,w:'Gustavo',q:"Why Bugatti Rimac, and why exterior CAE?",a:`<div class="say">Two reasons. First, the product. A car designed to be stable above 400 km/h, built mostly in carbon, with an active wing that doubles as an airbrake, and only 250 of them. At that volume you can't afford many prototypes or tooling changes, so simulation carries more of the sign-off than at a volume OEM, and the CAE engineer's judgement matters more. Second, exterior specifically. It's where stiffness, stability, impact, aero loads and durability all meet on parts customers can see and touch. It covers implicit and explicit, so it uses everything I've learned rather than one narrow slice.</div>
+<div class="dont">&ldquo;Dream car since childhood&rdquo; &middot; Mate Rimac fandom &middot; &ldquo;cutting-edge&rdquo; &middot; anything that applies equally to Ferrari</div>`},
+{t:1,w:'Gustavo',q:"What do you know about what our team does?",a:`<p>Keep it short and show the inference. Then turn it into a question.</p>
+<div class="say">From the posting and the car: CAE for the exterior, so closures like the dihedral doors and the lids, the aero devices like the active wing and the diffuser, panels and attachments, implicit for stiffness, sag, dent and durability, and explicit for impact and slam. And since CAE and Materials sit together, I'd guess you also own the material cards, which matters a lot with CFRP. Is that roughly the split, or does the team cover more?</div>`},
+{t:1,w:'Gustavo',q:"Where do you see yourself in five years?",a:`<div class="say">As a CAE engineer the design team comes to before they commit geometry, not after. Deep in exterior, trusted to own a whole system's load cases, and good at correlation, so the models are believed. I'm not chasing a management title. If leading a small team comes with the technical depth I'd take it, but not instead of it.</div>`},
+{t:1,w:'Gustavo',q:"What are you working on at the moment?",a:`<p>Factual, one sentence, then pivot.</p>
+<div class="say">I joined Helsing in Munich in October as a mechanical engineer on the design side, onboarding and getting into their hardware. Most of what's relevant to this role is from before: the Volvo work and the analysis I've done along the way.</div>
+<p>If they push, go to <em>! The Helsing question</em>.</p>`},
+{t:1,w:'Any',q:"Walk us through your thesis at a high level.",a:`<p>Use <em>&sect;5 Story 1</em>. Open with the scope sentence, then offer depth: &ldquo;Happy to go into the homogenisation or the calibration, whichever is more useful.&rdquo; That hands Ivan the choice and shows you can go deep on either.</p>`},
+
+/* ---------- 2 · FEA CORE ---------- */
+{t:2,w:'Ivan',q:"Explain the difference between implicit and explicit solvers.",a:`<p>Full answer and three levels of follow-up in <strong>&sect;8</strong>. Core points: equation of motion; Newton&ndash;Raphson with tangent stiffness vs central difference with lumped mass; unconditional vs conditional stability; &Delta;t &le; L<sub>e</sub>/c; which load cases each suits.</p>`},
+{t:2,w:'Ivan',q:"What are the sources of nonlinearity in FEA? Give an exterior example of each.",a:`<ul><li><strong>Material:</strong> plasticity in a steel hinge under overslam; thermoplastic fascia; hyperelastic seal.</li>
+<li><strong>Geometric:</strong> large displacement and stress stiffening; oil-canning snap-through of a shallow panel; buckling of a thin flange.</li>
+<li><strong>Boundary / contact:</strong> door to seal; latch to striker; indenter to panel; friction.</li></ul>
+<p>Follow-up: &ldquo;How do you know if you need geometric nonlinearity?&rdquo; If displacements change the load path or stiffness (deflection comparable to thickness for plates, rotations above a few degrees), or if a linear result shows deflection much larger than the thickness of a thin panel. Run both and compare.</p>`},
+{t:2,w:'Ivan',q:"Shear locking: what is it and how do you avoid it?",a:`<div class="say">Fully integrated linear elements can't represent pure bending. To bend they have to develop parasitic shear strain, which makes them far too stiff, so a beam in bending predicts a fraction of the real deflection. Fixes: reduced integration with hourglass control, incompatible-mode elements, quadratic elements, or several elements through the thickness for solids. For thin structures, use shell elements, which are formulated for bending.</div>
+<p>Related: <strong>volumetric locking</strong> in nearly incompressible behaviour (plasticity, rubber). Use hybrid or mixed formulations, or reduced or selective integration.</p>`},
+{t:2,w:'Ivan',q:"What is hourglassing, and how do you control and check it?",a:`<p>See <em>&sect;8</em>. Key points: zero-energy modes in reduced-integration elements; controlled by hourglass stiffness or viscosity; check hourglass energy against internal energy (typical target &lt; 5&ndash;10%), both globally and per part. Causes include point loads, coarse mesh in bending, and concentrated contact. Visual sign: zig-zag mesh deformation.</p>`},
+{t:2,w:'Ivan',q:"How do you know your mesh is fine enough?",a:`<div class="say">A convergence study on the quantity I'm reporting, not on the whole model. Refine in the region of interest and plot the result against element size. When the change between refinements falls below a few percent, the mesh is fine enough for that output. Displacements converge fast, stresses slowly, and stress at a singularity never does. If stress keeps rising with every refinement, it's a singularity, not a converging peak. I did this on the thesis and checked energy balance alongside it.</div>`},
+{t:2,w:'Ivan',q:"You see a very high stress at a corner. Is it real?",a:`<div class="say">First I check whether it's a singularity: a sharp re-entrant corner, a point load, a point constraint, or the edge of a rigid element. If refining the mesh makes it keep rising, it's numerical. Then I either model the real fillet radius, read the stress a couple of elements away, or use a method meant for it, like hot-spot stress for welds. If it converges with refinement and the geometry is real, it's a real peak and it goes into the assessment, for static strength and especially fatigue.</div>`},
+{t:2,w:'Ivan',q:"RBE2 vs RBE3: when do you use each?",a:`<p>RBE2 is rigid and adds infinite stiffness between nodes. Use it for genuinely rigid connections (bolt through a thick boss, a stiff casting). RBE3 interpolates: it distributes force and mass to the nodes by weighting, without adding stiffness. Use it to apply loads or lumped masses. <strong>Trap:</strong> applying a load to a thin CFRP panel through an RBE2 makes the panel artificially stiff over the spider's footprint and underpredicts deflection.</p>`},
+{t:2,w:'Ivan',q:"Shells or solids: how do you decide, and what are the pitfalls of shells?",a:`<p>Shells when thickness is small compared with in-plane dimensions (around 1:10 or less): sheet metal, CFRP skins, plastic fascias. Solids for castings, thick bosses, inserts, adhesive bead detail. Shell pitfalls: mid-surface offsets (the mesh is at the mid-plane but contact is at the outer surface, so set thickness offsets for contact); thickness changes; T-junction double-counting; through-thickness stress is not available; enough integration points through the thickness for plasticity (5 is common).</p>`},
+{t:2,w:'Ivan',q:"How would you model a bolted joint?",a:`<div class="say">It depends on the question. For global stiffness, a beam or CBUSH element between the parts, connected with RBE2 spiders sized to the washer or head footprint. For joint loads or separation, add preload, with contact between the clamped faces so they can open. For local stress in the boss, solid bolt and threads simplified, contact under the head, and a pretension section. Into CFRP I'd also check bearing stress and whether there's a metallic insert. Preload relaxation in composite is a real issue.</div>`},
+{t:2,w:'Ivan',q:"How would you model an adhesive bond between CFRP panels?",a:`<p>Options by fidelity: (1) <strong>tied contact</strong>, which gives stiffness but no bond failure; (2) <strong>cohesive elements</strong> with a traction&ndash;separation law (initiation stress, fracture energies G<sub>Ic</sub>/G<sub>IIc</sub>, mixed-mode law), for debond prediction; (3) solid adhesive layer for detailed stress. For exterior slam and impact, debond is a real failure mode, so cohesive is justified where peel loads are high. Check: cohesive elements need small elements in the process zone, and explicit time-step sensitivity if the thickness is small.</p>`},
+{t:2,w:'Ivan',q:"Linear buckling analysis: what does it give you and when is it misleading?",a:`<p>An eigenvalue problem: (K + &lambda;K<sub>G</sub>)&phi; = 0, giving a load multiplier and a mode shape. It is misleading for imperfection-sensitive structures (curved shells, cylinders), where real collapse can be far below the linear prediction, and where plasticity happens before buckling. Better: nonlinear analysis with an imperfection seeded from the first mode or modes (amplitude around a fraction of thickness), plus arc-length to pass the limit point.</p>`},
+{t:2,w:'Ivan',q:"What checks do you run before trusting any result?",a:`<ol><li>Units consistent (mm, t, s, N, MPa is the classic set). Mass versus CAD.</li><li>Free-free modal: six rigid-body modes near 0 Hz, a seventh means something is disconnected.</li><li>Reaction forces equal applied loads.</li><li>Deformed shape plausible at true scale and exaggerated.</li><li>Implicit: convergence history. Explicit: energy balance, hourglass, added mass, time step.</li><li>Compare with the hand calculation done beforehand.</li><li>Mesh sensitivity at the location being reported.</li></ol>`},
+{t:2,w:'Ivan',q:"What is inertia relief and when would you use it?",a:`<p>For a free body under applied loads (a vehicle or subsystem with no real constraints), inertia relief balances the applied loads with D'Alembert inertial forces from the mass distribution. The model is in equilibrium without arbitrary constraints, so there are no artificial reactions or stress concentrations at fake supports. Used for road-load durability on bodies and subsystems, and aero load cases on free structures.</p>`},
+{t:2,w:'Ivan',q:"What element would you use for a thin CFRP panel, and how do you define the layup?",a:`<p>A layered (composite) shell: CQUAD4 with PCOMP (zone-based) or PCOMPP plus STACK and PLY (ply-based) in OptiStruct. MAT8 orthotropic ply properties. Material orientation set per element or by projection, since fibre angle matters. Ply-based follows real plies across zones and makes drop-off and optimisation sensible. Output per-ply stresses and strains and failure indices. Check the laminate's ABD behaviour (unbalanced or unsymmetric layups couple bending and extension).</p>`},
+
+/* ---------- 3 · IMPLICIT ---------- */
+{t:3,w:'Ivan',q:"Explain Newton–Raphson. What do you do when it doesn't converge?",a:`<div class="say">At each increment you linearise about the current state, solve K<sub>T</sub>&Delta;u = R for a correction, update, recompute the residual and iterate until the residual and the displacement correction fall below tolerance. Convergence is quadratic near the solution if the tangent is consistent. When it fails I look at where and why. Contact chattering: smaller increments, contact stabilisation, cleaner initial gaps. Material softening or buckling: the tangent goes singular at a limit point, so switch to displacement control or arc-length. Large increments: let the automatic stepping cut back. And if the event is really dynamic with lots of contact, the honest answer may be that it belongs in explicit.</div>`},
+{t:3,w:'Ivan',q:"What is the arc-length (Riks) method and when do you need it?",a:`<p>It controls the increment by a combined measure of load and displacement (the arc length) instead of load alone. That lets the solver follow the equilibrium path through limit points where the load drops (snap-through), and through snap-back where displacement also reverses. Needed for post-buckling, collapse and <strong>oil-canning</strong> of shallow panels. Displacement control alone handles snap-through but not snap-back. See drill 12.</p>`},
+{t:3,w:'Gustavo',q:"How would you set up a door sag analysis?",a:`<p>Use the 10-step checklist in &sect;7.</p>
+<ol><li><strong>Target:</strong> elastic and permanent set at the latch or striker under specified load (company spec).</li><li><strong>Model:</strong> door assembly (inner, outer, reinforcements, hinge reinforcements), hinges with pin or revolute joints, check strap or stop in its open position. Body side either fixed at the hinge mounting, or with a cut-out of the body-in-white if hinge-pillar stiffness matters, and it usually does.</li><li><strong>Load:</strong> vertical force at the outer end (distributed with RBE3) plus gravity, at the specified opening angle.</li><li><strong>Analysis:</strong> nonlinear static (plasticity at the hinge reinforcement), load then unload to read permanent set.</li><li><strong>Output:</strong> deflection at the latch, permanent set, plastic strain at the hinges.</li></ol>
+<p><strong>Dihedral-door twist:</strong> the hinge axis is inclined, so gravity and the actuator moment vary through the arc. Check several opening angles and the actuator and hinge reactions. Ask how they define it.</p>`},
+{t:3,w:'Gustavo',q:"How would you assess the stiffness of a bonnet or frunk lid?",a:`<p>Linear static. Constrain at the hinges and latch (or latch plus bump stops, matching the test). Torsion: load at one free corner, others constrained. Bending: load mid-span. Report stiffness as N/mm at the load point. Also check the inner panel's contribution and adhesive or hem modelling. For the Tourbillon's <strong>through-flow bonnet</strong>, openings reduce torsional stiffness, so look at stress and deformation around them. Combine with modal (first torsion and bending) for buffeting at speed.</p>`},
+{t:3,w:'Ivan',q:"How would you model dent resistance and oil-canning on an outer panel?",a:`<p>Rigid indenter (hemispherical or flat pad, per spec) pushed into the panel at grid points under displacement control, with contact. Nonlinear geometric (and material, for permanent dent in metals). Output the load-deflection curve. Stiffness is the initial slope; <strong>oil-canning</strong> shows as a limit point or flat region (snap-through), and permanent set after unload gives the dent. Load-control Newton fails at the limit point, so use displacement control or arc-length. For CFRP the permanent dent is less of an issue than local stiffness, snap-through and core or matrix damage if it is a sandwich.</p>`},
+{t:3,w:'Ivan',q:"Modal analysis: how is it solved and what do you check?",a:`<p>Generalised eigenproblem (K &minus; &omega;&sup2;M)&phi; = 0, solved with Lanczos (EIGRL in OptiStruct) for the lowest modes. Checks: mass matches; free-free run gives six rigid-body modes; mode shapes physically sensible; local panel modes not hidden among global ones. Use: keep the first modes of mirrors, the wing and panels above excitation bands (engine orders, road, aero buffeting). Correlation: frequency error within a few percent and MAC &gt; about 0.9.</p>`},
+{t:3,w:'Gustavo',q:"How would you approach a durability analysis of an exterior bracket?",a:`<ol><li>Load source: road-load data (measured or multibody), slam cycles, or aero.</li><li>Unit-load or modal-transient stress solutions (linear, OptiStruct), combined with the load time histories by superposition.</li><li>Rainflow counting, then S-N (high cycle) or &epsilon;-N (local plasticity), with mean-stress correction (Goodman for conservative, Gerber, or Smith&ndash;Watson&ndash;Topper in &epsilon;-N).</li><li>Miner's rule damage; target damage &lt; 1 with a safety factor.</li><li>Surface finish, size and notch factors; welds use their own S-N classes.</li></ol>
+<p>Anchor: your A400M work (mission profile, S-N, NASGRO, 489 h and 770 h intervals). That is the same structure for aircraft.</p>`},
+{t:3,w:'Vijay',q:"How would you apply CFD pressure loads to the rear wing in FE?",a:`<p>Map the CFD surface pressure onto the FE surface mesh (HyperMesh and other pre-processors have mapping tools), then check the integrated total force and moment against the CFD result. Mapping loses fidelity when meshes differ a lot. Run several flight states: max downforce at the relevant speed, airbrake deployed at high speed, and yaw or crosswind cases. Check stiffness (aero shape change changes the load, so iterate or couple if it is significant) and actuator and hinge reactions. Add modal, since buffeting and flutter are possible on a slender wing.</p>`},
+
+/* ---------- 4 · EXPLICIT ---------- */
+{t:4,w:'Ivan',q:"Derive or explain the explicit stable time step.",a:`<p>Central difference is stable for &Delta;t &le; 2/&omega;<sub>max</sub>. For a single element &omega;<sub>max</sub> &asymp; 2c/L<sub>e</sub>, so &Delta;t &le; L<sub>e</sub>/c, with c = &radic;(E/&rho;) for a bar (plate wave speed &radic;(E/&rho;(1&minus;&nu;&sup2;)) for shells). Physically, a wave must not cross more than one element per step. See drill 1 for numbers.</p>`},
+{t:4,w:'Vijay',q:"What is mass scaling? When is it acceptable?",a:`<p>See &sect;8 and drill 2. Acceptable when the added mass is a small fraction of the total (often &lt; 2&ndash;5%) and it is in small elements away from where inertia drives the result. Never in the impact zone of a dynamic event. Always report it. Radioss offers nodal time-step control (/DT/NODA) as the equivalent.</p>`},
+{t:4,w:'Ivan',q:"Which energies do you check in an explicit run and what do you look for?",a:`<ul><li><strong>Total energy:</strong> constant (energy ratio near 1). Growth means instability or a bad contact.</li><li><strong>Internal vs kinetic:</strong> follow the physics. For quasi-static explicit, kinetic &lt; 5&ndash;10% of internal.</li><li><strong>Hourglass:</strong> &lt; 5&ndash;10% of internal, globally and per part.</li><li><strong>Contact or sliding energy:</strong> small and positive. Large negative values mean penetration problems.</li><li><strong>Added mass:</strong> reported, small.</li></ul><p>See drill 11.</p>`},
+{t:4,w:'Ivan',q:"Penalty contact vs Lagrange multiplier: what is the difference?",a:`<p><strong>Penalty:</strong> a spring is inserted when penetration is detected. Force is proportional to penetration, small penetration is allowed, and the stiffness is scaled from the element stiffness. Cheap and the default in explicit. Too stiff reduces the stable time step or causes noise; too soft gives visible penetration. <strong>Lagrange:</strong> the constraint is enforced exactly with extra unknowns. Used in implicit, more expensive. Also: node-to-surface vs surface-to-surface (more robust for shell edges), and self-contact for folding.</p>`},
+{t:4,w:'Vijay',q:"How would you set up a low-speed bumper/fascia impact?",a:`<ol><li>Impactor or pendulum per the regulation or standard (mass, height, velocity), modelled rigid with the correct mass.</li><li>Fascia, absorber (foam or plastic), beam and mounting with real connections.</li><li>Materials: strain-rate-dependent thermoplastic cards (tabulated, e.g. Radioss LAW36), foam (crushable), metals (Johnson&ndash;Cook or tabulated).</li><li>General contact plus self-contact. Initial penetrations cleaned.</li><li>Output: intrusion, permanent damage to lamps, beam and mounts, force-time, energy balance.</li></ol><p>Hand check: impact energy &frac12;mv&sup2; (drill 10).</p>`},
+{t:4,w:'Ivan',q:"How do you model strain-rate dependence in a material?",a:`<p>Either a law with a rate term, such as Johnson&ndash;Cook &sigma; = (A + B&epsilon;<sup>n</sup>)(1 + C ln &epsilon;&#775;*)(1 &minus; T*<sup>m</sup>) or Cowper&ndash;Symonds &sigma;<sub>d</sub>/&sigma;<sub>s</sub> = 1 + (&epsilon;&#775;/D)<sup>1/q</sup>, or tabulated stress-strain curves at several strain rates, interpolated. Rate is usually filtered to avoid noise. Anchor: your thesis did this for the cell layers. Be ready to say which form you used and over what strain-rate range you characterised.</p>`},
+{t:4,w:'Gustavo',q:"Door slam: how would you approach it?",a:`<p>Explicit transient of the door closing at a specified velocity, with seal compression modelled (force-deflection curve or a hyperelastic seal), latch engagement, and contact. Extract stress and strain histories at critical locations (hinge reinforcements, inner panel corners, mirror mount, adhesive joints). Then fatigue over the specified number of cycles. For powered or soft-close doors, the impact is lower but actuator end-stop loads matter. Correlate peak accelerations and strains against a slam rig.</p>`},
+{t:4,w:'Ivan',q:"How would you model crash of a CFRP structure, like the rear diffuser crash element?",a:`<p>Honest framing: you haven't done production CFRP crash, so show you know the issues. Progressive crushing is dominated by fragmentation, delamination and frond formation, which shell models capture only approximately. Options: layered shells with a progressive-damage material model (e.g. Radioss composite laws, Ladev&egrave;ze-type or Matzenmiller-type damage), stacked shells with cohesive interfaces for delamination, and a crush trigger. These models need calibration on coupon and component crush tests (specific energy absorption), and they are mesh-sensitive, so regularise. <strong>Say:</strong> &ldquo;This is where I'd lean on the team's correlated method rather than invent one.&rdquo;</p>`},
+
+/* ---------- 5 · EXTERIOR ---------- */
+{t:5,w:'Gustavo',q:"Which load cases would you consider for an active rear wing?",a:`<ul><li><strong>Aero downforce</strong> at max speed with the wing deployed: stiffness (shape retention), strength, actuator load.</li><li><strong>Airbrake</strong>: high angle at high speed, sudden deployment. Dynamic amplification up to about 2 for a step load on a lightly damped structure (drill 3).</li><li><strong>Crosswind or yaw:</strong> asymmetric load, torsion of the mounts.</li><li><strong>Modal:</strong> first bending and torsion versus buffeting and engine excitation. Flutter is a coupled aero-structural issue to flag.</li><li><strong>Fatigue:</strong> deployment cycles plus road vibration.</li><li><strong>Abuse:</strong> someone leaning on or pushing the wing when parked, car-wash loads.</li><li><strong>Thermal:</strong> exhaust or engine heat near the mounts. CTE mismatch between CFRP blade and metal mechanism.</li></ul>`},
+{t:5,w:'Gustavo',q:"What changes for a dihedral door compared with a conventional door?",a:`<ul><li>The hinge axis is inclined, so gravity's moment about the hinge varies through the opening arc. Sag is not one case but a function of angle.</li><li>The actuator and gas-strut loads must hold the door at every angle. The worst case may be partially open, in wind.</li><li>Wind gust on a fully open door has a long lever arm: hinge and A-pillar or roof loads.</li><li>Abuse: someone pulling the door down or forcing it past its stops. End-stop impact loads from the powered mechanism.</li><li>Seal and closing: the door closes downwards with gravity, which changes slam and latch engagement.</li><li>Crash interaction: hinge location affects how the door behaves in side impact and roll-over (egress requirements).</li></ul>`},
+{t:5,w:'Gustavo',q:"What is oil-canning, and why does it matter to a customer?",a:`<p>Snap-through instability of a shallow, lightly curved panel. You press it, it suddenly pops inwards, and it may pop back. It is perceived as cheapness or fragility, so on a &euro;3.8M car it is unacceptable even if it is structurally harmless. Drivers: low curvature, thin skin, large unsupported span. Fixes: more curvature (styling permitting), local reinforcement or bonding to the inner, ribs or beads (OptiStruct topography optimisation suggests bead patterns), or a thicker or sandwich laminate.</p>`},
+{t:5,w:'Any',q:"What is the dynamic pressure at 400 km/h and why does it matter?",a:`<p>q = &frac12;&rho;v&sup2; = 0.5 &times; 1.225 &times; (111.1)&sup2; &asymp; <strong>7.6 kPa</strong>. That is roughly 760 kg-force per square metre of pressure coefficient. Every exterior part (flaps, mirror housings, fender edges, trim) must keep its shape and stay attached under loads that scale with v&sup2;. At twice the speed, four times the load. Suction on upper surfaces can pull panels off their attachments, so check fastener and adhesive pull-off, not just bending.</p>`},
+{t:5,w:'Gustavo',q:"Mirror vibration: what would you check?",a:`<p>First modes of the mirror assembly (arm plus head) above the road and engine excitation bands, typically aiming for a margin to avoid image blur. Frequency response to base excitation at the mount. Stiffness under aero load at top speed. Drill 5 gives the order of magnitude for an aluminium arm with a 1 kg head. Ask whether the Tourbillon uses glass mirrors or cameras. Do not assume.</p>`},
+{t:5,w:'Gustavo',q:"How would you analyse gap and flush under temperature?",a:`<p>Thermal load case (hot soak, cold soak, paint-bake if relevant) on the assembly with the real attachments. The key driver is <strong>CTE mismatch</strong>: CFRP close to zero in-plane, aluminium about 23 &micro;m/m&middot;K, steel about 12. Over a 1 m panel and an 80 K swing, aluminium grows by about 1.8 mm against about 0.1&ndash;0.2 mm for CFRP. Results: gap and flush change at boundaries, stresses at constrained fixings, adhesive shear. Fixes: slotted or floating mounts, compliant attachments, a matched-CTE bracket material. Drill 9.</p>`},
+{t:5,w:'Gustavo',q:"Pedestrian protection: does it apply to a car like this? What would you model?",a:`<p>Say you'd confirm the homologation route: requirements and exemptions depend on how a low-volume vehicle is type-approved and on the market. Technically: headform impactors (adult and child) on the bonnet and windscreen base giving HIC, and a leg impactor on the front bumper. Explicit, with impactor models certified by the suppliers. The challenge on a low, stiff, carbon front end is space for deformation over hard points (radiators, frame). The through-flow bonnet layout is relevant.</p>`},
+{t:5,w:'Gustavo',q:"A designer wants to cut the outer skin thickness to save weight. How do you respond?",a:`<div class="say">I'd ask which requirement governs that panel, because it's probably not strength. For an outer skin it's usually stiffness, oil-canning, dent or palm load, or modal. Bending stiffness scales with thickness cubed, so a 20% reduction loses about half the bending stiffness. Before saying no, I'd run the governing cases at the new thickness and look at alternatives that keep the mass saving: local reinforcement, bonding to the inner at a new point, ply changes, or bead patterns. I'd come back with what passes and what each option costs in mass.</div>`},
+{t:5,w:'Any',q:"Why is CAE more important at 250 cars a year than at 250,000?",a:`<div class="say">Because the cost of physical iterations is spread over so few cars. Composite tooling is expensive and slow to change, prototype cars are extremely expensive, and there are few of them, so you can't test everything physically or iterate on hardware. Simulation has to do more of the validation and the few physical tests have to be well chosen and well correlated. The flip side is that the CAE has to be trusted, which raises the bar on correlation and on knowing exactly how far you can believe a model.</div>`},
+
+/* ---------- 6 · MATERIALS ---------- */
+{t:6,w:'Gustavo',q:"Which failure criteria do you know for composites and how do they differ?",a:`<ul><li><strong>Max stress or max strain:</strong> each ply direction is checked independently. Simple, with no interaction.</li><li><strong>Tsai&ndash;Hill / Tsai&ndash;Wu:</strong> a single quadratic interaction polynomial. One index, but it doesn't say <em>which</em> mode failed. Tsai&ndash;Wu needs an interaction coefficient that is hard to measure.</li><li><strong>Hashin:</strong> separates fibre and matrix failure, in tension and compression.</li><li><strong>Puck:</strong> physically based, with fracture-plane angle for inter-fibre failure. Good at matrix compression.</li></ul><p>For exterior parts, first-ply failure is often conservative and stiffness governs. Delamination needs a separate approach (interlaminar stress or cohesive zones).</p>`},
+{t:6,w:'Gustavo',q:"Where do material cards come from, and what makes a good one?",a:`<p>Coupon testing (tension, compression, shear, at rates for explicit; ply-level for CFRP), supplier data, or literature. Then calibration of the chosen model to those tests, and validation on a component test that was not used in fitting. A good card is <em>fit for the load case</em>: the right rate range, temperature, failure definition, and knowledge of the scatter. Link to the thesis: you ran the layer tests yourself and calibrated from them. That is exactly this process.</p>`},
+{t:6,w:'Ivan',q:"Thermoplastic fascia material: what is special about modelling it?",a:`<p>Strong strain-rate dependence, different behaviour in tension and compression, pressure-dependent yield, temperature dependence (cold impacts are brittle), and failure that is hard to predict. Typically handled with tabulated rate-dependent curves (e.g. Radioss LAW36, or more advanced polymer laws), calibrated at several rates and temperatures. Mesh dependence of the failure strain should be regularised by element size.</p>`},
+{t:6,w:'Gustavo',q:"What are the main differences between designing in CFRP and in aluminium, from a CAE view?",a:`<ul><li>Anisotropy, and the layup is a design variable (orientation, stacking, drop-offs).</li><li>Mostly linear-elastic to brittle failure, with no plastic reserve, so margins mean something different.</li><li>Joints: bonding and inserts instead of welds. Bearing and pull-out at fasteners.</li><li>Larger material scatter, and environmental knock-downs (hot/wet).</li><li>Damage tolerance: barely visible impact damage, delamination.</li><li>CTE close to zero creates mismatch with metal parts.</li><li>Optimisation: free-size &rarr; size &rarr; ply shuffle (the OptiStruct three-phase process).</li></ul>`},
+{t:6,w:'Ivan',q:"Explain homogenisation, as you did in your thesis.",a:`<div class="say">You replace a heterogeneous microstructure, here the layered stack of anode, cathode, separator and current collectors, with an equivalent homogeneous material whose effective properties reproduce the response of a representative volume element. The RVE has to be large enough to be statistically representative, but small compared with the structure. You load it in the relevant modes, extract effective stiffness and the non-linear response, and use that as the material in the full model. That's why the number of calibration parameters dropped: they came from the constituents rather than being fitted at cell level.</div>
+<p class="catch">Be ready for: &ldquo;What boundary conditions did you use on the RVE?&rdquo; (periodic, kinematic or traction). Know your answer.</p>`},
+
+/* ---------- 7 · HYPERWORKS & PROCESS ---------- */
+{t:7,w:'Vijay',q:"Have you used HyperWorks?",a:`<p>See <em>&sect;6 Gap 1</em> for the script. Short version: no production use; Abaqus Standard and Explicit plus 3DEXPERIENCE; you know the map (HyperMesh, OptiStruct, Radioss, HyperView, HyperStudy); a proven fast learner (3DEXPERIENCE in weeks). Do not overclaim.</p>`},
+{t:7,w:'Vijay',q:"What mesh-quality criteria do you check?",a:`<p>Aspect ratio, warpage, skew, Jacobian, min and max angles for quads and trias, tria percentage, minimum element size or explicit time step, free edges, duplicates, and normal consistency for shells (important for contact and pressure loads). Values: see the table in &sect;9, and say you'd follow their guideline.</p>`},
+{t:7,w:'Vijay',q:"How would you automate a repetitive load-case setup?",a:`<p>Template the deck: the same subcases, outputs and checks for each variant. Script the pre-processing (HyperMesh Tcl or Python API) to import the new geometry, assign properties from a naming convention, create connectors, apply loads at standard locations, and run the model checks. Script post-processing (HyperView) to extract standard results into a report template. Anchor: at Apple you scripted the processing of 10,000+ images. Same mindset: automate what is repeated, so the engineering time goes to judgement.</p>`},
+{t:7,w:'Vijay',q:"How do you make sure a model you hand over can be reproduced by a colleague?",a:`<p>Naming conventions for parts, properties and materials. Units stated. Material card source and version recorded. Load-case definition documented against the spec. Model checks listed in the report. Files under version control or PDM. Assumptions written explicitly (&ldquo;measured vs assumed&rdquo;). The test: could someone rerun it from the report alone?</p>`},
+{t:7,w:'Vijay',q:"What is topology / topography / free-size optimisation, and when would you use them on exterior parts?",a:`<ul><li><strong>Topology:</strong> material distribution in a design space. Concept stage for brackets and castings (3D printed or cast parts, which this car uses).</li><li><strong>Topography:</strong> bead or swage patterns on thin panels. Raises stiffness and modal frequency at no mass cost, useful against oil-canning.</li><li><strong>Free-size:</strong> continuous thickness, or per-ply-orientation thickness for composites. Phase 1 of the composite process, then size (discrete plies), then ply-stacking shuffle.</li><li><strong>Size and shape:</strong> fine-tuning thickness and geometry.</li></ul>`},
+{t:7,w:'Gustavo',q:"How do you work with designers when the CAE result is bad news?",a:`<div class="say">Early and with an alternative. I'd rather show a designer a rough result before they've committed geometry than a precise one after. When it fails, I come with three things: what fails and by how much, what's driving it, and one or two options I've already checked. Having been the designer myself, I know a contour plot without a direction is useless to them. What they need is &ldquo;it fails here by 20%, and adding this rib or moving this fixing fixes it&rdquo;.</div>`},
+
+/* ---------- 8 · TEST & REPORTING ---------- */
+{t:8,w:'Gustavo',q:"How do you correlate a model to a physical test?",a:`<p>See <em>&sect;10</em>. Plan with the model, reproduce the actual test set-up, compare like with like, diagnose BCs first, change one thing at a time, validate on a test not used for calibration, then update the guideline.</p>`},
+{t:8,w:'Gustavo',q:"Your simulation and test disagree by 30%. What do you do?",a:`<div class="say">I don't touch the material card first. I start with the test set-up versus the model: fixture stiffness, how it was really constrained, where the load really went in, measured thickness and ply count versus nominal, and whether the sensor sits where I'm reading. Most large discrepancies are boundary conditions or geometry. Then connections and contact, then the material card, then the mesh. One change at a time, and I note which test data I've used to tune, so I can still validate on something independent. And I'd also question the test. Thirty percent sometimes means a broken gauge or a slipping fixture.</div>`},
+{t:8,w:'Gustavo',q:"How do you structure a CAE report for a design review?",a:`<ol><li><strong>Question and answer in one line:</strong> &ldquo;Passes sag target with 15% margin; fails overslam at hinge reinforcement by 10%.&rdquo;</li><li>Load cases, targets and status table (green, amber, red).</li><li>Key plots: deformation first, then stress or strain at the governing location.</li><li>Assumptions: <em>measured vs assumed</em>, model limitations.</li><li>Recommendation with options and their mass or cost impact.</li><li>Appendix: model checks, mesh study, energy plots.</li></ol>`},
+{t:8,w:'Any',q:"What sensors and measurements would you want on a physical test of a panel?",a:`<p>Load cell on the actuator, displacement (LVDT, laser) at the loading point and at the target point, strain gauges (rosettes) at predicted hot spots but not in steep gradients, accelerometers for modal or slam, high-speed video for impact, and DIC for full-field strain on composite or plastic parts. Measured thickness and mass of the actual specimen. Place them using a pre-test simulation.</p>`},
+{t:8,w:'Ivan',q:"What is MAC, and what values do you expect?",a:`<p>Modal Assurance Criterion: the normalised squared dot product between a test mode-shape vector and an FE mode-shape vector at the measured points. 1 means identical shape, 0 means orthogonal. Typically &gt; about 0.9 is a good match for the main modes, with off-diagonal values low. Combine with a frequency error target of a few percent.</p>`},
+
+/* ---------- 9 · HARD / PERSONAL ---------- */
+{t:9,w:'Gustavo',q:"You joined Helsing a month ago. Why are you talking to us?",a:`<p>Full page: <em>! The Helsing question</em>. 35 seconds, true, consistent with what you told Ana. The process started before Helsing. Helsing is design and you want analysis. No criticism.</p>`},
+{t:9,w:'Gustavo',q:"Six months at Tesla, a month at Helsing. Why should we believe you'd stay?",a:`<div class="say">Fair question. The pattern I'd point to is that both times the mismatch was about how much of the job was the work I'm best at. This time I'm moving towards that work, not away from a company. And a car programme runs long. You learn the most by staying to see the next one, and that's what I'm planning on.</div><p>Then stop. Don't add a third justification.</p>`},
+{t:9,w:'Gustavo',q:"This salary is a lot lower than Munich. Have you considered that?",a:`<div class="say">Yes, I've seen the posted range. The reason I'm here is the work, and I'd rather go through the package properly with HR.</div><p class="catch">Only if true. See <em>&euro; Money &amp; the move</em>.</p>`},
+{t:9,w:'Ivan',q:"Tell us about a time your model was wrong.",a:`<p>Use <em>&sect;5 Story 5</em>: the assumed boundary condition on the Tesla end effector, a week to isolate it, and since then you state measured vs assumed explicitly and treat BCs as the first suspect. Ninety seconds.</p>`},
+{t:9,w:'Ivan',q:"What would you not trust in your own thesis model?",a:`<p>This is a test of honesty. Name a real limit: validity outside the tested strain-rate range, a loading mode not tested (e.g. off-axis or combined loading), failure prediction versus pre-failure stiffness, temperature or state-of-charge effects, or calibration without a held-out validation test. Then say what you would do: an extra test, or a range statement in the report.</p>
+<div class="say">I'd trust it in the loading regime and rate range I tested, and I'd be careful extrapolating beyond that, particularly into [the regime you didn't test]. If I were taking it further, I'd hold out a test case to validate on and extend the rate range.</div>`},
+{t:9,w:'Gustavo',q:"Your manager wants the result tomorrow; you need three days to be confident. What do you do?",a:`<div class="say">I'd give them something tomorrow, but labelled for what it is: a coarse answer with its confidence stated, which parts are checked and which aren't, and what could change it. Often a coarse result already answers the decision. If the answer sits near the limit, I'd say clearly that I need the extra days and why. The thing I won't do is present an unchecked result as if it were final.</div>`},
+{t:9,w:'Any',q:"What is the weakest part of your profile for this role?",a:`<div class="say">Volume of industrial CAE. My analysis depth is real, but it comes from one industry thesis, academic projects and analysis done inside design jobs, not from years of running dozens of load cases on a vehicle programme. And I haven't used HyperWorks in production. Both are things this role fixes quickly, and the fundamentals underneath them are the part that's hard to teach.</div>`},
+{t:9,w:'Gustavo',q:"When could you start?",a:`<p>Give the real number. Check your Helsing contract tonight (probation notice is commonly two weeks under &sect;622(3) BGB, but the contract decides), then add relocation time. Do not commit to a date you haven't checked.</p>`}
+];
+
+/* ---------------- drills ---------------- */
+const DRILLS=[
+{h:"1 · Explicit stable time step: steel, aluminium, CFRP, 5 mm shell",b:`<div class="say">The time step is the element length divided by the wave speed. For a 5 mm steel or aluminium shell that's just under a microsecond, so a 100 ms slam event is about a hundred thousand steps.</div>
+<div class="eq">shell wave speed  c = sqrt( E / (rho (1 - nu^2)) )
+steel  E=210 GPa rho=7850  nu=0.30  -> c = 5,420 m/s
+alu    E= 70 GPa rho=2700  nu=0.33  -> c = 5,390 m/s
+CFRP   quasi-iso E=50 GPa rho=1550  -> c = 5,950 m/s
+       UD fibre dir E1=135 GPa      -> c ~ 9,300 m/s (bar)
+
+dt = Le / c   (Le = 5 mm)
+steel  0.005/5420 = 0.92 us  x 0.9 safety -> 0.83 us
+alu    0.93 us                           -> 0.83 us
+CFRP   0.84 us                           -> 0.76 us</div>
+<p class="catch"><strong>Catches:</strong> (1) steel and aluminium have nearly the same wave speed: E/&rho; is almost equal, which surprises people. (2) Stiff fibre directions shrink the time step. (3) Nearly incompressible rubber or seals: the wave speed is driven by the <em>bulk</em> modulus, which is very large, so they can control the time step despite a low shear modulus. (4) The smallest element controls everything.</p>`},
+{h:"2 · Mass scaling: what does it cost to reach a 1 µs target?",b:`<div class="say">The time step scales with the square root of density. To make a 2 mm steel element run at 1 microsecond you'd have to scale its density by about eight. That's fine for a handful of tiny elements, but if those elements matter dynamically, you've changed the physics.</div>
+<div class="eq">dt ∝ Le * sqrt(rho / E)
+2 mm steel: dt = 0.002/5420 x 0.9 = 0.33 us
+to reach 1.0 us:  scale = (1.0/0.33)^2 ≈ 9  -> rho x 9
+
+check: added mass / total mass  (keep small, commonly < 2-5 %)
+       added mass location (not in the impact path)</div>
+<p class="catch"><strong>Catch:</strong> mass scaling in the impact zone changes peak force and timing. Always report added mass, and for quasi-static runs, also check kinetic energy.</p>`},
+{h:"3 · Rear wing: downforce and airbrake load (assumed numbers)",b:`<p>These are illustration values, not Tourbillon data.</p>
+<div class="eq">q = 0.5 * rho * v^2
+250 km/h (69.4 m/s): q = 0.5*1.225*69.4^2 = 2,950 Pa
+300 km/h (83.3 m/s): q = 4,250 Pa
+400 km/h (111 m/s):  q = 7,560 Pa
+
+downforce   L = q * CL * S      CL=1.0, S=0.5 m^2 @250 -> ~1.5 kN
+airbrake    D = q * CD * A      CD=1.2, A=0.35 m^2 @300 -> ~1.8 kN
+step load on lightly damped SDOF: dynamic amplification -> up to ~2
+-> design check ~3.5 kN on mounts + actuator, plus fatigue per deployment</div>
+<div class="say">Order of magnitude: one or two kilonewtons on a wing that weighs a few kilograms, applied suddenly in the airbrake case. So the dynamic amplification factor matters, and stiffness of the mounts matters, both for strength and so the aero shape holds.</div>
+<p class="catch"><strong>Catch:</strong> force scales with v&sup2;, so 10% more speed is 21% more load. Mention yaw and crosswind asymmetry.</p>`},
+{h:"4 · First mode of a CFRP panel (simply supported plate)",b:`<div class="eq">f11 = (pi/2) * (1/a^2 + 1/b^2) * sqrt( D / (rho*h) )
+D = E h^3 / (12 (1 - nu^2))
+
+a=0.6 m, b=0.4 m, h=2 mm, E=50 GPa, nu=0.3, rho=1550
+D = 50e9 * 8e-9 / (12*0.91) = 36.6 N·m
+rho*h = 3.1 kg/m^2   ->  sqrt(D/rho h) = 3.44
+1/a^2 + 1/b^2 = 2.78 + 6.25 = 9.03
+f11 = 1.571 * 9.03 * 3.44 ≈ 49 Hz</div>
+<div class="say">Around 50 Hz for a 600 by 400 by 2 mm quasi-isotropic carbon panel, simply supported. Clamped edges roughly double it. Halve the thickness and the frequency halves, because D goes with h cubed and mass with h, so f is proportional to h.</div>
+<p class="catch"><strong>Catch:</strong> f &prop; h (not h&sup3;) for plates. Curvature raises it a lot, which is why flat panels are the problem panels.</p>`},
+{h:"5 · Mirror arm: tip stiffness and first mode",b:`<div class="eq">aluminium arm L=150 mm, section 20 x 10 mm (bending about the thin axis)
+I = b h^3 / 12 = 0.02 * 0.01^3 / 12 = 1.67e-9 m^4
+k = 3 E I / L^3 = 3*70e9*1.67e-9 / 0.15^3 = 104 kN/m
+tip load 50 N -> delta = 0.48 mm
+head mass m = 1 kg (arm mass neglected)
+f = (1/2pi) * sqrt(k/m) = (1/6.28)*sqrt(104,000) ≈ 51 Hz</div>
+<p class="catch"><strong>Catches:</strong> L&sup3;: a 20% longer arm loses about 42% stiffness. The mounting compliance (door or body) often dominates the real result, so model the base, not a fixed constraint.</p>`},
+{h:"6 · Door sag: hinge reactions (assumed numbers)",b:`<div class="eq">door m = 18 kg, CG 0.6 m from hinge line
+sag load P = 900 N at 1.1 m
+M = 18*9.81*0.6 + 900*1.1 = 106 + 990 = 1,096 N·m
+hinge spacing s = 0.35 m -> axial couple F = M/s = 3.1 kN per hinge
+(+ vertical shear shared: (18*9.81 + 900)/2 ≈ 540 N each)</div>
+<div class="say">The sag load, not the door weight, dominates the hinge moment. Close hinge spacing turns it into large hinge forces, which is why the hinge reinforcement and the pillar stiffness matter as much as the hinge itself.</div>
+<p class="catch"><strong>Dihedral:</strong> the hinge axis is inclined and the moment arm of gravity changes with opening angle. Check several angles.</p>`},
+{h:"7 · Bolt preload and composite fixings",b:`<div class="eq">T = K * F * d        K ≈ 0.2 (dry steel, nut factor)
+M8 at 25 N·m:  F = 25 / (0.2*0.008) ≈ 15.6 kN
+under head area (M8, ~13 mm OD washer, 8.4 mm hole) ≈ 77 mm^2
+bearing pressure ≈ 15,600 / 77 ≈ 200 MPa  -> too high for bare CFRP
+-> metallic insert / compression limiter / larger washer</div>
+<p class="catch"><strong>Catch:</strong> K varies from about 0.1 to 0.3 with lubrication, so the preload scatter is &plusmn;25% or more. Composites creep and relax under preload, so clamp load is lost over time. Modelling: beam plus pretension (e.g. PRETENS in OptiStruct) with contact on the clamped faces.</p>`},
+{h:"8 · Fatigue: how sensitive is life to stress?",b:`<div class="eq">Basquin form:  N ∝ S^(-k)
+k ≈ 3 for welded joints, ≈ 5-10 for smooth parts
+10 % stress increase, k=5:  life x (1/1.1)^5 = 0.62  (-38 %)
+double stress,     k=5:  life / 32
+
+Miner:  D = sum(n_i / N_i)  ; failure at D ≈ 1 (often target D < 0.3-0.5)</div>
+<div class="say">Fatigue life is very sensitive to stress: ten percent more stress costs about a third of the life for a smooth part. That's why mesh convergence at the hotspot matters more for durability than for static strength.</div>
+<p class="catch"><strong>Catch:</strong> mean-stress correction (Goodman is conservative, Gerber less so) and surface, size and notch factors. Composites and adhesives use different fatigue approaches from metals.</p>`},
+{h:"9 · Thermal mismatch: aluminium bracket on a CFRP panel",b:`<div class="eq">delta L = alpha * L * delta T,   L = 1.0 m, delta T = 80 K
+aluminium  23e-6  -> 1.84 mm
+CFRP (q-i) ~1-2e-6 -> 0.08-0.16 mm
+mismatch ≈ 1.7 mm  (visible as gap / flush change)
+
+fully constrained aluminium: sigma = E alpha dT = 70e3*23e-6*80 ≈ 129 MPa</div>
+<div class="say">Almost two millimetres of mismatch over a metre. That is visible on a car where gaps are measured in tenths, and if you constrain it rigidly, the bracket sees well over a hundred MPa just from temperature. So you design the fixing to float, or match the CTE.</div>`},
+{h:"10 · Low-speed impact energy and mean force",b:`<div class="eq">E = 0.5 m v^2     m = 2,000 kg (assumed), v = 4 km/h = 1.11 m/s
+E = 0.5 * 2000 * 1.235 ≈ 1.2 kJ
+absorbed over 50 mm stroke at constant force: F = E/d ≈ 25 kN  (~1.3 g)
+over 25 mm: 50 kN -> halving the stroke doubles the force</div>
+<p class="catch"><strong>Catch:</strong> on a hypercar with a low front and stiff carbon, the stroke available before hitting a hard point is small. That drives the absorber design. Use this as a sanity check on explicit results: does the energy absorbed in the model match &frac12;mv&sup2;?</p>`},
+{h:"11 · Read this energy report: is the run acceptable?",b:`<div class="eq">initial KE          12.0 kJ
+final internal      10.2 kJ
+final KE             0.5 kJ
+hourglass            1.4 kJ   <-
+contact (sliding)   -0.2 kJ   <-
+added mass           3 %  of total
+total energy drift  +0.1 kJ</div>
+<div class="say">Total energy is conserved, so the run is stable. But hourglass energy is about fourteen percent of internal, which is too high. The deformation is partly non-physical. And negative contact energy suggests penetrations or a bad initial contact. Three percent added mass is acceptable if it's not in the crush zone. I'd look at where the hourglass energy is concentrated, refine or change the hourglass control there, check initial penetrations, and rerun before I'd report anything.</div>`},
+{h:"12 · Oil-canning: why Newton–Raphson fails, and how to fix it",b:`<div class="fig"><svg viewBox="0 0 420 180" role="img" aria-label="snap-through load-deflection curve">
+<line x1="40" y1="150" x2="400" y2="150" stroke="currentColor" opacity=".5"/><line x1="40" y1="150" x2="40" y2="15" stroke="currentColor" opacity=".5"/>
+<path d="M40,150 C90,90 120,45 160,45 C200,45 220,110 260,115 C300,118 330,70 395,25" fill="none" stroke="#5b9dff" stroke-width="2.5"/>
+<line x1="160" y1="45" x2="355" y2="45" stroke="#ff6b6b" stroke-dasharray="5 4"/>
+<text x="165" y="38" fill="currentColor" font-size="11">limit point</text>
+<text x="270" y="60" fill="#ff6b6b" font-size="11">load control jumps</text>
+<text x="300" y="168" fill="currentColor" font-size="11">indenter displacement</text>
+<text x="46" y="26" fill="currentColor" font-size="11">force</text>
+</svg></div>
+<div class="say">A shallow panel under an indenter stiffens, reaches a limit point, then the force drops while displacement increases. That's the snap-through, the oil-can. With load control, Newton&ndash;Raphson can't go past the peak: the tangent stiffness goes to zero and the solution either diverges or jumps to a different branch. Displacement control on the indenter traces the drop. If there's snap-back, where displacement also reverses, you need arc-length. The criterion is usually that no negative slope or flat region appears up to the specified load.</div>`}
+];
+/* ---------------- section activation ---------------- */
+function activate(id,scroll){
+  document.querySelectorAll('#nav a').forEach(x=>x.classList.toggle('on',x.dataset.s===id));
+  document.querySelectorAll('main > section').forEach(s=>s.classList.toggle('on',s.id===id));
+  if(scroll!==false) window.scrollTo(0,0);
+}
+const nav=document.getElementById('nav');
+const side=document.getElementById('side');
+nav.addEventListener('click',e=>{
+  const a=e.target.closest('a[data-s]'); if(!a)return;
+  activate(a.dataset.s);
+  side.classList.remove('navopen');
+});
+document.getElementById('navToggle').addEventListener('click',()=>side.classList.toggle('navopen'));
+
+/* ---------------- countdown (13:00 local time, Mon 2 Nov 2026) ---------------- */
+(function(){
+  const target=new Date(2026,10,2,13,0,0);
+  function tick(){
+    const el=document.getElementById('cd');
+    const d=target-new Date();
+    if(d<=-3600000){el.innerHTML='<span style="color:var(--good);font-weight:700">Interview done</span>';return}
+    if(d<=0){el.innerHTML='<span style="color:var(--warn);font-weight:700">Now</span>';return}
+    const h=Math.floor(d/3600000), m=Math.floor(d%3600000/60000);
+    el.innerHTML='<span style="color:var(--acc);font-weight:700">'+h+'h '+m+'m to 13:00</span> <span style="color:var(--warn)">(confirm time, &sect;0)</span>';
+  }
+  tick(); setInterval(tick,30000);
+})();
+
+/* ---------------- question bank ---------------- */
+(function(){
+  const f=document.getElementById('filt'), m=document.getElementById('mockScope');
+  Object.keys(TIER).forEach(k=>{
+    if(!QS.some(q=>String(q.t)===k))return;
+    f.insertAdjacentHTML('beforeend','<option value="'+k+'">'+TIER[k][1]+'</option>');
+    m.insertAdjacentHTML('beforeend','<option value="'+k+'">'+TIER[k][1]+' only</option>');
+  });
+  m.insertAdjacentHTML('beforeend','<option value="drills">Hand-calc drills only</option>');
+})();
+function setTier(v){document.getElementById('filt').value=v;renderBank();renderPills();}
+function renderPills(){
+  const host=document.getElementById('tierPills');
+  const cur=document.getElementById('filt').value||'all';
+  const counts={}; QS.forEach(o=>{counts[o.t]=(counts[o.t]||0)+1});
+  let html='<span class="tpill all'+(cur==='all'?' on':'')+'" data-t="all">All <span class="tn">'+QS.length+'</span></span>';
+  Object.keys(TIER).forEach(k=>{
+    if(!counts[k])return;
+    html+='<span class="tpill '+TIER[k][0]+(String(cur)===k?' on':'')+'" data-t="'+k+'">'+TIER[k][1]+' <span class="tn">'+counts[k]+'</span></span>';
+  });
+  host.innerHTML=html;
+  host.querySelectorAll('.tpill').forEach(el=>{el.onclick=()=>setTier(el.dataset.t)});
+}
+function renderBank(){
+  const f=document.getElementById('filt').value;
+  const list=document.getElementById('bankList');
+  list.innerHTML='';
+  QS.forEach((q,i)=>{
+    if(f!=='all'&&String(q.t)!==f)return;
+    const d=document.createElement('div');
+    d.className='q'; d.dataset.qi=i;
+    d.innerHTML='<div class="qh"><span class="qn">'+String(i+1).padStart(2,'0')+'</span><span class="qt">'+q.q+'<br><span class="pill '+TIER[q.t][0]+'" style="margin-top:6px;display:inline-block">'+TIER[q.t][1]+'</span><span class="qw">likely: '+q.w+'</span></span><span class="chev">&#9660;</span></div><div class="qb">'+q.a+'</div>';
+    d.querySelector('.qh').onclick=()=>d.classList.toggle('open');
+    list.appendChild(d);
+  });
+}
+function allQ(o){document.querySelectorAll('#bankList .q').forEach(q=>q.classList.toggle('open',o))}
+renderBank(); renderPills();
+
+/* ---------------- drills ---------------- */
+(function(){
+  const l=document.getElementById('drillList');
+  DRILLS.forEach((d,i)=>{
+    const e=document.createElement('div');
+    e.className='drill'; e.dataset.di=i;
+    e.innerHTML='<h5>'+d.h+'</h5>'+d.b;
+    l.appendChild(e);
+  });
+})();
+
+/* ---------------- mock mode ---------------- */
+let cur=null, t0=null, tint=null;
+const KEY='rimac_prep_v1';
+function prog(){try{return JSON.parse(localStorage.getItem(KEY))||{}}catch(e){return {}}}
+function save(p){try{localStorage.setItem(KEY,JSON.stringify(p))}catch(e){}}
+function pool(){
+  const s=document.getElementById('mockScope').value;
+  if(s==='drills') return DRILLS.map((d,i)=>({id:'d'+i,q:d.h.replace(/^\d+ · /,'')+': work it out loud.',a:d.b,m:'Hand-calc drill'}));
+  return QS.map((q,i)=>({id:'q'+i,t:q.t,q:q.q,a:q.a,m:TIER[q.t][1]+' · likely: '+q.w+' · question '+(i+1)}))
+           .filter(x=>s==='all'||String(x.t)===s);
+}
+function nextQ(){
+  const p=prog(), all=pool(); if(!all.length)return;
+  let cand=all.filter(x=>p[x.id]!==1); if(!cand.length)cand=all;
+  cur=cand[Math.floor(Math.random()*cand.length)];
+  document.getElementById('stageQ').textContent=cur.q;
+  document.getElementById('stageMeta').textContent=cur.m;
+  const A=document.getElementById('stageA'); A.innerHTML=cur.a; A.classList.remove('on');
+  resetTimer(); startTimer(); updProg();
+}
+function toggleAns(){document.getElementById('stageA').classList.toggle('on')}
+function startTimer(){
+  clearInterval(tint); t0=Date.now();
+  tint=setInterval(()=>{
+    const s=Math.floor((Date.now()-t0)/1000), el=document.getElementById('timer');
+    el.textContent=Math.floor(s/60)+':'+String(s%60).padStart(2,'0');
+    el.className=s>150?'over':(s>90?'hot':'');
+  },500);
+}
+function resetTimer(){clearInterval(tint);const el=document.getElementById('timer');el.textContent='0:00';el.className=''}
+function mark(v){if(!cur)return;const p=prog();p[cur.id]=v;save(p);nextQ()}
+function resetProg(){save({});updProg()}
+function updProg(){
+  const p=prog(), all=pool(), done=all.filter(x=>p[x.id]===1).length;
+  document.getElementById('prog').textContent=done+' / '+all.length+' marked solid in this set';
+  document.getElementById('barI').style.width=(all.length?done/all.length*100:0)+'%';
+}
+document.getElementById('mockScope').onchange=updProg;
+updProg();
+
+/* ---------------- day-of checklist ---------------- */
+(function(){
+  const K='rimac_chk_v1';
+  let st={}; try{st=JSON.parse(localStorage.getItem(K))||{}}catch(e){}
+  document.querySelectorAll('#dayChk input').forEach(cb=>{
+    const li=cb.closest('li');
+    cb.checked=!!st[cb.dataset.k]; li.classList.toggle('done',cb.checked);
+    cb.onchange=()=>{st[cb.dataset.k]=cb.checked;li.classList.toggle('done',cb.checked);try{localStorage.setItem(K,JSON.stringify(st))}catch(e){}};
+  });
+})();
+
+/* ---------------- global search ---------------- */
+(function(){
+  const strip=s=>String(s||'').replace(/<[^>]*>/g,' ').replace(/&nbsp;/gi,' ').replace(/&mdash;|&ndash;/gi,'-')
+    .replace(/&amp;/gi,'&').replace(/&lt;/gi,'<').replace(/&gt;/gi,'>').replace(/&[a-z]+;/gi,' ').replace(/\s+/g,' ').trim();
+  const esc=s=>s.replace(/[.*+?^${}()|[\]\\]/g,'\\$&');
+  const escHtml=s=>s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+  const SECNAME={}; document.querySelectorAll('#nav a').forEach(a=>{SECNAME[a.dataset.s]=strip(a.textContent)});
+  const IDX=[];
+  QS.forEach((o,i)=>IDX.push({kind:'q',sec:'bank',qi:i,tier:TIER[o.t][1],pill:TIER[o.t][0],title:strip(o.q),body:strip(o.a)}));
+  DRILLS.forEach((d,i)=>IDX.push({kind:'d',sec:'drill',di:i,tier:'Drill',pill:'pT',title:strip(d.h),body:strip(d.b)}));
+  const HEAD=/^H[2-5]$/;
+  document.querySelectorAll('main > section').forEach(sec=>{
+    sec.querySelectorAll('h2,h3,h4,h5').forEach(el=>{
+      if(el.closest('#drillList')||el.closest('#bankList'))return;
+      const t=strip(el.textContent); if(t.length<3)return;
+      let body='', n=el.nextElementSibling, budget=12;
+      while(n&&!HEAD.test(n.tagName)&&budget-->0){body+=' '+strip(n.textContent);n=n.nextElementSibling}
+      IDX.push({kind:'s',sec:sec.id,el:el,tier:'Section',pill:'pT',title:t,body:body.trim().slice(0,1500)});
+    });
+  });
+  function score(it,terms){
+    const T=it.title.toLowerCase(), B=it.body.toLowerCase(); let s=0;
+    for(const t of terms){
+      const inT=T.indexOf(t)!==-1, inB=B.indexOf(t)!==-1;
+      if(!inT&&!inB)return 0;
+      if(inT) s+= T.indexOf(t)===0?14:(new RegExp('\\b'+esc(t)).test(T)?9:5);
+      else s+= new RegExp('\\b'+esc(t)).test(B)?2:1;
+    }
+    return s+(it.kind==='q'?2:it.kind==='d'?1.5:0);
+  }
+  function hl(text,terms){let out=escHtml(text);terms.forEach(t=>{out=out.replace(new RegExp('('+esc(escHtml(t))+')','ig'),'<mark>$1</mark>')});return out}
+  function snippet(it,terms){
+    if(!it.body)return '';
+    const low=it.body.toLowerCase(); let at=-1;
+    for(const t of terms){const i=low.indexOf(t);if(i!==-1&&(at===-1||i<at))at=i}
+    if(at===-1)at=0;
+    const from=Math.max(0,at-70); let frag=it.body.slice(from,from+200);
+    if(from>0)frag='…'+frag; if(from+200<it.body.length)frag+='…';
+    return hl(frag,terms);
+  }
+  const wrap=document.getElementById('searchWrap'), input=document.getElementById('searchIn'),
+        panel=document.getElementById('searchRes'), clearBtn=document.getElementById('searchClear');
+  let hits=[], sel=-1;
+  function close(){panel.classList.remove('on');sel=-1}
+  function run(){
+    const raw=input.value.trim(); wrap.classList.toggle('has',raw.length>0);
+    if(raw.length<2){close();return}
+    const terms=raw.toLowerCase().split(/\s+/).filter(Boolean);
+    hits=IDX.map(it=>({it,s:score(it,terms)})).filter(x=>x.s>0).sort((a,b)=>b.s-a.s).slice(0,25).map(x=>x.it);
+    sel=hits.length?0:-1; draw(terms);
+  }
+  function draw(terms){
+    if(!hits.length){panel.innerHTML='<div class="rEmpty">No match for <strong>'+escHtml(input.value)+'</strong>. Try one keyword: <em>sag</em>, <em>Riks</em>, <em>OptiStruct</em>, <em>Volvo</em>.</div>';panel.classList.add('on');return}
+    let html='<div class="rcount">'+hits.length+' result'+(hits.length>1?'s':'')+' · ↑↓ move · ↵ open · esc close</div>';
+    hits.forEach((it,i)=>{
+      const where=it.kind==='q'?'Question bank → '+it.tier:it.kind==='d'?'Hand-calc drills':(SECNAME[it.sec]||it.sec);
+      const sn=snippet(it,terms);
+      html+='<div class="rItem'+(i===sel?' sel':'')+'" data-i="'+i+'"><span class="pill '+it.pill+'">'+it.tier+'</span><div class="rmain"><div class="rt">'+hl(it.title,terms)+'</div>'+(sn?'<div class="rs">'+sn+'</div>':'')+'<div class="rwhere">'+escHtml(where)+'</div></div></div>';
+    });
+    panel.innerHTML=html; panel.classList.add('on');
+    panel.querySelectorAll('.rItem').forEach(el=>{el.onmousedown=e=>{e.preventDefault();go(hits[+el.dataset.i])}});
+  }
+  function flash(el){
+    if(!el)return; el.classList.remove('hitflash'); void el.offsetWidth; el.classList.add('hitflash');
+    setTimeout(()=>{try{el.scrollIntoView({behavior:'smooth',block:'center'})}catch(err){}},60);
+  }
+  function go(it){
+    if(!it)return; activate(it.sec,false); close(); input.blur();
+    if(it.kind==='q'){
+      const f=document.getElementById('filt'); if(f.value!=='all'){f.value='all';renderBank();renderPills()}
+      const el=document.querySelector('#bankList .q[data-qi="'+it.qi+'"]'); if(el){el.classList.add('open');flash(el)}
+    } else if(it.kind==='d'){flash(document.querySelector('#drillList .drill[data-di="'+it.di+'"]'))}
+    else flash(it.el);
+  }
+  input.addEventListener('input',run);
+  input.addEventListener('focus',()=>{if(input.value.trim().length>=2)run()});
+  input.addEventListener('blur',()=>setTimeout(close,120));
+  clearBtn.onclick=()=>{input.value='';wrap.classList.remove('has');close();input.focus()};
+  input.addEventListener('keydown',e=>{
+    if(e.key==='Escape'){close();input.blur();return}
+    if(!panel.classList.contains('on')||!hits.length)return;
+    if(e.key==='ArrowDown'||e.key==='ArrowUp'){
+      e.preventDefault(); sel=(sel+(e.key==='ArrowDown'?1:-1)+hits.length)%hits.length;
+      panel.querySelectorAll('.rItem').forEach((el,i)=>el.classList.toggle('sel',i===sel));
+      const s=panel.querySelector('.rItem.sel'); if(s){try{s.scrollIntoView({block:'nearest'})}catch(err){}}
+    } else if(e.key==='Enter'){e.preventDefault();go(hits[sel])}
+  });
+  document.addEventListener('keydown',e=>{
+    const tag=(document.activeElement&&document.activeElement.tagName)||'';
+    const typing=tag==='INPUT'||tag==='TEXTAREA'||tag==='SELECT';
+    if((e.key==='k'||e.key==='K')&&(e.metaKey||e.ctrlKey)){e.preventDefault();input.focus();input.select()}
+    else if(e.key==='/'&&!typing){e.preventDefault();input.focus();input.select()}
+  });
+})();
+
+/* ---------------- theme toggle ---------------- */
+(function(){
+  const btn=document.getElementById('themeToggle'), root=document.documentElement;
+  function paint(){const light=root.getAttribute('data-theme')==='light';btn.innerHTML=(light?'◐ Dark':'◑ Light');}
+  btn.addEventListener('click',()=>{
+    const light=root.getAttribute('data-theme')==='light';
+    if(light)root.removeAttribute('data-theme');else root.setAttribute('data-theme','light');
+    try{localStorage.setItem('prep_theme',light?'dark':'light')}catch(e){}
+    paint();
+  });
+  paint();
+})();
+</script>
+</body>
+</html>

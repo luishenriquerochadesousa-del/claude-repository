@@ -63,3 +63,11 @@ rewritten at municipal level through the end of 2026 and tax thresholds move
 annually. Have a lawyer review the contract package and a *contabilista
 certificado* confirm the tax position before you sign a lease or file a
 comunicação prévia.
+
+---
+
+## `rimac/` — Bugatti Rimac interview prep (CAE Engineer, Exterior)
+
+Single-file prep dashboard for the 2 Nov 2026 technical panel. Open
+[`rimac/index.html`](rimac/index.html). Sources live in `rimac/src/`; run
+`rimac/build.sh` to reassemble.
