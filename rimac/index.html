@@ -1252,7 +1252,7 @@ updProg();
 /* ---------------- theme toggle ---------------- */
 (function(){
   const btn=document.getElementById('themeToggle'), root=document.documentElement;
-  function paint(){const light=root.getAttribute('data-theme')==='light';btn.innerHTML=(light?'◐ Dark':'◑ Light');}
+  function paint(){const light=root.getAttribute('data-theme')==='light';btn.textContent=light?'Dark mode':'Light mode';}
   btn.addEventListener('click',()=>{
     const light=root.getAttribute('data-theme')==='light';
     if(light)root.removeAttribute('data-theme');else root.setAttribute('data-theme','light');
